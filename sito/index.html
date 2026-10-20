@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PreventIVO — Quanto ti resta? Preventivi per forfettari</title>
+<meta name="description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF, inviato su WhatsApp. 9,99 € una volta, niente account.">
+<link rel="canonical" href="https://partitaivo.app/">
+<meta name="robots" content="index,follow">
+<meta name="author" content="Elvis Iacobuta">
+<meta name="theme-color" content="#161616">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PreventIVO">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://partitaivo.app/">
+<meta property="og:title" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta property="og:description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF su WhatsApp. 9,99 € una volta.">
+<meta property="og:image" content="https://partitaivo.app/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta name="twitter:description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF su WhatsApp. 9,99 € una volta.">
+<meta name="twitter:image" content="https://partitaivo.app/img/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' rx='14' fill='%23161616'/%3E%3Ccircle cx='30' cy='30' r='17' fill='none' stroke='%23FFD54A' stroke-width='10'/%3E%3Ccircle cx='30' cy='30' r='17' fill='none' stroke='%23FF4D4D' stroke-width='10' stroke-dasharray='25 82' transform='rotate(-90 30 30)'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://partitaivo.app/#app",
+      "name": "PreventIVO",
+      "url": "https://partitaivo.app/",
+      "description": "App per partite IVA in regime forfettario: stima quanto resta di un incasso o di un preventivo, crea il preventivo in PDF e lo invia su WhatsApp o per mail. I dati restano sul telefono. Le cifre sono stime: il calcolo definitivo spetta al commercialista.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "iOS, Android, Web",
+      "inLanguage": "it",
+      "image": "https://partitaivo.app/img/og.png",
+      "screenshot": [
+        "https://partitaivo.app/img/s1-home.png",
+        "https://partitaivo.app/img/s2-preventivo.png",
+        "https://partitaivo.app/img/s4-preventivi.png",
+        "https://partitaivo.app/img/s5-anno.png"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "9.99",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/PreOrder",
+        "url": "https://partitaivo.app/#prezzo"
+      },
+      "author": { "@id": "https://partitaivo.app/#author" },
+      "publisher": { "@id": "https://partitaivo.app/#org" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://partitaivo.app/#author",
+      "name": "Elvis Iacobuta",
+      "email": "elvisiacobuta@gmail.com",
+      "address": { "@type": "PostalAddress", "addressLocality": "Aosta", "addressCountry": "IT" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://partitaivo.app/#org",
+      "name": "PreventIVO",
+      "url": "https://partitaivo.app/",
+      "logo": "https://partitaivo.app/img/icon.png",
+      "email": "elvisiacobuta@gmail.com",
+      "founder": { "@id": "https://partitaivo.app/#author" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Aosta", "addressCountry": "IT" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://partitaivo.app/#site",
+      "url": "https://partitaivo.app/",
+      "name": "PreventIVO",
+      "inLanguage": "it",
+      "publisher": { "@id": "https://partitaivo.app/#org" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://partitaivo.app/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "È per me?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te." }
+        },
+        {
+          "@type": "Question",
+          "name": "I calcoli sono esatti?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sono stime, fatte con i coefficienti e le aliquote pubbliche del forfettario: coefficiente della tua attività, INPS gestione separata o artigiani e commercianti, imposta al 5% o al 15%. Servono a sapere subito dove sei. Il conto definitivo lo fa il tuo commercialista: l'app non dà consulenza fiscale." }
+        },
+        {
+          "@type": "Question",
+          "name": "Sostituisce il commercialista?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e a novembre. C'è l'export in CSV apposta." }
+        },
+        {
+          "@type": "Question",
+          "name": "Dove vanno i miei dati?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo." }
+        },
+        {
+          "@type": "Question",
+          "name": "Perché a pagamento e non gratis?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari." }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso provarla prima?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto." }
+        }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+:root{--bg:#161616;--sur:#1f1f1f;--sur2:#2a2a2a;--txt:#F4F4F4;--mut:#9A9A9A;--acc:#FFD54A;--red:#FF4D4D;--line:#2e2e2e;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+a{color:inherit}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:6px}
+.btn:focus-visible,.demo .ctrl button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--acc);color:#111;padding:10px 14px;border-radius:10px;font-weight:700;z-index:100;text-decoration:none}
+.skip:focus{left:8px}
+.w{max-width:1100px;margin:0 auto;padding:0 20px}
+b,strong{font-weight:700}
+.y{color:var(--acc)}.r{color:var(--red)}
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(22,22,22,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .w{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none}
+.logo svg{width:28px;height:28px}
+.logo i{font-style:normal;color:var(--acc)}
+.navlinks{display:flex;gap:22px;font-size:14px;color:var(--mut)}
+.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--txt)}
+@media(max-width:720px){.navlinks{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;border-radius:14px;padding:16px 24px;text-decoration:none;font-size:17px;border:0;cursor:pointer;transition:transform .15s;text-align:center}
+.btn:hover{transform:translateY(-1px)}
+.btn.sm{padding:10px 16px;font-size:14px;border-radius:10px}
+.btn.ghost{background:var(--sur2);color:var(--txt)}
+.btn.ghost:hover{background:#333}
+/* hero */
+.hero{padding:72px 0 40px;position:relative;overflow:hidden}
+.hero .w{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+@media(max-width:860px){.hero .w{grid-template-columns:1fr}.hero{padding-top:40px}}
+.kick{display:inline-flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--mut);margin-bottom:22px}
+.kick b{color:var(--red)}
+h1{font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px;font-weight:900}
+.lead{font-size:clamp(17px,2vw,21px);color:var(--mut);max-width:520px;margin:0 0 30px}
+.lead b{color:var(--txt)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.sub{font-size:13px;color:var(--mut);margin-top:14px}
+.phone{position:relative;width:min(340px,80vw);margin:0 auto;aspect-ratio:390/844;border-radius:44px;background:#000;padding:10px;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px #333 inset}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:36px;display:block}
+.glow{position:absolute;inset:auto;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,213,74,.18),transparent 60%);filter:blur(20px);pointer-events:none;right:-80px;top:-40px;z-index:-1}
+/* strip */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sur)}
+.strip ul{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 20px;font-size:14px;color:var(--mut);list-style:none;margin:0 auto}
+.strip li b{color:var(--txt)}
+/* sections */
+section{padding:84px 0}
+@media(max-width:720px){section{padding:56px 0}}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:12px}
+h2{font-size:clamp(30px,4.5vw,48px);letter-spacing:-.035em;line-height:1.08;margin:0 0 14px;font-weight:800}
+.p{color:var(--mut);font-size:18px;max-width:640px;margin:0}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
+.feat.rev .ph{order:-1}
+@media(max-width:860px){.feat{grid-template-columns:1fr;gap:28px;margin-top:40px}.feat.rev .ph{order:0}}
+.feat h3{font-size:clamp(26px,3.4vw,38px);letter-spacing:-.03em;line-height:1.1;margin:0 0 14px;font-weight:800}
+.feat p{color:var(--mut);font-size:17px;margin:0 0 18px}
+.feat ul{margin:0;padding:0;list-style:none;color:var(--mut)}
+.feat li{padding:8px 0 8px 18px;border-top:1px solid var(--line);position:relative}
+.feat li::before{content:"";position:absolute;left:0;top:16px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.feat li b{color:var(--txt)}
+.ph{width:min(300px,78vw);margin:0 auto;border-radius:38px;background:#000;padding:8px;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 0 1px #333 inset}
+.ph img{width:100%;height:auto;display:block;border-radius:32px}
+/* ad blocks */
+.ad{background:linear-gradient(135deg,#FFD54A,#ffc61a);color:#111;border-radius:24px;padding:36px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.ad.red{background:linear-gradient(135deg,#FF4D4D,#ff2f2f);color:#fff}
+.ad h3{margin:0 0 6px;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.03em;line-height:1.1;font-weight:900}
+.ad p{margin:0;font-size:16px;opacity:.85}
+.ad .btn{background:#111;color:#fff;white-space:nowrap}
+.ad.red .btn{background:#fff;color:#111}
+.ad .btn:focus-visible{outline-color:#111}
+@media(max-width:720px){.ad{grid-template-columns:1fr;padding:26px}.ad .btn{white-space:normal}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;list-style:none;padding:0}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.step{background:var(--sur);border:1px solid var(--line);border-radius:20px;padding:26px}
+.step .n{width:40px;height:40px;border-radius:50%;background:var(--acc);color:#111;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px}
+.step h3{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
+.step p{margin:0;color:var(--mut);font-size:15px}
+/* ring demo */
+.demo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:36px;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;margin-top:40px}
+@media(max-width:720px){.demo{grid-template-columns:1fr;padding:24px;text-align:center}}
+.ring{width:220px;height:220px;position:relative;margin:0 auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .c b{font-size:44px;letter-spacing:-.04em;color:var(--acc);font-weight:900;line-height:1}
+.ring .c small{font-size:12px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.demo .ctrl{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px;justify-content:inherit}
+.demo .ctrl button{background:var(--sur2);border:0;color:var(--txt);border-radius:12px;padding:12px 18px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+.demo .ctrl button[aria-pressed="true"]{background:var(--acc);color:#111}
+.demo .leg{display:flex;gap:22px;color:var(--mut);font-size:15px;flex-wrap:wrap;justify-content:inherit}
+.demo .leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.demo .leg b{color:var(--txt)}
+.demo .note{color:var(--mut);font-size:13px;margin:16px 0 0}
+/* pricing */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+@media(max-width:720px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--sur);border:1px solid var(--line);border-radius:24px;padding:30px;position:relative}
+.plan.hi{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.plan .tag{position:absolute;top:-13px;left:24px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;letter-spacing:.05em}
+.plan h3{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.price{font-size:56px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:12px 0 4px}
+.price s{color:var(--mut);font-size:26px;font-weight:600;margin-left:8px;letter-spacing:-.02em}
+.price small{font-size:15px;color:var(--mut);font-weight:500;letter-spacing:0;margin-left:6px}
+@media(max-width:720px){.price{font-size:48px}.price small{display:block;margin:8px 0 0}}
+.plan ul{list-style:none;padding:0;margin:20px 0 24px;color:var(--mut)}
+.plan li{padding:9px 0;border-top:1px solid var(--line)}
+.plan li b{color:var(--txt)}
+.plan .btn{width:100%}
+/* faq */
+.faq{max-width:760px;margin:30px auto 0}
+details{border-top:1px solid var(--line);padding:18px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-size:18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-weight:700;font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--mut);margin:12px 0 0;font-size:16px}
+/* ivo */
+.ivo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:40px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+@media(max-width:720px){.ivo{grid-template-columns:1fr;padding:26px}}
+.ivo .av{width:96px;height:96px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;color:#111;letter-spacing:-.04em}
+.ivo blockquote{margin:0;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.02em;line-height:1.25;font-weight:600}
+.ivo .cite{display:block;font-style:normal;color:var(--mut);font-size:14px;margin-top:12px}
+/* final */
+.final{text-align:center;padding:100px 0}
+.final h2{font-size:clamp(36px,6vw,64px)}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--mut);font-size:13px}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}footer a:hover{color:var(--txt)}
+footer nav{position:static;background:none;border:0;backdrop-filter:none}
+footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+.disc{font-size:12px;color:var(--mut);max-width:760px;margin:12px auto 0}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Vai al contenuto</a>
+
+<nav aria-label="Principale"><div class="w">
+  <a class="logo" href="#" aria-label="PreventIVO, torna all'inizio"><svg viewBox="0 0 60 60" aria-hidden="true" focusable="false"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg><span>Prevent<i>IVO</i></span></a>
+  <div class="navlinks"><a href="#come">Provalo</a><a href="#funzioni">Cosa fa</a><a href="#prezzo">Prezzo</a><a href="#faq">Domande</a></div>
+  <a class="btn sm" href="../">Provala ora</a>
+</div></nav>
+
+<main id="main">
+<header class="hero"><div class="glow" aria-hidden="true"></div><div class="w">
+  <div>
+    <p class="kick"><b>Prezzo di lancio</b> 5,99 € invece di 9,99 € · per le prime 3 settimane</p>
+    <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
+    <p class="lead">Hai appena aperto la partita IVA forfettaria. Ti pagano 1.000 €: <b>quanto è tuo?</b> Scrivi la cifra, il cerchio risponde. Poi fai il preventivo in PDF e lo mandi su WhatsApp. <b>Senza Excel, senza modelli Word.</b></p>
+    <div class="ctas">
+      <a class="btn" href="../" id="cta1">Provala ora, gratis nel browser</a>
+      <a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20quando%20PreventIVO%20%C3%A8%20su%20App%20Store%20e%20Google%20Play.%20Telefono%3A%20iPhone%20%2F%20Android" id="cta2">Avvisami quando è sugli store</a>
+    </div>
+    <p class="sub">In arrivo su App Store e Google Play · 9,99 € una volta, nessun abbonamento · niente account, i dati restano sul tuo telefono</p>
+  </div>
+  <div class="phone"><img src="img/s1-home.png" width="1170" height="2532" fetchpriority="high" decoding="async" alt="Schermata principale di PreventIVO: 1.500 € incassati, il cerchio giallo e rosso mostra che il 77% è tuo"></div>
+</div></header>
+
+<div class="strip"><ul class="w">
+  <li><b>Solo forfettari.</b> Fatta per chi ha appena aperto</li>
+  <li><b>Niente account.</b> I dati restano sul telefono</li>
+  <li><b>Un prezzo, una volta.</b> Nessun abbonamento</li>
+  <li><b>Sono stime.</b> Il conto vero lo fa il commercialista</li>
+</ul></div>
+
+<section id="come" aria-labelledby="h-come"><div class="w">
+  <p class="eyebrow">Provalo qui</p>
+  <h2 id="h-come">Ti pagano. Quanto è tuo davvero?</h2>
+  <p class="p">Tocca una cifra. Giallo è tuo, rosso va al fisco. L'app fa questo a ogni preventivo e a ogni incasso.</p>
+  <div class="demo">
+    <div class="ring">
+      <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false"><circle cx="100" cy="100" r="84" fill="none" stroke="#2a2a2a" stroke-width="18"/><circle id="ry" cx="100" cy="100" r="84" fill="none" stroke="#FFD54A" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 999"/><circle id="rr" cx="100" cy="100" r="84" fill="none" stroke="#FF4D4D" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 999"/></svg>
+      <div class="c" aria-live="polite"><b id="dnet">—</b><small>è tuo</small></div>
+    </div>
+    <div>
+      <p class="eyebrow" id="h-ctrl" style="margin-bottom:4px">Hai incassato</p>
+      <div class="ctrl" id="ctrl" role="group" aria-labelledby="h-ctrl"><button type="button" data-v="300" aria-pressed="false">300 €</button><button type="button" data-v="1000" aria-pressed="true">1.000 €</button><button type="button" data-v="2500" aria-pressed="false">2.500 €</button><button type="button" data-v="5000" aria-pressed="false">5.000 €</button></div>
+      <div class="leg"><span><i style="background:#FFD54A" aria-hidden="true"></i>tuoi <b id="lnet">—</b></span><span><i style="background:#FF4D4D" aria-hidden="true"></i>imposta <b id="limp">—</b></span><span><i style="background:#B33A3A" aria-hidden="true"></i>INPS <b id="linps">—</b></span></div>
+      <p class="note">Stima: forfettario al 5%, coefficiente 78%, INPS gestione separata. Nell'app scegli la tua attività e se sei al 5% o al 15%. Il conto definitivo lo fa il commercialista.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="funzioni" style="padding-top:0" aria-labelledby="h-funzioni"><div class="w">
+  <p class="eyebrow">Cosa fa</p>
+  <h2 id="h-funzioni">Tre cose. Nient'altro.</h2>
+
+  <div class="feat">
+    <div>
+      <h3>Il preventivo in 10 secondi, dal telefono.</h3>
+      <p>Metti le voci e il prezzo. L'app ti mostra subito quanto ti resta su quel lavoro. Poi lo mandi.</p>
+      <ul><li>Voci con quantità e prezzo, quante vuoi</li><li>Condizioni (pagamento, validità, incluso, extra) scritte una volta: restano</li><li>PDF con il tuo nome e la tua partita IVA, numerato e con validità</li><li>Due tasti: <b>Invia su WhatsApp</b>, <b>Invia per mail</b>. Con il PDF allegato</li></ul>
+    </div>
+    <div class="ph"><img src="img/s2-preventivo.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Schermata preventivo di PreventIVO: elenco voci con quantità e prezzo, totale e netto stimato"></div>
+  </div>
+
+  <div class="feat rev">
+    <div>
+      <h3>Sai sempre chi ti deve cosa.</h3>
+      <p>Ogni preventivo ha uno stato: inviato, accettato, fatturato, incassato. In alto vedi quanto aspetti e da chi. I fermi da più di 30 giorni diventano rossi.</p>
+      <ul><li>I clienti si creano da soli dal primo preventivo</li><li>Mail e WhatsApp del cliente salvati per la volta dopo</li><li>Quando incassi, ti dice quanto mettere via per le tasse</li></ul>
+    </div>
+    <div class="ph"><img src="img/s4-preventivi.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Elenco preventivi di PreventIVO con stato inviato, accettato, fatturato e incassato"></div>
+  </div>
+
+  <div class="feat">
+    <div>
+      <h3>Cosa paghi, e quando. Prima che arrivi.</h3>
+      <p>Il forfettario ha trappole che nessuno ti spiega: il secondo anno paghi quasi il doppio, dopo cinque anni il 5% finisce, oltre 85.000 € esci dal regime. L'app te lo dice in base all'anno di partita IVA in cui sei.</p>
+      <ul><li>Tasse stimate dell'anno e cosa paghi a giugno e a novembre</li><li>Quanto manca alla soglia degli 85.000 €</li><li>Incassi mese per mese ed export CSV per il commercialista</li></ul>
+    </div>
+    <div class="ph"><img src="img/s5-anno.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Schermata anno di PreventIVO: tasse stimate, scadenze di giugno e novembre e distanza dalla soglia di 85.000 €"></div>
+  </div>
+</div></section>
+
+<section style="padding-top:0" aria-label="Il PDF del preventivo"><div class="w">
+  <div class="ad">
+    <div><h3>Il PDF che mandi parla per te.</h3><p>Nome, partita IVA, voci chiare, condizioni, firma. Il cliente capisce al volo. Tu non devi spiegare niente.</p></div>
+    <a class="btn" href="../">Fai il tuo primo preventivo</a>
+  </div>
+</div></section>
+
+<section id="passi" style="padding-top:0" aria-labelledby="h-passi"><div class="w">
+  <p class="eyebrow">Come funziona</p>
+  <h2 id="h-passi">Tre passi, poi non ci pensi più.</h2>
+  <ol class="steps">
+    <li class="step"><div class="n" aria-hidden="true">1</div><h3>Dimmi cosa fai</h3><p>Una domanda sola: la tua attività e se sei al 5% o al 15%. Se non lo sai, l'app conta il 15%: così non ti trovi a corto.</p></li>
+    <li class="step"><div class="n" aria-hidden="true">2</div><h3>Scrivi la cifra</h3><p>Un preventivo o un incasso. Il cerchio si riempie: quanto è tuo, quanto va in imposta, quanto in INPS. E quanto mettere via.</p></li>
+    <li class="step"><div class="n" aria-hidden="true">3</div><h3>Manda il PDF</h3><p>Nome, partita IVA, voci, condizioni e firma. Su WhatsApp o per mail, in un tocco. Poi segna quando ti pagano.</p></li>
+  </ol>
+</div></section>
+
+<section id="prezzo" style="padding-top:0" aria-labelledby="h-prezzo"><div class="w">
+  <p class="eyebrow">Prezzo</p>
+  <h2 id="h-prezzo">Una volta. Non ogni mese.</h2>
+  <p class="p">9,99 € ed è tua. Niente abbonamenti, niente versione gratuita che si blocca a metà.</p>
+  <div class="plans">
+    <div class="plan hi"><span class="tag">PREZZO DI LANCIO</span>
+      <h3>PreventIVO</h3>
+      <p class="price">5,99 €<s><span class="vh">invece di </span>9,99 €</s><small>una volta</small></p>
+      <ul><li><b>Tutto:</b> quanto ti resta, preventivi, PDF, clienti, anno</li><li>PDF con il tuo nome e la tua partita IVA</li><li>Invio su WhatsApp e mail con allegato</li><li>Cosa paghi a giugno e novembre, soglia 85.000 €</li><li>Niente account, niente dati raccolti</li></ul>
+      <a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Telefono%3A%20iPhone%20%2F%20Android">Avvisami al prezzo di lancio</a>
+    </div>
+    <div class="plan">
+      <h3>Il tuo brand</h3>
+      <p class="price">+6 €<small>una volta, dentro l'app</small></p>
+      <ul><li>Il PDF con <b>il tuo logo e i tuoi colori</b></li><li>Piede con i tuoi dati, senza il marchio PreventIVO</li><li>Per chi ha già uno studio, un'agenzia, un'immagine</li><li>Si attiva quando vuoi, dall'app</li></ul>
+      <a class="btn ghost" href="#faq">In arrivo dopo il lancio</a>
+    </div>
+  </div>
+  <p class="disc">Prezzi indicativi, IVA inclusa, come appariranno su App Store e Google Play. "Il tuo brand" arriva nei mesi successivi al lancio.</p>
+</div></section>
+
+<section style="padding-top:0" aria-label="Partita IVO"><div class="w">
+  <figure class="ivo" style="margin:0">
+    <div class="av" aria-hidden="true">IVO</div>
+    <div>
+      <blockquote>"Mi hanno pagato 2.000 euro. Sono andato a fare la spesa come se fossero 2.000 euro. Erano 1.540. Adesso prima guardo il cerchio."</blockquote>
+      <figcaption class="cite">Partita IVO è un personaggio inventato dall'autore dell'app. Non è una recensione. Lo trovi su Instagram e TikTok.</figcaption>
+    </div>
+  </figure>
+</div></section>
+
+<section id="faq" style="padding-top:0" aria-labelledby="h-faq"><div class="w">
+  <p class="eyebrow">Domande</p>
+  <h2 id="h-faq">Le cose che chiedono tutti.</h2>
+  <div class="faq">
+    <details open><summary><h3 style="margin:0;font:inherit">È per me?</h3></summary><p>Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">I calcoli sono esatti?</h3></summary><p>Sono stime, fatte con i coefficienti e le aliquote pubbliche del forfettario: coefficiente della tua attività, INPS gestione separata o artigiani e commercianti, imposta al 5% o al 15%. Servono a sapere subito dove sei. Il conto definitivo lo fa il tuo commercialista: l'app non dà consulenza fiscale.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Sostituisce il commercialista?</h3></summary><p>No. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e a novembre. C'è l'export in CSV apposta.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Dove vanno i miei dati?</h3></summary><p>Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Perché a pagamento e non gratis?</h3></summary><p>Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Posso provarla prima?</h3></summary><p>Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto.</p></details>
+  </div>
+</div></section>
+
+<section style="padding-top:0" aria-label="Prezzo di lancio"><div class="w">
+  <div class="ad red">
+    <div><h3>Le prime 3 settimane a 5,99 €. Poi 9,99 €.</h3><p>Prezzo di lancio sugli store. Lascia la mail e ti avviso il giorno che esce.</p></div>
+    <a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Telefono%3A%20iPhone%20%2F%20Android">Avvisami</a>
+  </div>
+</div></section>
+
+<section class="final" aria-labelledby="h-final"><div class="w">
+  <h2 id="h-final">Quanto ti resta?<br><span class="y">Scoprilo adesso.</span></h2>
+  <p class="p" style="margin:0 auto 28px">Gratis nel browser, oggi. Sugli store, tra poco.</p>
+  <div class="ctas" style="justify-content:center"><a class="btn" href="../">Provala ora</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store">Avvisami quando esce</a></div>
+</div></section>
+</main>
+
+<footer><div class="w">
+  <div>© 2026 Elvis Iacobuta · P.IVA IT01292500079 · Aosta</div>
+  <nav aria-label="Pagine legali e contatti"><ul><li><a href="privacy.html">Privacy</a></li><li><a href="termini.html">Termini d'uso</a></li><li><a href="mailto:elvisiacobuta@gmail.com">Contatti</a></li></ul></nav>
+</div>
+<p class="disc" style="text-align:center;padding:0 20px">PreventIVO calcola stime per il regime forfettario italiano e non fornisce consulenza fiscale, contabile o legale. Apple, App Store, Google Play e WhatsApp sono marchi dei rispettivi proprietari.</p>
+</footer>
+
+<script>
+// demo del cerchio: stessa formula dell'app (coefficiente 78%, INPS 26,07%, imposta 5%)
+const C=2*Math.PI*84;
+function calc(v){ const imp=v*0.78, inps=imp*0.2607, tax=Math.max(0,imp-inps)*0.05; return {net:v-inps-tax,inps,tax}; }
+const fmt=n=>Math.round(n).toLocaleString('it-IT')+' €';
+function show(v){ const c=calc(v); const fy=c.net/v, fr=(c.inps+c.tax)/v;
+  const ry=document.getElementById('ry'), rr=document.getElementById('rr');
+  ry.setAttribute('stroke-dasharray',`${fy*C} ${C}`); rr.setAttribute('stroke-dasharray',`${fr*C} ${C}`); rr.setAttribute('transform',`rotate(${fy*360} 100 100)`);
+  document.getElementById('dnet').textContent=fmt(c.net); document.getElementById('lnet').textContent=fmt(c.net); document.getElementById('limp').textContent=fmt(c.tax); document.getElementById('linps').textContent=fmt(c.inps); }
+document.getElementById('ctrl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); show(+b.dataset.v); });
+show(1000);
+</script>
+</body>
+</html>
