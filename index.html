@@ -154,6 +154,10 @@ h1{font-size:clamp(42px,7.2vw,80px);line-height:.98;letter-spacing:-.045em;margi
 .phone::before{content:'';position:absolute;inset:9px;border-radius:38px;background:#161616 var(--poster) center/cover no-repeat}
 .phone video,.phone img{position:relative;width:100%;height:100%;object-fit:cover;border-radius:38px;display:block;background:transparent}
 .phone.sm{width:min(290px,76vw)}
+/* promo */
+.promo{padding:10px 0 50px}
+.pv{border-radius:24px;overflow:hidden;background:#000;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #333 inset;aspect-ratio:16/9}
+.pv video{width:100%;height:100%;display:block;object-fit:cover}
 /* strip */
 .strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sur)}
 .strip ul{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 20px;font-size:14px;color:var(--mut);list-style:none;margin:0}.strip b{color:var(--txt)}
@@ -230,6 +234,11 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   </div>
   <div class="phone" style="--poster:url(video/cifra.jpg)"><video autoplay muted loop playsinline preload="metadata" data-poster="video/cifra.jpg" width="780" height="1688" aria-label="Demo: digiti 1.500 e il cerchio mostra quanto è tuo"><source src="video/cifra.mp4" type="video/mp4"></video></div>
 </div></header>
+
+<section class="promo" aria-label="Video di presentazione"><div class="w">
+  <div class="pv"><video controls autoplay muted loop playsinline preload="metadata" poster="video/promo.jpg" width="1920" height="1080" aria-label="PreventIVO in 40 secondi: cifra, preventivo, invio, stati, clienti, anno"><source src="video/promo.mp4" type="video/mp4"></video></div>
+  <p class="cap">PreventIVO dall'inizio alla fine, in 40 secondi.</p>
+</div></section>
 
 <div class="strip"><ul>
   <li><b>Solo forfettari.</b> Fatta per chi ha appena aperto</li>
