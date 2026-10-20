@@ -375,7 +375,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '1.4',
+  ver: '1.5',
   link: 'partitaivo.it',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -601,7 +601,7 @@ function openPrev(id){
     ${p.rows.map(r=>`<div class="kv"><span>${esc(r.d)}${r.q>1?` × ${r.q}`:''}</span><span>${fmt(r.t)}</span></div>`).join('')}
     <label class="l">Stato</label>
     <div class="opts">${STATES.map(s=>`<button class="opt ${p.status===s?'on':''}" onclick="setStatus(${p.id},'${s}')"><span>${s.charAt(0).toUpperCase()+s.slice(1)}${p.hist[s]?`<small>${fdate(p.hist[s])}</small>`:''}</span>${p.status===s?'●':''}</button>`).join('')}</div>
-    <button class="btn" onclick="sendPrev(${p.id});closeSheet()">Invia (mail, WhatsApp…)</button>
+    <button class="btn" onclick="sendPrev(${p.id})">Invia (mail, WhatsApp…)</button>
     <button class="btn ghost" onclick="downloadPDF(${p.id});closeSheet()">Apri / salva il PDF</button>
     <button class="btn ghost" onclick="dupPrev(${p.id})">Riusa come nuovo</button>
     <button class="btn ghost danger" onclick="delPrev(${p.id})">Elimina</button>
