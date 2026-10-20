@@ -39,6 +39,19 @@ textarea.msg{width:100%;background:transparent;border:0;padding:4px 0;min-height
 textarea.msg::placeholder{color:var(--mut)}
 .hint{font-size:12px;color:var(--mut);margin:8px 2px 0;line-height:1.5}
 .rows{margin-top:10px}.rows:empty{display:none}
+.yr{background:var(--sur2);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid transparent}.yr.now{border-color:#FFD54A55}
+.yh{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;font-weight:700}.yh b{font-size:24px;color:var(--red)}.yh small{font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
+.yd{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);padding:5px 0;border-top:1px solid #2a2a2a}.yd:first-of-type{margin-top:8px}
+.yn{font-size:13px;color:var(--mut);line-height:1.45;margin-top:8px}
+.vr{display:flex;gap:6px;align-items:center;padding:5px 0}
+.vr input{background:var(--sur2);border:0;border-radius:10px;padding:11px 10px;outline:none;color:var(--txt);font-size:16px;min-width:0;font-family:inherit}
+.vr .vd{flex:1}.vr .vq{width:46px;text-align:center;padding-left:4px;padding-right:4px}.vr .vp{width:82px;text-align:right}.vr .vx{background:none;border:0;color:var(--mut);font-size:22px;padding:0 2px;line-height:1}
+.vh{display:flex;gap:6px;font-size:10px;letter-spacing:1px;color:var(--mut);margin-top:16px}.vh span:first-child{flex:1}.vh span:nth-child(2){width:46px;text-align:center}.vh span:nth-child(3){width:82px;text-align:right}.vh span:last-child{width:26px}
+.addv{display:block;width:100%;background:transparent;border:1px dashed #3a3a3a;border-radius:12px;padding:12px;color:var(--txt);font-size:15px;margin-top:8px;font-family:inherit}
+.quick{display:flex;gap:6px;align-items:center;margin-top:10px}.quick textarea{font-size:16px!important;min-height:0!important;padding:10px 12px!important;background:var(--sur2)!important;border-radius:10px!important;flex:1}
+.quick button{background:var(--acc);color:#111;border:0;border-radius:10px;padding:11px 14px;font-weight:700;font-family:inherit;display:none}.quick.has button{display:block}
+.cond{margin-top:16px;border-top:1px solid var(--sur2);padding-top:6px}.cond summary{cursor:pointer;color:var(--mut);font-size:14px;padding:8px 0;list-style:none}.cond summary::before{content:'› ';}.cond[open] summary::before{content:'⌄ '}
+.cond label{display:block;font-size:10px;letter-spacing:1px;color:var(--mut);margin:10px 0 4px}.cond textarea{width:100%;background:var(--sur2);border:0;border-radius:10px;padding:10px 12px;color:var(--txt);font-size:14px;outline:none;resize:none;font-family:inherit;line-height:1.4}
 .row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;font-size:14px;color:var(--mut)}
 .row .d{color:var(--mut)}.row .q{color:var(--mut);font-size:12px;margin-left:6px}
 .row .n{font-weight:600}
@@ -235,8 +248,18 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <input class="qin" id="client" list="clients" placeholder="Per chi è?" autocomplete="off" enterkeyhint="next" style="font-size:19px">
       <datalist id="clients"></datalist>
       <div class="chips" id="recent"></div>
-      <textarea class="msg" id="msg" placeholder="Cosa gli fai e a quanto? Es: 800 video, 4 reel 50" rows="2" style="margin-top:18px;font-size:19px"></textarea>
+      <div class="vh"><span>VOCE</span><span>Q.TÀ</span><span>PREZZO</span><span></span></div>
       <div class="rows" id="rows"></div>
+      <button class="addv" onclick="addRow()">+ Aggiungi voce</button>
+      <div class="quick" id="quick"><textarea class="msg" id="msg" placeholder="Oppure scrivi veloce: 800 video, 4 reel 50" rows="1"></textarea><button onclick="addFromMsg()">Aggiungi</button></div>
+      <details class="cond" id="cond">
+        <summary>Condizioni del preventivo (pagamento, validità, incluso, extra)</summary>
+        <label>PAGAMENTO</label><textarea id="c-pag" rows="2"></textarea>
+        <label>VALIDITÀ</label><textarea id="c-val" rows="1"></textarea>
+        <label>INCLUSO</label><textarea id="c-inc" rows="2"></textarea>
+        <label>EXTRA</label><textarea id="c-ext" rows="2"></textarea>
+        <div class="hint" style="margin-top:8px">Quello che scrivi qui resta come predefinito per i prossimi preventivi. <span class="link" onclick="resetCond()">Rimetti i testi standard</span></div>
+      </details>
       <div class="big" id="bigres" style="margin-top:18px">
         <div class="net" id="net" style="font-size:48px">0 €</div>
         <div class="sub" id="netsub">ti resta · stima</div>
@@ -316,14 +339,13 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     </div>
 
     <div class="card">
-      <div class="k2">Scadenze</div>
-      <div class="tl">
-        <div class="tli"><div class="dot2"></div><div class="k">Giugno · acconto</div><div class="v" id="d1">—</div></div>
-        <div class="tli"><div class="dot2"></div><div class="k">Novembre · acconto</div><div class="v" id="d2">—</div></div>
-        <div class="tli"><div class="dot2"></div><div class="k">Giugno prossimo · saldo e INPS</div><div class="v" id="due3">—</div></div>
+      <div class="k2">Cosa paghi e quando</div>
+      <div class="qsub" id="yatt" style="margin:-4px 0 12px"></div>
+      <div id="piano"></div>
+      <div class="tl" style="margin-top:6px">
         <div class="tli"><div class="dot2 ok"></div><div class="k">Già messo via</div><div class="v" id="d4" style="color:var(--acc)">—</div></div>
       </div>
-      <div class="hint" style="text-align:center">stime · il conto vero lo fa il commercialista</div>
+      <div class="hint" style="text-align:center">stime sugli incassi di quest'anno, come se restassero uguali · il conto vero lo fa il commercialista</div>
     </div>
 
     <div class="card">
@@ -382,10 +404,14 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} 
 
 /* ---------- CALCOLO ---------- */
 function coef(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
+/* anno di attività: 1 = anno di apertura della P.IVA */
+function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
+function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || n<=5); }
+function ordinale(n){ return n+'°'; }
 function calc(lordo, opts={}){
   const imponibile = lordo * coef();
   const inps = imponibile * PARAMS.inps[S.profile.inps];
-  const aliq = S.profile.start===true ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
+  const aliq = is5() ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
   // imposta su imponibile meno contributi (approssimati con l'INPS stesso se non noti)
   const ded = opts.contribPrec!=null ? opts.contribPrec : inps;
   const imposta = Math.max(0, imponibile - ded) * aliq;
@@ -436,10 +462,10 @@ function donut(svgId, legId, c){
 /* ---------- UI: NUOVO (guidata) ---------- */
 function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
 function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
-function renderActLine(){ $('actline').innerHTML = S.setup ? `stima per <b style="color:var(--txt)">${actName()}</b> · ${S.profile.start===true?'5%':(S.profile.start===false?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
-function setRate(five){ S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
+function renderActLine(){ $('actline').innerHTML = S.setup ? `stima per <b style="color:var(--txt)">${actName()}</b> · ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
+function setRate(five){ if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function renderHello(){}
-function renderRate(){ $('rate5').classList.toggle('on',S.profile.start===true); $('rate15').classList.toggle('on',S.profile.start!==true); }
+function renderRate(){ $('rate5').classList.toggle('on',is5()); $('rate15').classList.toggle('on',!is5()); }
 function ring0(v){
   const c=calc(v); const C=2*Math.PI*82;
   const fy=v? Math.max(0,c.netto)/v : 0, fr=v? c.tasse/v : 0;
@@ -463,21 +489,23 @@ setPad(true);
 function fromHome(k){
   if(!S.setup){ askAct(true,()=>fromHome(k)); return; }
   const v=parseFloat($('q0').value)||0;
-  if(k==='prev'){ $('msg').value = v? String(v) : ''; step(1); }
+  if(k==='prev'){ cur.rows = v? [{d:'',q:1,p:v,t:v}] : []; step(1); }
   else { if(v) $('inc').value=String(v); step(10); $('inc').dispatchEvent(new Event('input')); }
 }
 function step(n){
   document.querySelectorAll('#v-new .step').forEach(x=>x.classList.toggle('on',x.id==='st'+n));
-  if(n===1){ renderRecent(); renderCalc(); setTimeout(()=>{ if(!$('client').value) $('client').focus(); else $('msg').focus(); },50); }
+  if(n===1){ renderRecent(); renderRows(); renderCalc(); loadCond(); setTimeout(()=>{ if(!$('client').value) $('client').focus(); else { const d=document.querySelector('#rows .vd'); if(d&&!d.value) d.focus(); } },50); }
   if(n===0){ $('q0').value=''; ring0(0); setPad(true); }
   if(n===10){ setTimeout(()=>{ if(!$('inc').value) $('inc').focus(); },50); }
   window.scrollTo(0,0);
 }
 function renderRecent(){
-  const r=[...new Set(S.prev.map(p=>clientOf(p).name))].slice(0,6);
-  $('recent').innerHTML=r.map(n=>`<button class="chip" onclick="$('client').value=${JSON.stringify(n)};$('msg').focus()">${esc(n)}</button>`).join('');
+  const r=[...new Set([...S.prev.map(p=>clientOf(p).name), ...S.clients.slice().reverse().map(c=>c.name)])].filter(n=>n&&n!=='—'&&n!=='Senza cliente').slice(0,8);
+  $('recent').innerHTML=r.map(n=>`<button class="chip" onclick="$('client').value=${JSON.stringify(n)};focusRow()">${esc(n)}</button>`).join('');
+  $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
 }
-$('client').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('msg').focus(); } });
+function focusRow(){ const d=document.querySelector('#rows .vd'); if(d) d.focus(); else addRow(); }
+$('client').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); focusRow(); } });
 
 $('inc').addEventListener('input',()=>{ const v=parseFloat($('inc').value)||0; const c=calc(v); $('incres').style.display=v?'':'none'; $('incnet').textContent=fmt(c.netto); $('incvia').innerHTML=`Metti via <b>${fmt(c.via)}</b> sul conto tasse`; $('incsave').disabled=!v; });
 function saveIncasso(){
@@ -489,11 +517,30 @@ function saveIncasso(){
 }
 
 let cur={rows:[],tot:0};
-$('msg').addEventListener('input', ()=>{ const m=$('msg'); m.style.height='auto'; m.style.height=m.scrollHeight+'px'; renderCalc(); });
+/* voci editabili */
+function renderRows(){
+  $('rows').innerHTML = cur.rows.map((r,i)=>`<div class="vr">
+    <input class="vd" placeholder="Es. Video evento" value="${esc(r.d)}" oninput="updRow(${i},'d',this.value)" enterkeyhint="next">
+    <input class="vq" type="number" inputmode="numeric" min="1" value="${r.q}" oninput="updRow(${i},'q',this.value)">
+    <input class="vp" type="number" inputmode="decimal" placeholder="€" value="${r.p||''}" oninput="updRow(${i},'p',this.value)" enterkeyhint="done">
+    <button class="vx" onclick="delRow(${i})" aria-label="Togli">×</button></div>`).join('');
+}
+function updRow(i,k,v){ const r=cur.rows[i]; if(!r) return; if(k==='d') r.d=v; else if(k==='q') r.q=Math.max(1,parseInt(v)||1); else r.p=parseFloat(String(v).replace(',','.'))||0; r.t=r.q*r.p; renderCalc(); }
+function addRow(){ cur.rows.push({d:'',q:1,p:0,t:0}); renderRows(); renderCalc(); const all=document.querySelectorAll('#rows .vd'); all[all.length-1].focus(); }
+function delRow(i){ cur.rows.splice(i,1); renderRows(); renderCalc(); }
+function addFromMsg(){ const t=$('msg').value.trim(); if(!t) return; const nr=parse(t); if(!nr.length){ toast('Scrivi almeno una cifra, es. "800 video"'); return; } cur.rows.push(...nr); $('msg').value=''; $('quick').classList.remove('has'); renderRows(); renderCalc(); }
+$('msg').addEventListener('input', ()=>{ $('quick').classList.toggle('has',!!$('msg').value.trim()); });
+$('msg').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addFromMsg(); } });
+
+/* condizioni modificabili */
+const DEF_COND={pag:'Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.', val:'30 giorni dalla data del preventivo.', inc:'Quanto descritto nelle voci. Una revisione inclusa.', ext:'Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.'};
+function condOf(p){ return Object.assign({},DEF_COND,S.profile.cond||{},p&&p.cond||{}); }
+function loadCond(c){ c=c||condOf(null); $('c-pag').value=c.pag; $('c-val').value=c.val; $('c-inc').value=c.inc; $('c-ext').value=c.ext; }
+function readCond(){ return {pag:$('c-pag').value.trim()||DEF_COND.pag, val:$('c-val').value.trim()||DEF_COND.val, inc:$('c-inc').value.trim()||DEF_COND.inc, ext:$('c-ext').value.trim()||DEF_COND.ext}; }
+function resetCond(){ S.profile.cond=null; save(); loadCond(DEF_COND); toast('Testi standard ripristinati'); }
 
 function renderCalc(){
-  cur.rows=parse($('msg').value); cur.tot=cur.rows.reduce((a,r)=>a+r.t,0);
-  $('rows').innerHTML = cur.rows.map(r=>`<div class="row"><span class="d">${esc(r.d)}${r.q>1?`<span class="q">× ${r.q}</span>`:''}</span><span class="n">${fmt(r.t)}</span></div>`).join('');
+  cur.rows.forEach(r=>{ r.t=(r.q||1)*(r.p||0); }); cur.tot=cur.rows.reduce((a,r)=>a+r.t,0);
   const c=calc(cur.tot);
   $('net').textContent=fmt(c.netto);
   const ok=cur.tot>0; ['save','save2','save3'].forEach(i=>{ if($(i)) $(i).disabled=!ok; }); $('bigres').style.opacity=ok?1:.3;
@@ -504,9 +551,13 @@ function savePrev(mode){
   if((mode==='send'||mode==='pdf') && !S.profile.nome){ needProfile(()=>savePrev(mode)); return; }
   const name=$('client').value.trim()||'Senza cliente';
   const cl=getClient(name,true);
+  const rows=cur.rows.filter(r=>r.p>0).map((r,i)=>({d:(r.d||'').trim()||('Voce '+(i+1)),q:r.q||1,p:r.p,t:(r.q||1)*r.p}));
+  if(!rows.length){ toast('Metti almeno una voce con un prezzo'); return; }
+  const tot=rows.reduce((a,r)=>a+r.t,0);
+  const cond=readCond(); S.profile.cond=cond;
   S.seq++;
-  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:cur.rows, tot:cur.tot, status:'inviato', hist:{inviato:today()} });
-  save(); const nid=S.prev[0].id; $('msg').value=''; $('client').value=''; renderCalc(); renderAll(); toast('Preventivo salvato'); step(0); if(mode==='pdf'){ downloadPDF(nid); go('list'); } else if(mode==='send'){ sendPrev(nid); } else go('list');
+  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows, tot, cond, status:'inviato', hist:{inviato:today()} });
+  save(); const nid=S.prev[0].id; cur.rows=[]; $('msg').value=''; $('client').value=''; renderRows(); renderCalc(); renderAll(); toast('Preventivo salvato'); step(0); if(mode==='pdf'){ downloadPDF(nid); go('list'); } else if(mode==='send'){ sendPrev(nid); } else go('list');
 }
 function getClient(name,create){
   let c=S.clients.find(x=>x.name.toLowerCase()===name.toLowerCase());
@@ -591,8 +642,8 @@ function buildPDF(p){
   y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MUT);
   doc.text(doc.splitTextToSize("Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54\u201389, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 \u20AC per importi superiori a 77,47 \u20AC.",74),X0,y);
   // condizioni
-  y+=18; const T=[['PAGAMENTO','Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.'],['VALIDIT\u00C0','30 giorni dalla data del preventivo.'],['INCLUSO','Quanto descritto nelle voci. Una revisione inclusa.'],['EXTRA','Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.']];
-  T.forEach((t,i)=>{ const x=i%2?108:L, yy=y+Math.floor(i/2)*16; doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(t[0],x,yy); doc.setFontSize(9); doc.setTextColor(...INK); doc.text(doc.splitTextToSize(t[1],80),x,yy+4.5); });
+  y+=18; const cd=condOf(p); const T=[['PAGAMENTO',cd.pag],['VALIDIT\u00C0',cd.val],['INCLUSO',cd.inc],['EXTRA',cd.ext]];
+  let rowH=[0,0]; T.forEach((t,i)=>{ const x=i%2?108:L, yy=y+(i>1?rowH[0]:0); doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(t[0],x,yy); doc.setFontSize(9); doc.setTextColor(...INK); const lines=doc.splitTextToSize(t[1],80); doc.text(lines,x,yy+4.5); const h=8+lines.length*4; if(i<2) rowH[0]=Math.max(rowH[0],h); });
   // firma
   const yf=262; doc.setDrawColor(...INK); doc.line(L,yf,98,yf); doc.line(112,yf,R,yf); doc.setFontSize(8); doc.setTextColor(...MUT); doc.text('Per accettazione \u2014 firma e data',L,yf+5); doc.text(pr.nome||'',112,yf+5);
   // piede
@@ -605,7 +656,8 @@ function buildPDF(p){
 function prevText(p){
   const c=clientOf(p); const pr=S.profile; const val=new Date(p.date); val.setDate(val.getDate()+30);
   const righe=p.rows.map(r=>`• ${r.d}${r.q>1?` × ${r.q}`:''}: ${fmt2(r.t)}`).join('\n');
-  return `Preventivo n. ${p.num} del ${fdate(p.date)}\nPer: ${c.name}\n\n${righe}\n\nTotale: ${fmt2(p.tot)}\nOperazione non soggetta a IVA (regime forfettario, art. 1 c. 54–89 L. 190/2014).\nValido fino al ${fdate(val.toISOString().slice(0,10))}.\n\nPer accettare basta rispondere a questo messaggio.\n\n${pr.nome||''}${pr.piva?' · P.IVA '+pr.piva:''}${pr.contatti?'\n'+pr.contatti:''}`;
+  const cd=condOf(p);
+  return `Preventivo n. ${p.num} del ${fdate(p.date)}\nPer: ${c.name}\n\n${righe}\n\nTotale: ${fmt2(p.tot)}\nOperazione non soggetta a IVA (regime forfettario, art. 1 c. 54–89 L. 190/2014).\n\nPagamento: ${cd.pag}\nValidità: ${cd.val}\nIncluso: ${cd.inc}\nExtra: ${cd.ext}\n\nPer accettare basta rispondere a questo messaggio.\n\n${pr.nome||''}${pr.piva?' · P.IVA '+pr.piva:''}${pr.contatti?'\n'+pr.contatti:''}`;
 }
 async function sendPrev(id){
   if(!S.profile.nome){ needProfile(()=>sendPrev(id)); return; }
@@ -630,7 +682,7 @@ async function sendPrev(id){
 function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); const p=S.prev.find(x=>x.client===id); if(p) sendPrev(p.id); }
 async function shareFile(title,text){ try{ await navigator.share({title,text,files:[window._shareFile]}); closeSheet(); go('list'); }catch(e){} }
 function downloadPDF(id){ if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; } const p=S.prev.find(x=>x.id===id); try{ buildPDF(p).save(`Preventivo-${p.num}.pdf`); }catch(e){ makePDF(id); } }
-function dupPrev(id){ const p=S.prev.find(x=>x.id===id); $('msg').value=p.rows.map(r=>`${r.q>1?r.q+' ':''}${r.d} ${r.p}`).join('\n'); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); }
+function dupPrev(id){ const p=S.prev.find(x=>x.id===id); cur.rows=p.rows.map(r=>({d:r.d,q:r.q,p:r.p,t:r.t})); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); loadCond(condOf(p)); }
 function delPrev(id){ if(!confirm('Eliminare questo preventivo?')) return; S.prev=S.prev.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
 
 /* ---------- CLIENTI ---------- */
@@ -668,6 +720,28 @@ function saveClient(id){ const c=S.clients.find(x=>x.id===id); c.atteso=+$('att'
 function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei preventivi: elimina prima quelli.'); return; } if(!confirm('Eliminare?')) return; S.clients=S.clients.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
 
 /* ---------- ANNO ---------- */
+/* piano per anno: cosa paghi nel 2026, nel 2027… in base all'anno di attività */
+function renderPiano(c){
+  const n=annoAtt(), Y=PARAMS.anno, I=c.imposta, N=c.inps;
+  const aliqNext = (S.profile.start===true && (n==null || n+1<=5)) ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
+  const Inext = Math.max(0,c.imponibile-N)*aliqNext;
+  $('yatt').innerHTML = n ? `Sei nel <b style="color:var(--txt)">${ordinale(n)} anno</b> di partita IVA (aperta nel ${S.profile.apertura}) · <span class="link" onclick="askAct(false)">cambia</span>` : `<span class="link" onclick="askAct(false)">Dimmi in che anno hai aperto la P.IVA</span>: acconti e aliquota cambiano col tempo. Intanto conto come se non fosse il primo anno.`;
+  const anni=[];
+  if(n===1){
+    anni.push({y:Y, giu:0, nov:0, tot:0, note:`Primo anno: non paghi nulla. Metti via lo stesso ${fmt(c.via)}, perché il conto arriva tutto nel ${Y+1}.`});
+    anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`});
+  } else {
+    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`});
+    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===5?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
+  }
+  $('piano').innerHTML = anni.map((a,i)=>`
+    <div class="yr${i===0?' now':''}">
+      <div class="yh"><span>Nel ${a.y}${i===0?' <small>quest\'anno</small>':''}</span><b>${fmt(a.tot)}</b></div>
+      <div class="yd"><span>giugno</span><span>${fmt(a.giu)}</span></div>
+      <div class="yd"><span>novembre</span><span>${fmt(a.nov)}</span></div>
+      <div class="yn">${a.note}</div>
+    </div>`).join('');
+}
 function renderYear(){
   const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
   const tot=inc.reduce((a,p)=>a+p.tot,0);
@@ -676,7 +750,7 @@ function renderYear(){
   $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
   const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
   $('ytax').textContent=fmt(c.tasse); donut('dy','ly',c);
-  $('d1').textContent=fmt(c.imposta*0.5); $('d2').textContent=fmt(c.imposta*0.5); $('due3').textContent=fmt(c.inps); $('d4').textContent=fmt(S.profile.messoVia||0);
+  renderPiano(c); $('d4').textContent=fmt(S.profile.messoVia||0);
   $('yin').textContent=fmt(tot); $('ynet').textContent=fmt(c.netto);
   $('ysoglia').textContent= tot>PARAMS.soglia? `superata di ${fmt(tot-PARAMS.soglia)}` : fmt(PARAMS.soglia-tot);
   $('ysoglia').style.color = tot>PARAMS.soglia?'var(--red)':'';
@@ -746,10 +820,10 @@ function makePDF(id){
       <p class="pf">Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54–89, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 € per importi superiori a 77,47 €.</p>
     </div></div>
     <div class="terms">
-      <div><h4>Pagamento</h4><p>Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.</p></div>
-      <div><h4>Validità</h4><p>30 giorni dalla data del preventivo.</p></div>
-      <div><h4>Incluso</h4><p>Quanto descritto nelle voci. Una revisione inclusa.</p></div>
-      <div><h4>Extra</h4><p>Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.</p></div>
+      <div><h4>Pagamento</h4><p>${esc(condOf(p).pag)}</p></div>
+      <div><h4>Validità</h4><p>${esc(condOf(p).val)}</p></div>
+      <div><h4>Incluso</h4><p>${esc(condOf(p).inc)}</p></div>
+      <div><h4>Extra</h4><p>${esc(condOf(p).ext)}</p></div>
     </div>
     <div class="ps"><div>Per accettazione — firma e data</div><div>${esc(pr.nome||'')}</div></div>
     <div class="pfoot"><span>Preventivo ${p.num} · pagina 1 di 1 · <a href="https://${PARAMS.link}" style="color:#7a7a82">scarica l'app: ${PARAMS.link}</a></span><span>${SYM}fatto con <b>Prevent<i>IVO</i></b></span></div>
@@ -769,6 +843,9 @@ function askAct(first,after){
     <select id="a-act" onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
+    <label class="l">In che anno hai aperto la partita IVA?</label>
+    <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <div class="hint" style="margin:8px 2px 0">Serve per sapere in che anno di attività sei: cambiano acconti e, dopo il 5°, l'aliquota.</div>
     <label class="l">La partita IVA ha meno di 5 anni ed è un'attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="a-y" class="${pr.start===true?'on':''}" onclick="aStart(true)">Sì · 5%</button><button id="a-n" class="${pr.start===false?'on':''}" onclick="aStart(false)">No · 15%</button><button id="a-u" class="${pr.start==null?'on':''}" onclick="aStart(null)">Non lo so</button></div>
     <div class="hint" id="a-shint" style="margin:8px 2px 0">${pr.start==null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':''}</div>
@@ -776,7 +853,7 @@ function askAct(first,after){
     <div class="stima">Se scegli "Altro" usiamo il coefficiente più comune (78%): il tuo lo trovi sul codice ATECO, chiedilo al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
 }
 let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
-function saveAct(){ S.profile.act=$('a-act').value; S.profile.actName=($('a-altro').value||'').trim(); if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
+function saveAct(){ S.profile.act=$('a-act').value; S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
 function needProfile(after){
   const pr=S.profile; if(pr.nome) { after(); return; }
   sheet(`
