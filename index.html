@@ -601,7 +601,7 @@ function openPrev(id){
     <label class="l">Stato</label>
     <div class="opts">${STATES.map(s=>`<button class="opt ${p.status===s?'on':''}" onclick="setStatus(${p.id},'${s}')"><span>${s.charAt(0).toUpperCase()+s.slice(1)}${p.hist[s]?`<small>${fdate(p.hist[s])}</small>`:''}</span>${p.status===s?'●':''}</button>`).join('')}</div>
     <button class="btn" onclick="sendPrev(${p.id});closeSheet()">Invia (mail, WhatsApp…)</button>
-    <button class="btn ghost" onclick="downloadPDF(${p.id});closeSheet()">Scarica il PDF</button>
+    <button class="btn ghost" onclick="downloadPDF(${p.id});closeSheet()">Apri / salva il PDF</button>
     <button class="btn ghost" onclick="dupPrev(${p.id})">Riusa come nuovo</button>
     <button class="btn ghost danger" onclick="delPrev(${p.id})">Elimina</button>
   `);
@@ -674,14 +674,26 @@ async function sendPrev(id){
       ${canFiles?`<button class="opt" onclick="shareFile(${JSON.stringify(subject)},${JSON.stringify(text)})"><span>Invia il PDF<small>Mail, WhatsApp, AirDrop… con il PDF allegato</small></span>›</button>`:''}
       <a class="opt" href="mailto:${encodeURIComponent(c.email||'')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}" onclick="closeSheet();go('list')"><span>Mail, solo testo<small>${c.email?'a '+esc(c.email):'scegli tu il destinatario'}</small></span>›</a>
       <a class="opt" href="https://wa.me/${waNum}?text=${encodeURIComponent(text)}" target="_blank" rel="noopener" onclick="closeSheet();go('list')"><span>WhatsApp, solo testo<small>${waNum?'al numero salvato':'scegli tu il contatto'}</small></span>›</a>
-      <button class="opt" onclick="downloadPDF(${p.id})"><span>Scarica il PDF</span>›</button>
+      <button class="opt" onclick="downloadPDF(${p.id})"><span>Apri / salva il PDF<small>Si apre il foglio di condivisione: Salva in File, AirDrop…</small></span>›</button>
       <button class="opt" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(text)});toast('Copiato');closeSheet();go('list')"><span>Copia il testo</span>›</button>
     </div>
     ${canFiles?'':'<div class="stima">Su questo browser il PDF non si allega da solo: scaricalo e allegalo tu.</div>'}`);
 }
 function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); const p=S.prev.find(x=>x.client===id); if(p) sendPrev(p.id); }
 async function shareFile(title,text){ try{ await navigator.share({title,text,files:[window._shareFile]}); closeSheet(); go('list'); }catch(e){} }
-function downloadPDF(id){ if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; } const p=S.prev.find(x=>x.id===id); try{ buildPDF(p).save(`Preventivo-${p.num}.pdf`); }catch(e){ makePDF(id); } }
+const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/.test(navigator.platform));
+async function downloadPDF(id){
+  if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; }
+  const p=S.prev.find(x=>x.id===id); const fname=`Preventivo-${p.num}.pdf`;
+  let doc; try{ doc=buildPDF(p); }catch(e){ makePDF(id); return; }
+  const blob=doc.output('blob');
+  // Telefono: il foglio di condivisione (Salva in File, AirDrop, Mail, WhatsApp) è l'unico modo affidabile su iPhone
+  if(isMobile && navigator.canShare){ const file=new File([blob],fname,{type:'application/pdf'}); if(navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:fname}); return; }catch(e){ if(e&&e.name==='AbortError') return; } } }
+  // Fallback telefono: apri il PDF in una scheda (Safari lo mostra con il tasto Condividi)
+  if(isMobile){ const url=URL.createObjectURL(blob); const w=window.open(url,'_blank'); if(w) return; location.href=url; return; }
+  // Computer: download classico
+  try{ doc.save(fname); }catch(e){ const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); }
+}
 function dupPrev(id){ const p=S.prev.find(x=>x.id===id); cur.rows=p.rows.map(r=>({d:r.d,q:r.q,p:r.p,t:r.t})); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); loadCond(condOf(p)); }
 function delPrev(id){ if(!confirm('Eliminare questo preventivo?')) return; S.prev=S.prev.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
 
