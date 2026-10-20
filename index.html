@@ -114,7 +114,7 @@
         {
           "@type": "Question",
           "name": "Posso provarla prima?",
-          "acceptedAnswer": { "@type": "Answer", "text": "Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto." }
+          "acceptedAnswer": { "@type": "Answer", "text": "Non c'è una versione gratuita: PreventIVO costa 9,99 € una volta (5,99 € al lancio), senza pubblicità né abbonamenti. Gli store prevedono il rimborso secondo le loro regole." }
         }
       ]
     }
@@ -205,12 +205,12 @@ h2{font-size:clamp(30px,4.5vw,48px);letter-spacing:-.035em;line-height:1.08;marg
 .demo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:36px;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;margin-top:40px}
 @media(max-width:720px){.demo{grid-template-columns:1fr;padding:24px;text-align:center}}
 .ring{width:220px;height:220px;position:relative;margin:0 auto}
-.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}.ring circle{transition:stroke-dasharray .8s ease,transform .8s ease}
 .ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
 .ring .c b{font-size:44px;letter-spacing:-.04em;color:var(--acc);font-weight:900;line-height:1}
 .ring .c small{font-size:12px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
 .demo .ctrl{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px;justify-content:inherit}
-.demo .ctrl button{background:var(--sur2);border:0;color:var(--txt);border-radius:12px;padding:12px 18px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+.demo .ctrl .ex,.demo .ctrl button{background:var(--sur2);border:0;color:var(--txt);border-radius:12px;padding:12px 18px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
 .demo .ctrl button[aria-pressed="true"]{background:var(--acc);color:#111}
 .demo .leg{display:flex;gap:22px;color:var(--mut);font-size:15px;flex-wrap:wrap;justify-content:inherit}
 .demo .leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
@@ -262,8 +262,8 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
 
 <nav aria-label="Principale"><div class="w">
   <a class="logo" href="#" aria-label="PreventIVO, torna all'inizio"><svg viewBox="0 0 60 60" aria-hidden="true" focusable="false"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg><span>Prevent<i>IVO</i></span></a>
-  <div class="navlinks"><a href="#come">Provalo</a><a href="#funzioni">Cosa fa</a><a href="#prezzo">Prezzo</a><a href="#faq">Domande</a></div>
-  <a class="btn sm" href="app/">Provala ora</a>
+  <div class="navlinks"><a href="#come">Come funziona</a><a href="#funzioni">Cosa fa</a><a href="#prezzo">Prezzo</a><a href="#faq">Domande</a></div>
+  <a class="btn sm" href="#prezzo">Scarica l'app</a>
 </div></nav>
 
 <main id="main">
@@ -273,7 +273,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
     <p class="lead">Hai appena aperto la partita IVA forfettaria. Ti pagano 1.000 €: <b>quanto è tuo?</b> Scrivi la cifra, il cerchio risponde. Poi fai il preventivo in PDF e lo mandi su WhatsApp. <b>Senza Excel, senza modelli Word.</b></p>
     <div class="ctas">
-      <a class="btn" href="app/" id="cta1">Provala ora, gratis nel browser</a>
+      <a class="btn" href="#prezzo" id="cta1">Scarica l'app · 5,99 €</a>
       <a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20quando%20PreventIVO%20%C3%A8%20su%20App%20Store%20e%20Google%20Play.%20Telefono%3A%20iPhone%20%2F%20Android" id="cta2">Avvisami quando è sugli store</a>
     </div>
     <p class="sub">In arrivo su App Store e Google Play · 9,99 € una volta, nessun abbonamento · niente account, i dati restano sul tuo telefono</p>
@@ -289,7 +289,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
 </ul></div>
 
 <section id="come" aria-labelledby="h-come"><div class="w">
-  <p class="eyebrow">Provalo qui</p>
+  <p class="eyebrow">Così funziona</p>
   <h2 id="h-come">Ti pagano. Quanto è tuo davvero?</h2>
   <p class="p">Tocca una cifra. Giallo è tuo, rosso va al fisco. L'app fa questo a ogni preventivo e a ogni incasso.</p>
   <div class="demo">
@@ -299,7 +299,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     </div>
     <div>
       <p class="eyebrow" id="h-ctrl" style="margin-bottom:4px">Hai incassato</p>
-      <div class="ctrl" id="ctrl" role="group" aria-labelledby="h-ctrl"><button type="button" data-v="300" aria-pressed="false">300 €</button><button type="button" data-v="1000" aria-pressed="true">1.000 €</button><button type="button" data-v="2500" aria-pressed="false">2.500 €</button><button type="button" data-v="5000" aria-pressed="false">5.000 €</button></div>
+      <div class="ctrl" id="ctrl" aria-hidden="true"><span class="ex on" data-v="300">300 €</span><span class="ex" data-v="1000">1.000 €</span><span class="ex" data-v="2500">2.500 €</span><span class="ex" data-v="5000">5.000 €</span></div>
       <div class="leg"><span><i style="background:#FFD54A" aria-hidden="true"></i>tuoi <b id="lnet">—</b></span><span><i style="background:#FF4D4D" aria-hidden="true"></i>imposta <b id="limp">—</b></span><span><i style="background:#B33A3A" aria-hidden="true"></i>INPS <b id="linps">—</b></span></div>
       <p class="note">Stima: forfettario al 5%, coefficiente 78%, INPS gestione separata. Nell'app scegli la tua attività e se sei al 5% o al 15%. Il conto definitivo lo fa il commercialista.</p>
     </div>
@@ -341,7 +341,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
 <section style="padding-top:0" aria-label="Il PDF del preventivo"><div class="w">
   <div class="ad">
     <div><h3>Il PDF che mandi parla per te.</h3><p>Nome, partita IVA, voci chiare, condizioni, firma. Il cliente capisce al volo. Tu non devi spiegare niente.</p></div>
-    <a class="btn" href="app/">Fai il tuo primo preventivo</a>
+    <a class="btn" href="#prezzo">Scarica l'app</a>
   </div>
 </div></section>
 
@@ -395,7 +395,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
     <details><summary><h3 style="margin:0;font:inherit">Sostituisce il commercialista?</h3></summary><p>No. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e a novembre. C'è l'export in CSV apposta.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Dove vanno i miei dati?</h3></summary><p>Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Perché a pagamento e non gratis?</h3></summary><p>Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari.</p></details>
-    <details><summary><h3 style="margin:0;font:inherit">Posso provarla prima?</h3></summary><p>Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Posso provarla prima?</h3></summary><p>Non c'è una versione gratuita: PreventIVO costa 9,99 € una volta (5,99 € al lancio) e non ha pubblicità né abbonamenti. Se non fa per te, App Store e Google Play prevedono il rimborso secondo le loro regole.</p></details>
   </div>
 </div></section>
 
@@ -409,7 +409,7 @@ footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
 <section class="final" aria-labelledby="h-final"><div class="w">
   <h2 id="h-final">Quanto ti resta?<br><span class="y">Scoprilo adesso.</span></h2>
   <p class="p" style="margin:0 auto 28px">Gratis nel browser, oggi. Sugli store, tra poco.</p>
-  <div class="ctas" style="justify-content:center"><a class="btn" href="app/">Provala ora</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store">Avvisami quando esce</a></div>
+  <div class="ctas" style="justify-content:center"><a class="btn" href="#prezzo">Scarica l'app</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store">Avvisami quando esce</a></div>
 </div></section>
 </main>
 
@@ -429,8 +429,7 @@ function show(v){ const c=calc(v); const fy=c.net/v, fr=(c.inps+c.tax)/v;
   const ry=document.getElementById('ry'), rr=document.getElementById('rr');
   ry.setAttribute('stroke-dasharray',`${fy*C} ${C}`); rr.setAttribute('stroke-dasharray',`${fr*C} ${C}`); rr.setAttribute('transform',`rotate(${fy*360} 100 100)`);
   document.getElementById('dnet').textContent=fmt(c.net); document.getElementById('lnet').textContent=fmt(c.net); document.getElementById('limp').textContent=fmt(c.tax); document.getElementById('linps').textContent=fmt(c.inps); }
-document.getElementById('ctrl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); show(+b.dataset.v); });
-show(1000);
+const EX=[300,1000,2500,5000]; let ei=0; function cyc(){ const v=EX[ei]; show(v); document.querySelectorAll('#ctrl .ex').forEach(x=>x.classList.toggle('on',+x.dataset.v===v)); ei=(ei+1)%EX.length; } cyc(); setInterval(cyc,2600);
 </script>
 </body>
 </html>
