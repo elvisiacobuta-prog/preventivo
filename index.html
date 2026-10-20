@@ -1,0 +1,852 @@
+<!doctype html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#161616">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="PreventIVO">
+<title>PreventIVO</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221024%22%20height%3D%221024%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20fill%3D%22%23161616%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%20font-family%3D%22Inter%2CArial%22%20font-weight%3D%22800%22%20font-size%3D%2276%22%20letter-spacing%3D%22-4%22%20fill%3D%22%23FFD54A%22%3EIVO%3C%2Ftext%3E%3C%2Fsvg%3E%0A">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221024%22%20height%3D%221024%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20fill%3D%22%23161616%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%20font-family%3D%22Inter%2CArial%22%20font-weight%3D%22800%22%20font-size%3D%2276%22%20letter-spacing%3D%22-4%22%20fill%3D%22%23FFD54A%22%3EIVO%3C%2Ftext%3E%3C%2Fsvg%3E%0A">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+:root{
+  --bg:#161616; --sur:#222222; --sur2:#2C2C2C; --txt:#F4F4F4; --mut:#9A9A9A; --line:#333333;
+  --acc:#FFD54A; --red:#FF4D4D; --green:#4CD97B; --orange:#FF9F43;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
+body{min-height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
+button,input,textarea,select{font:inherit;color:inherit}
+button{background:none;border:0;cursor:pointer}
+.app{max-width:480px;width:100%;margin:0 auto;padding:0 16px}
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top)) 0 18px}
+.logo{font-weight:800;font-size:18px;letter-spacing:-.02em}.logo b{color:var(--acc)}
+.hdr .ico{color:var(--mut);font-size:20px;padding:6px}
+.year{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin:4px 0 14px}
+.year .k{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
+.year .v{font-size:17px;font-weight:700;margin-top:2px}
+.year > div{background:var(--sur);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between}
+.bar{height:6px;background:var(--sur2);border-radius:3px;margin-top:8px;position:relative;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .4s}
+.bar.over i{background:var(--red)}
+.bar.warn i{background:#FFB44A}
+.card{background:var(--sur);border-radius:20px;padding:20px;margin-bottom:14px}
+textarea.msg{width:100%;background:transparent;border:0;padding:4px 0;min-height:64px;resize:none;font-size:22px;font-weight:500;line-height:1.4;outline:none;overflow:hidden}
+textarea.msg::placeholder{color:var(--mut)}
+.hint{font-size:12px;color:var(--mut);margin:8px 2px 0;line-height:1.5}
+.rows{margin-top:10px}.rows:empty{display:none}
+.row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;font-size:14px;color:var(--mut)}
+.row .d{color:var(--mut)}.row .q{color:var(--mut);font-size:12px;margin-left:6px}
+.row .n{font-weight:600}
+.big{display:flex;flex-direction:column;align-items:flex-start;margin-top:28px}
+.big .lab{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
+.big .net{font-size:64px;font-weight:800;color:var(--acc);letter-spacing:-.04em;line-height:1}
+.big .sub{font-size:13px;color:var(--mut);margin-top:4px}
+.big .sub b{color:var(--red);font-weight:600}
+.split{display:flex;gap:8px;margin-top:22px}.split.off{display:none}
+.pill{flex:1;padding:0}
+.pill .k{font-size:11px;color:var(--mut)}.pill .v{font-size:15px;font-weight:600;margin-top:2px}
+.pill.red .v{color:var(--red)}
+.why{color:var(--mut);font-size:11px;margin-left:4px;border:1px solid var(--line);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
+.field{display:flex;gap:8px;margin-top:26px}
+.field input{flex:1;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:10px 0;font-size:16px;outline:none}
+.field input::placeholder{color:var(--mut)}
+.btn{background:var(--acc);color:#111;font-weight:700;border-radius:16px;padding:16px 18px;width:100%;font-size:16px;margin-top:18px}
+.btn:disabled{opacity:.18}
+.btn.ghost{background:var(--sur2);color:var(--txt);font-weight:600}
+.btn.small{width:auto;padding:10px 14px;font-size:14px;margin-top:0}
+.stima{font-size:11px;color:var(--mut);text-align:center;margin-top:10px;line-height:1.5}
+.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(22,22,22,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
+.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mut);font-size:11px;padding:4px 14px;font-weight:500}
+.tabs button.on{color:var(--acc)}
+.tabs svg{width:22px;height:22px}
+.view{display:none}.view.on{display:block}
+h2{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin:18px 2px 10px}
+.list .it{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
+.list .it:first-child{border-top:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none}
+.it .t{flex:1;min-width:0}
+.it .t .a{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.it .t .b{font-size:12px;color:var(--mut);margin-top:2px}
+.it .amt{text-align:right}.it .amt .g{font-weight:700}.it .amt .nn{font-size:12px;color:var(--acc)}
+.st{font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;background:var(--sur2);color:var(--mut);white-space:nowrap}
+.st.inviato{color:var(--txt)}.st.accettato{color:#FFB44A}.st.fatturato{color:var(--red)}.st.incassato{color:var(--acc)}.st.perso{opacity:.5;text-decoration:line-through}
+.empty{color:var(--mut);text-align:center;padding:40px 10px;font-size:14px;line-height:1.6}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:20}
+.sheet.on{display:flex}
+.sheet .in{background:var(--sur);width:100%;max-width:480px;margin:0 auto;border-radius:22px 22px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));max-height:88dvh;overflow:auto}
+.sheet h3{margin:0 0 4px;font-size:18px}
+.sheet .sub{color:var(--mut);font-size:13px;margin-bottom:14px}
+.opts{display:flex;flex-direction:column;gap:8px;margin:10px 0}
+.opt{background:var(--sur2);border-radius:14px;padding:14px;text-align:left;display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--txt);text-decoration:none}
+.opt.on{outline:2px solid var(--acc)}
+.opt small{color:var(--mut);display:block;font-size:12px;margin-top:2px}
+.kv{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
+.kv:first-child{border-top:0}
+.kv span:last-child{font-weight:600}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.due{background:var(--sur2);border-radius:14px;padding:12px}
+.due .k{font-size:11px;color:var(--mut)}.due .v{font-size:18px;font-weight:700;margin-top:2px}
+.huge{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
+.huge.acc{color:var(--acc)}.huge.red{color:var(--red)}
+.chart{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:12px 0 8px;background:var(--sur2)}
+.chart i{display:block;height:100%}
+.leg{display:flex;gap:14px;font-size:12px;color:var(--mut);flex-wrap:wrap}
+.leg b{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
+.bars{display:flex;align-items:flex-end;gap:4px;height:110px;margin-top:4px}
+.bars div{flex:1;background:var(--sur2);border-radius:4px 4px 0 0;position:relative;min-height:2px}
+.bars div.f{background:var(--acc)}
+.bars div.p{background:#3a3a3a}
+.ml{display:flex;gap:4px;font-size:10px;color:var(--mut);margin-top:4px}.ml span{flex:1;text-align:center}
+.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top));background:var(--acc);color:#111;font-weight:600;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
+.toast.on{opacity:1}
+.cl{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
+.cl .nm{flex:1;font-weight:600}
+.cl .mt{font-size:12px;color:var(--mut)}
+.inl{display:flex;gap:8px;align-items:center}
+.inl input{flex:1}
+select{background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;width:100%;outline:none;-webkit-appearance:none}
+label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
+.seg{display:flex;background:var(--sur2);border-radius:12px;padding:3px}
+.seg button{flex:1;padding:9px;border-radius:10px;font-size:13px;font-weight:600;color:var(--mut)}
+#rateseg button{padding:12px;font-size:14px}#rateseg button.on{background:var(--acc);color:#111}
+.seg button.on{background:var(--sur);color:var(--txt)}
+.link{color:var(--acc);font-weight:600;font-size:14px;padding:8px 0}
+.danger{color:var(--red)}
+#pdfroot{display:none}
+.step{display:none;padding-top:10px}.step.on{display:block;animation:in .25s ease}
+@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+.q{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin:8px 0 18px}
+.qsub{color:var(--mut);font-size:14px;line-height:1.5;margin:-10px 0 16px}.qsub em{color:var(--txt);font-style:normal}
+.choice{display:block;width:100%;text-align:left;background:var(--sur);border-radius:18px;padding:18px 20px;font-size:18px;font-weight:600;margin-bottom:10px}
+.choice small{display:block;font-weight:400;font-size:13px;color:var(--mut);margin-top:4px}
+.choice:active{background:var(--sur2)}
+.choice.main{background:var(--acc);color:#111}.choice.main small{color:#5a4a10}
+.back{color:var(--mut);font-size:28px;line-height:1;padding:0 4px 8px;margin-left:-4px}
+.qin{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 0;font-size:22px;font-weight:500;outline:none}
+.qin::placeholder{color:#555}
+.big-in{font-size:56px;font-weight:800;letter-spacing:-.04em;color:var(--acc)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.chip{background:var(--sur);border-radius:999px;padding:8px 14px;font-size:14px}
+.viaquick{margin-top:14px;font-size:16px}.viaquick b{color:var(--red)}
+.stima{cursor:pointer}
+input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
+.amtwrap{display:flex;align-items:baseline;gap:8px}.amtwrap .qin{flex:1;border-bottom:0}.eur{font-size:40px;font-weight:700;color:var(--mut)}
+.quick{display:flex;gap:24px;margin:10px 0 30px;min-height:58px}
+.quick .k{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
+.quick .v{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:2px}.quick .v.acc{color:var(--acc)}.quick .v.red{color:var(--red)}
+.choices{margin-top:6px}
+.row2{display:flex;gap:8px}.row2 .btn{margin-top:10px}
+.qin.sm{font-size:15px;font-weight:400;flex:1;min-width:0}
+.hero{position:relative;width:225px;height:225px;margin:0 auto 8px}
+.ring{width:100%;height:100%;display:block}
+.ring circle{transition:stroke-dasharray .45s cubic-bezier(.2,.8,.2,1)}
+.herotxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.hero .amtwrap{justify-content:center;gap:4px}
+.hero .big-in{width:140px;text-align:center;font-size:46px;background:transparent}
+.hero .eur{font-size:28px}
+.herosub{font-size:12px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
+.legend.h{flex-direction:row;justify-content:space-between;margin:4px 0 22px}
+.legend.h div{flex-direction:column;align-items:flex-start;gap:4px}
+.legend.h b{margin-left:0}
+.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 18px}
+.pad button{background:var(--sur);border-radius:14px;padding:13px 0;font-size:21px;font-weight:600}
+.pad button:active{background:var(--sur2)}
+.pad .del{color:var(--mut);font-size:20px}
+.pad .ok{grid-column:1/-1;background:var(--acc);color:#111;font-size:17px;padding:14px 0}
+@media (min-height:900px){.pad button{padding:20px 0}}
+.k2{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
+.kpi .k{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
+.gauge{position:relative;height:14px;background:var(--sur2);border-radius:7px;margin:8px 0 28px}
+.gfill{height:100%;border-radius:7px;background:var(--acc);transition:width .5s}
+.gfill.warn{background:#FF9F43}.gfill.over{background:var(--red)}
+.gtick{position:absolute;top:-4px;width:2px;height:22px;background:var(--txt);opacity:.7}
+.gtick span{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--mut)}
+.tl{position:relative;padding-left:22px}.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--line)}
+.tli{position:relative;display:flex;align-items:baseline;gap:10px;padding:8px 0}
+.tli .k{flex:1;font-size:14px;color:var(--mut)}.tli .v{font-size:17px;font-weight:700}
+.dot2{position:absolute;left:-22px;top:12px;width:14px;height:14px;border-radius:50%;background:var(--red);border:3px solid var(--bg)}
+.dot2.ok{background:var(--acc)}
+.bars div.f{background:var(--acc)}
+.donutwrap{display:flex;align-items:center;gap:22px;margin:6px 0 26px;min-height:150px}
+.donut{width:140px;height:140px;flex:none}
+.donut text{font-family:Inter,system-ui,sans-serif}
+.legend{display:flex;flex-direction:column;gap:10px;flex:1}
+.legend div{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mut)}
+.legend i{width:12px;height:12px;border-radius:4px;flex:none}
+.legend b{color:var(--txt);font-weight:700;font-size:16px;margin-left:auto;white-space:nowrap}
+.legend div{white-space:nowrap}
+.legend .ico{width:22px;height:22px;flex:none;color:var(--mut)}
+.donutwrap.empty .donut{opacity:.9}
+@media print{
+  body{background:#fff;color:#111;padding:0;display:block}
+  .app,.tabs,.sheet,.toast{display:none!important}
+  #pdfroot{display:block}
+}
+</style>
+</head>
+<body>
+<div class="app">
+  <div class="hdr">
+    <div class="logo"><svg width="22" height="22" viewBox="0 0 60 60" style="vertical-align:-4px;margin-right:8px"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg>Prevent<b>IVO</b></div>
+    <button class="ico" onclick="openSheet('settings')" aria-label="Impostazioni">⚙︎</button>
+  </div>
+
+
+  <!-- VIEW: NUOVO (guidata) -->
+  <section class="view on" id="v-new">
+    <div class="step on" id="st0">
+      <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
+      <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
+      <div class="seg" id="rateseg" style="margin:0 0 10px"><button id="rate5" onclick="setRate(true)">Forfettario 5%</button><button id="rate15" onclick="setRate(false)">Forfettario 15%</button></div>
+      <div class="hero">
+        <svg class="ring" viewBox="0 0 200 200" id="ring0">
+          <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="16"/>
+          <circle id="r0y" cx="100" cy="100" r="82" fill="none" stroke="#FFD54A" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
+          <circle id="r0r" cx="100" cy="100" r="82" fill="none" stroke="#FF4D4D" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
+        </svg>
+        <div class="herotxt">
+          <div class="amtwrap"><input class="qin big-in" id="q0" type="number" inputmode="decimal" placeholder="0" enterkeyhint="done"><span class="eur">€</span></div>
+          <div class="herosub" id="herosub">inserisci la cifra</div>
+        </div>
+      </div>
+      <div class="pad" id="pad">
+        <button>1</button><button>2</button><button>3</button>
+        <button>4</button><button>5</button><button>6</button>
+        <button>7</button><button>8</button><button>9</button>
+        <button>00</button><button>0</button><button class="del">⌫</button>
+      </div>
+      <div class="legend h" id="l0" style="display:none"></div>
+      <div class="hint" style="text-align:center;margin:-8px 0 14px" id="actline"></div>
+      <div class="choices">
+        <button class="choice main" onclick="fromHome('prev')">Fai il preventivo da mandare<small>Voci, PDF con il tuo logo, invio in un tocco</small></button>
+        <button class="choice" onclick="fromHome('inc')">Li ho già incassati<small>Segnali nell'anno e sai quanto mettere via</small></button>
+        <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
+      </div>
+    </div>
+
+    <div class="step" id="st1">
+      <button class="back" onclick="step(0)">‹</button>
+      <div class="q" style="font-size:26px;margin-bottom:14px">Preventivo</div>
+      <input class="qin" id="client" list="clients" placeholder="Per chi è?" autocomplete="off" enterkeyhint="next" style="font-size:19px">
+      <datalist id="clients"></datalist>
+      <div class="chips" id="recent"></div>
+      <textarea class="msg" id="msg" placeholder="Cosa gli fai e a quanto? Es: 800 video, 4 reel 50" rows="2" style="margin-top:18px;font-size:19px"></textarea>
+      <div class="rows" id="rows"></div>
+      <div class="big" id="bigres" style="margin-top:18px">
+        <div class="net" id="net" style="font-size:48px">0 €</div>
+        <div class="sub" id="netsub">ti resta · stima</div>
+      </div>
+      <div class="viaquick" id="via3" style="margin:8px 0 6px"></div>
+      <div class="split" id="split" style="display:none"><span id="via"></span><span id="inps"></span><span id="imp"></span></div>
+      <button class="btn" id="save" onclick="savePrev('send')" disabled>Salva e invia</button>
+      <div class="row2"><button class="btn ghost" id="save2" onclick="savePrev()" disabled>Solo salva</button><button class="btn ghost" id="save3" onclick="savePrev('pdf')" disabled>Salva e PDF</button></div>
+      <div class="stima" onclick="why('stima')">perché è una stima?</div>
+    </div>
+
+    <div class="step" id="st10">
+      <button class="back" onclick="step(0)">‹</button>
+      <div class="q">Quanto hai incassato?</div>
+      <input class="qin big-in" id="inc" type="number" inputmode="decimal" placeholder="0" enterkeyhint="done">
+      <div class="big" id="incres" style="display:none">
+        <div class="net" id="incnet">0 €</div>
+        <div class="sub">è tuo · stima</div>
+        <div class="viaquick" id="incvia"></div>
+      </div>
+      <input class="qin" id="incclient" list="clients" placeholder="Da chi? (facoltativo)" autocomplete="off" style="margin-top:18px">
+      <button class="btn" id="incsave" onclick="saveIncasso()" disabled>Segna come incassato</button>
+    </div>
+  </section>
+
+  <!-- VIEW: PREVENTIVI -->
+  <section class="view" id="v-list">
+    <div class="card">
+      <div class="kv" onclick="why('attesa')"><span>In attesa</span><span id="attesa" style="color:var(--red)">0 €</span></div>
+      <div class="kv"><span>Fatti · accettati · persi</span><span id="stat">0 · 0 · 0</span></div>
+    </div>
+    <div class="seg" id="filter">
+      <button class="on" data-f="">Tutti</button><button data-f="inviato">Inviati</button><button data-f="accettato">Accettati</button><button data-f="fatturato">Fatturati</button><button data-f="incassato">Incassati</button>
+    </div>
+    <div class="card list" id="list" style="margin-top:12px"></div>
+  </section>
+
+  <!-- VIEW: CLIENTI -->
+  <section class="view" id="v-clients">
+    <div class="card">
+      <h2 style="margin-top:0">Presunto dell'anno</h2>
+      <div class="huge acc" id="presunto">0 €</div>
+      <div class="hint" id="presuntosub"></div>
+      <div class="chart" id="chart"></div>
+      <div class="leg" id="leg"></div>
+    </div>
+    <div class="card list" id="clist"></div>
+    <div class="card">
+      <div class="inl"><input id="newclient" placeholder="Nuovo cliente" style="background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><button class="btn small" onclick="addClient()">Aggiungi</button></div>
+    </div>
+  </section>
+
+  <!-- VIEW: ANNO -->
+  <section class="view" id="v-year">
+    <div class="q" style="margin-bottom:6px">Quest'anno</div>
+    <div class="qsub" id="ylabel"></div>
+
+    <div class="card">
+      <div class="kpi"><div class="k">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
+      <div class="donutwrap" style="margin-bottom:6px"><svg class="donut" viewBox="0 0 120 120" id="dy"></svg><div class="legend" id="ly"></div></div>
+    </div>
+
+    <div class="card">
+      <div class="k2">Soglia forfettario</div>
+      <div class="hero" style="width:200px;height:200px;margin-bottom:18px">
+        <svg class="ring" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="14"/>
+          <circle id="gfill" cx="100" cy="100" r="82" fill="none" stroke="#FFD54A" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
+          <line x1="100" y1="8" x2="100" y2="28" stroke="var(--txt)" stroke-width="3" stroke-linecap="round" transform="rotate(306 100 100)"/>
+        </svg>
+        <div class="herotxt"><div class="big-in" style="font-size:40px;color:var(--txt)" id="gpct">0%</div><div class="herosub">di 85.000 €</div></div>
+      </div>
+      <div class="kv"><span>Incassato</span><span id="yin">0 €</span></div>
+      <div class="kv"><span>Netto reale</span><span id="ynet" style="color:var(--acc)">0 €</span></div>
+      <div class="kv"><span>Alla soglia mancano</span><span id="ysoglia">85.000 €</span></div>
+      <div class="kv"><span>Con il presunto arrivi a</span><span id="yproj">0 €</span></div>
+    </div>
+
+    <div class="card">
+      <div class="k2">Scadenze</div>
+      <div class="tl">
+        <div class="tli"><div class="dot2"></div><div class="k">Giugno · acconto</div><div class="v" id="d1">—</div></div>
+        <div class="tli"><div class="dot2"></div><div class="k">Novembre · acconto</div><div class="v" id="d2">—</div></div>
+        <div class="tli"><div class="dot2"></div><div class="k">Giugno prossimo · saldo e INPS</div><div class="v" id="due3">—</div></div>
+        <div class="tli"><div class="dot2 ok"></div><div class="k">Già messo via</div><div class="v" id="d4" style="color:var(--acc)">—</div></div>
+      </div>
+      <div class="hint" style="text-align:center">stime · il conto vero lo fa il commercialista</div>
+    </div>
+
+    <div class="card">
+      <div class="k2">Incassi per mese</div>
+      <div class="bars" id="bars"></div>
+      <div class="ml"><span>G</span><span>F</span><span>M</span><span>A</span><span>M</span><span>G</span><span>L</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
+    </div>
+
+    <button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
+    <button class="btn ghost" onclick="backup()">Backup</button>
+    <div style="height:10px"></div>
+  </section>
+</div>
+
+<nav class="tabs">
+  <button class="on" data-v="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Nuovo</button>
+  <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
+  <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
+  <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
+</nav>
+
+<div class="sheet" id="sheet"><div class="in" id="sheetin"></div></div>
+<div class="toast" id="toast"></div>
+<div id="pdfroot"></div>
+
+<script>
+const $=id=>document.getElementById(id);
+/* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
+const PARAMS = {
+  link: 'partitaivo.it',   // ← dominio da comprare; sostituire con il link dello store al lancio
+  anno: 2026,
+  soglia: 85000, sogliaOut: 100000,
+  aliquotaStart: 0.05, aliquotaStd: 0.15,
+  inps: { separata: 0.2607, artigiani: 0.24, commercianti: 0.2448 },
+  // "cosa fai?" → coefficiente di redditività (ATECO di riferimento, indicativi — verificare)
+  attivita: [
+    {id:'prof78',  n:'Libero professionista, consulenza, creativi', c:0.78, ateco:'varie'},
+    {id:'video',   n:'Video, foto, contenuti, grafica', c:0.78, ateco:'74.20 / 74.10 / 59.11'},
+    {id:'consul',  n:'Consulenza, marketing, comunicazione', c:0.78, ateco:'70.22 / 73.11'},
+    {id:'it',      n:'Sviluppo software, siti, IT', c:0.67, ateco:'62.01'},
+        {id:'artig',   n:'Artigiano, servizi alla persona', c:0.67, ateco:'varie'},
+    {id:'comm',    n:'Commercio', c:0.40, ateco:'47'},
+    {id:'ecomm',   n:'Commercio online', c:0.40, ateco:'47.91'},
+    {id:'ediliz',  n:'Edilizia, immobiliare', c:0.86, ateco:'41–43'},
+    {id:'ristor',  n:'Ristorazione, alloggio', c:0.40, ateco:'55–56'},
+    {id:'cassa',   n:'Avvocato, architetto, ingegnere, medico… (con cassa)', c:0.78, ateco:'varie', cassa:true},
+    {id:'altro',   n:'Altro: scrivi cosa fai', c:0.78, ateco:'—'},
+    {id:'no',      n:'Ho una SRL o sono in regime ordinario', c:0.78, ateco:'—', no:true}
+  ]
+};
+/* ---------- STATO ---------- */
+const KEY='preventivo.v1';
+let S = load() || { setup:false, profile:{act:'prof78', inps:'separata', start:null, nome:'', piva:'', contatti:'', contribPrec:0, messoVia:0}, prev:[], clients:[], seq:0 };
+function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
+function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+
+/* ---------- CALCOLO ---------- */
+function coef(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
+function calc(lordo, opts={}){
+  const imponibile = lordo * coef();
+  const inps = imponibile * PARAMS.inps[S.profile.inps];
+  const aliq = S.profile.start===true ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
+  // imposta su imponibile meno contributi (approssimati con l'INPS stesso se non noti)
+  const ded = opts.contribPrec!=null ? opts.contribPrec : inps;
+  const imposta = Math.max(0, imponibile - ded) * aliq;
+  const tasse = inps + imposta;
+  const via = Math.ceil(tasse * 1.05 / 5) * 5; // arrotonda per eccesso +5%
+  return { lordo, imponibile, inps, imposta, tasse, netto: lordo - tasse, via };
+}
+const fmt = n => (Math.round(n)).toLocaleString('it-IT') + ' €';
+const fmt2 = n => n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €';
+
+/* ---------- PARSER "come un messaggio" ---------- */
+function parse(text){
+  const out=[];
+  text.split(/\n|,|;|\+/).map(s=>s.trim()).filter(Boolean).forEach(seg=>{
+    const nums = [...seg.matchAll(/(\d+(?:[.,]\d+)?)/g)].map(m=>m[1].replace('.','').replace(',','.'));
+    let desc = seg.replace(/[\d.,]+\s*€?/g,' ').replace(/\bx\b|\bper\b|\bda\b|\ba\b|\beuro\b/gi,' ').replace(/\s+/g,' ').trim();
+    if(!nums.length) return;
+    let q=1, p=parseFloat(nums[0]);
+    if(nums.length>=2){ const a=parseFloat(nums[0]), b=parseFloat(nums[1]); if(a<=50 && b>a){q=a;p=b;} else if(b<=50 && a>b){q=b;p=a;} else {q=1;p=a;} }
+    if(!desc) desc='Voce';
+    desc = desc.charAt(0).toUpperCase()+desc.slice(1);
+    out.push({d:desc,q,p,t:q*p});
+  });
+  return out;
+}
+
+/* ---------- CIAMBELLA ---------- */
+const ICONS={
+  net:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M3 11h18M7 15h3"/></svg>',
+  imp:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg>',
+  inps:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'
+};
+function donut(svgId, legId, c){
+  const svg=$(svgId), leg=$(legId); if(!svg) return;
+  const tot=c.lordo||0;
+  const parts=[
+    {k:'net', n:'tuoi', v:Math.max(0,c.netto), col:'#FFD54A'},
+    {k:'imp', n:'imposta', v:c.imposta, col:'#FF4D4D', why:'imp'},
+    {k:'inps',n:'INPS', v:c.inps, col:'#B33A3A', why:'inps'}
+  ];
+  const R=46, C=2*Math.PI*R; let off=0;
+  const arcs = tot? parts.map(p=>{ const L=p.v/tot*C; const el=`<circle r="${R}" cx="60" cy="60" fill="none" stroke="${p.col}" stroke-width="16" stroke-dasharray="${L} ${C-L}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)" stroke-linecap="butt"/>`; off+=L; return el; }).join('') : `<circle r="${R}" cx="60" cy="60" fill="none" stroke="#FFD54A" stroke-width="16"/><circle r="${R}" cx="60" cy="60" fill="none" stroke="#FF4D4D" stroke-width="16" stroke-dasharray="${C*0.23} ${C*0.77}" transform="rotate(-90 60 60)"/>`;
+  const pct = tot? Math.round(c.netto/tot*100) : 0;
+  svg.innerHTML = arcs + `<text x="60" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="var(--txt)">${tot?pct+'%':'—'}</text><text x="60" y="72" text-anchor="middle" font-size="9" fill="var(--mut)" letter-spacing="1">${tot?'È TUO':''}</text>`;
+  leg.innerHTML = parts.map(p=>`<div ${p.why?`onclick="why('${p.why}')"`:''}><i style="background:${p.col}"></i>${ICONS[p.k]}${p.n}<b>${tot?fmt(p.v):'—'}</b></div>`).join('');
+  svg.parentElement.classList.toggle('empty',!tot);
+}
+/* ---------- UI: NUOVO (guidata) ---------- */
+function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
+function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
+function renderActLine(){ $('actline').innerHTML = S.setup ? `stima per <b style="color:var(--txt)">${actName()}</b> · ${S.profile.start===true?'5%':(S.profile.start===false?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
+function setRate(five){ S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
+function renderHello(){}
+function renderRate(){ $('rate5').classList.toggle('on',S.profile.start===true); $('rate15').classList.toggle('on',S.profile.start!==true); }
+function ring0(v){
+  const c=calc(v); const C=2*Math.PI*82;
+  const fy=v? Math.max(0,c.netto)/v : 0, fr=v? c.tasse/v : 0;
+  $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
+  $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
+  $('herosub').textContent = v? `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}` : 'scrivi la cifra';
+  const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
+  leg.innerHTML=[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']].map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
+}
+$('q0').addEventListener('input',()=>ring0(parseFloat($('q0').value)||0));
+renderActLine();
+$('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.classList.contains('ok')) return; const i=$('q0'); let v=i.value; if(b.classList.contains('del')) v=v.slice(0,-1); else if(v.length<7) v+=b.textContent; i.value=v; i.dispatchEvent(new Event('input')); });
+$('q0').setAttribute('readonly','');
+let padOpen=true;
+function setPad(o){ padOpen=o; $('pad').style.display=o?'':'none'; $('l0').style.display=(o||!$('q0').value)?'none':''; document.querySelector('#st0 .choices').style.display=o?'none':''; }
+$('q0').addEventListener('click',()=>setPad(true));
+document.querySelector('#st0 .amtwrap').addEventListener('click',()=>setPad(true));
+$('pad').insertAdjacentHTML('beforeend','<button class="ok">OK</button>');
+$('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&b.classList.contains('ok')){ if($('q0').value) setPad(false); } });
+setPad(true);
+function fromHome(k){
+  if(!S.setup){ askAct(true,()=>fromHome(k)); return; }
+  const v=parseFloat($('q0').value)||0;
+  if(k==='prev'){ $('msg').value = v? String(v) : ''; step(1); }
+  else { if(v) $('inc').value=String(v); step(10); $('inc').dispatchEvent(new Event('input')); }
+}
+function step(n){
+  document.querySelectorAll('#v-new .step').forEach(x=>x.classList.toggle('on',x.id==='st'+n));
+  if(n===1){ renderRecent(); renderCalc(); setTimeout(()=>{ if(!$('client').value) $('client').focus(); else $('msg').focus(); },50); }
+  if(n===0){ $('q0').value=''; ring0(0); setPad(true); }
+  if(n===10){ setTimeout(()=>{ if(!$('inc').value) $('inc').focus(); },50); }
+  window.scrollTo(0,0);
+}
+function renderRecent(){
+  const r=[...new Set(S.prev.map(p=>clientOf(p).name))].slice(0,6);
+  $('recent').innerHTML=r.map(n=>`<button class="chip" onclick="$('client').value=${JSON.stringify(n)};$('msg').focus()">${esc(n)}</button>`).join('');
+}
+$('client').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); $('msg').focus(); } });
+
+$('inc').addEventListener('input',()=>{ const v=parseFloat($('inc').value)||0; const c=calc(v); $('incres').style.display=v?'':'none'; $('incnet').textContent=fmt(c.netto); $('incvia').innerHTML=`Metti via <b>${fmt(c.via)}</b> sul conto tasse`; $('incsave').disabled=!v; });
+function saveIncasso(){
+  const v=parseFloat($('inc').value)||0; if(!v) return;
+  const cl=getClient($('incclient').value.trim()||'Senza cliente',true);
+  S.seq++;
+  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:today()} });
+  save(); $('inc').value=''; $('incclient').value=''; $('incres').style.display='none'; $('incsave').disabled=true; renderAll(); toast('Incassato. Metti via '+fmt(calc(v).via)); step(0); go('year');
+}
+
+let cur={rows:[],tot:0};
+$('msg').addEventListener('input', ()=>{ const m=$('msg'); m.style.height='auto'; m.style.height=m.scrollHeight+'px'; renderCalc(); });
+
+function renderCalc(){
+  cur.rows=parse($('msg').value); cur.tot=cur.rows.reduce((a,r)=>a+r.t,0);
+  $('rows').innerHTML = cur.rows.map(r=>`<div class="row"><span class="d">${esc(r.d)}${r.q>1?`<span class="q">× ${r.q}</span>`:''}</span><span class="n">${fmt(r.t)}</span></div>`).join('');
+  const c=calc(cur.tot);
+  $('net').textContent=fmt(c.netto);
+  const ok=cur.tot>0; ['save','save2','save3'].forEach(i=>{ if($(i)) $(i).disabled=!ok; }); $('bigres').style.opacity=ok?1:.3;
+  $('via').textContent=fmt(c.via); $('inps').textContent=fmt(c.inps); $('imp').textContent=fmt(c.imposta); if($('via3')) $('via3').innerHTML=ok?`Metti via <b>${fmt(c.via)}</b> · INPS ${fmt(c.inps)} · imposta ${fmt(c.imposta)}`:'';
+  $('netsub').textContent = cur.tot>0 ? `ti resta su ${fmt(c.lordo)} · stima` : 'ti resta · stima';
+}
+function savePrev(mode){
+  if((mode==='send'||mode==='pdf') && !S.profile.nome){ needProfile(()=>savePrev(mode)); return; }
+  const name=$('client').value.trim()||'Senza cliente';
+  const cl=getClient(name,true);
+  S.seq++;
+  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:cur.rows, tot:cur.tot, status:'inviato', hist:{inviato:today()} });
+  save(); const nid=S.prev[0].id; $('msg').value=''; $('client').value=''; renderCalc(); renderAll(); toast('Preventivo salvato'); step(0); if(mode==='pdf'){ downloadPDF(nid); go('list'); } else if(mode==='send'){ sendPrev(nid); } else go('list');
+}
+function getClient(name,create){
+  let c=S.clients.find(x=>x.name.toLowerCase()===name.toLowerCase());
+  if(!c && create){ c={id:Date.now(),name,color:pickColor(),atteso:0}; S.clients.push(c); }
+  return c;
+}
+const COLORS=['#FFD54A','#FF4D4D','#5BE38B','#4AA8FF','#C77DFF','#FF9F4A','#4AE0D8','#FF6FB5'];
+function pickColor(){ return COLORS[S.clients.length%COLORS.length]; }
+function today(){ return new Date().toISOString().slice(0,10); }
+function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
+
+/* ---------- LISTA ---------- */
+let filt='';
+$('filter').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; filt=b.dataset.f; [...$('filter').children].forEach(x=>x.classList.toggle('on',x===b)); renderList(); });
+function renderList(){
+  const L=S.prev.filter(p=>!filt||p.status===filt);
+  $('list').innerHTML = L.length? L.map(p=>{ const c=clientOf(p); const n=calc(p.tot); return `
+    <div class="it" onclick="openPrev(${p.id})">
+      ${miniRing(p)}
+      <div class="t"><div class="a">${esc(c.name)}</div><div class="b">${p.num} · ${fdate(p.date)}${p.status==='fatturato'&&days(p.hist.fatturato)>30?` · <span class="danger">fermo da ${days(p.hist.fatturato)} giorni</span>`:''}</div></div>
+      <div class="amt"><div class="g">${fmt(p.tot)}</div><div class="nn">${fmt(n.netto)} netti</div></div>
+      <span class="st ${p.status}">${p.status}</span>
+    </div>`;}).join('') : `<div class="empty">Nessun preventivo.<br>Scrivine uno nella scheda Nuovo.</div>`;
+  const attesa=S.prev.filter(p=>['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0);
+  $('attesa').textContent=fmt(attesa);
+  $('stat').textContent=`${S.prev.length} · ${S.prev.filter(p=>['accettato','fatturato','incassato'].includes(p.status)).length} · ${S.prev.filter(p=>p.status==='perso').length}`;
+}
+function clientOf(p){ return S.clients.find(c=>c.id===p.client)||{name:'—',color:'#555'}; }
+function fdate(d){ const [y,m,g]=d.split('-'); return `${g}/${m}/${y}`; }
+function days(d){ return Math.floor((Date.now()-new Date(d))/864e5); }
+
+const STATES=['inviato','accettato','fatturato','incassato','perso'];
+function miniRing(p){ const i=Math.max(0,STATES.indexOf(p.status)); const f=p.status==='perso'?0:(i+1)/4; const C=2*Math.PI*14; const col=p.status==='incassato'?'#FFD54A':(p.status==='perso'?'#555':'#FF4D4D');
+  return `<svg width="36" height="36" viewBox="0 0 36 36" style="flex:none"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--sur2)" stroke-width="5"/><circle cx="18" cy="18" r="14" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${f*C} ${C}" transform="rotate(-90 18 18)"/></svg>`; }
+function openPrev(id){
+  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const n=calc(p.tot);
+  sheet(`
+    <h3>${esc(c.name)} · ${fmt(p.tot)}</h3>
+    <div class="sub">${p.num} · ${fdate(p.date)} · netto stimato <b style="color:var(--acc)">${fmt(n.netto)}</b></div>
+    ${p.rows.map(r=>`<div class="kv"><span>${esc(r.d)}${r.q>1?` × ${r.q}`:''}</span><span>${fmt(r.t)}</span></div>`).join('')}
+    <label class="l">Stato</label>
+    <div class="opts">${STATES.map(s=>`<button class="opt ${p.status===s?'on':''}" onclick="setStatus(${p.id},'${s}')"><span>${s.charAt(0).toUpperCase()+s.slice(1)}${p.hist[s]?`<small>${fdate(p.hist[s])}</small>`:''}</span>${p.status===s?'●':''}</button>`).join('')}</div>
+    <button class="btn" onclick="sendPrev(${p.id});closeSheet()">Invia (mail, WhatsApp…)</button>
+    <button class="btn ghost" onclick="downloadPDF(${p.id});closeSheet()">Scarica il PDF</button>
+    <button class="btn ghost" onclick="dupPrev(${p.id})">Riusa come nuovo</button>
+    <button class="btn ghost danger" onclick="delPrev(${p.id})">Elimina</button>
+  `);
+}
+function setStatus(id,s){ const p=S.prev.find(x=>x.id===id); p.status=s; p.hist[s]=today(); save(); renderAll(); openPrev(id); if(s==='incassato') toast('Incassato. Metti via '+fmt(calc(p.tot).via)); }
+function buildPDF(p){
+  const { jsPDF } = window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'});
+  const c=clientOf(p); const pr=S.profile; const val=new Date(p.date); val.setDate(val.getDate()+30);
+  const W=210, L=18, R=192; let y=0;
+  const Y=[255,213,74], RD=[255,77,77], INK=[17,17,17], MUT=[122,122,130], LINE=[230,230,234];
+  const eur=n=>n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' \u20AC';
+  // barra brand
+  doc.setFillColor(...Y); doc.rect(0,0,W*0.77,2.5,'F'); doc.setFillColor(...RD); doc.rect(W*0.77,0,W*0.23,2.5,'F');
+  // intestazione
+  y=22; doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text(pr.nome||'Il tuo nome',L,y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MUT);
+  let yy=y+5; if(pr.piva){ doc.text('P.IVA '+pr.piva,L,yy); yy+=4; } if(pr.contatti){ doc.text(pr.contatti,L,yy); }
+  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...INK);
+  const w1=doc.getTextWidth('Prevent'), w2=doc.getTextWidth('IVO'); doc.text('Prevent',R-w1-w2,y); doc.setTextColor(...Y); doc.text('IVO',R-w2,y);
+  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MUT);
+  doc.text(`N. ${p.num} \u00B7 ${fdate(p.date)}`,R,y+5,{align:'right'}); doc.text(`Valido fino al ${fdate(val.toISOString().slice(0,10))}`,R,y+9,{align:'right'});
+  // per / oggetto
+  y=44; doc.setDrawColor(...LINE); doc.line(L,y,R,y); y+=7;
+  doc.setFontSize(7); doc.setTextColor(...MUT); doc.text('PER',L,y); doc.text('OGGETTO',108,y);
+  doc.setFontSize(10); doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.text(c.name,L,y+5); doc.setFont('helvetica','normal');
+  let yc=y+5; if(c.email){ yc+=4.5; doc.setFontSize(9); doc.text(c.email,L,yc); } if(c.wa){ yc+=4.5; doc.setFontSize(9); doc.text(c.wa,L,yc); }
+  doc.setFontSize(10); const ogg=doc.splitTextToSize(p.rows.map(r=>r.d).join(', '),80); doc.text(ogg,108,y+5);
+  y=Math.max(yc,y+5+ogg.length*4.5)+6; doc.line(L,y,R,y); y+=8;
+  // tabella
+  doc.setFontSize(7); doc.setTextColor(...MUT); doc.text('DESCRIZIONE',L,y); doc.text('Q.T\u00C0',140,y,{align:'right'}); doc.text('PREZZO',165,y,{align:'right'}); doc.text('TOTALE',R,y,{align:'right'}); y+=3;
+  doc.setFontSize(10); doc.setTextColor(...INK);
+  p.rows.forEach(r=>{ doc.line(L,y,R,y); y+=6; const d=doc.splitTextToSize(r.d,100); doc.text(d,L,y); doc.text(String(r.q),140,y,{align:'right'}); doc.text(eur(r.p),165,y,{align:'right'}); doc.text(eur(r.t),R,y,{align:'right'}); y+=d.length*4.5+2; });
+  // totali
+  y+=6; const X0=118; doc.setTextColor(...MUT); doc.setFontSize(9.5);
+  doc.text('Imponibile',X0,y); doc.text(eur(p.tot),R,y,{align:'right'}); y+=6; doc.text('IVA',X0,y); doc.text('non applicata',R,y,{align:'right'}); y+=4;
+  doc.setDrawColor(...INK); doc.setLineWidth(0.6); doc.line(X0,y,R,y); doc.setLineWidth(0.2); y+=8;
+  doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.setFontSize(14); doc.text('Totale',X0,y); doc.setFontSize(18); doc.text(eur(p.tot),R,y,{align:'right'});
+  y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MUT);
+  doc.text(doc.splitTextToSize("Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54\u201389, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 \u20AC per importi superiori a 77,47 \u20AC.",74),X0,y);
+  // condizioni
+  y+=18; const T=[['PAGAMENTO','Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.'],['VALIDIT\u00C0','30 giorni dalla data del preventivo.'],['INCLUSO','Quanto descritto nelle voci. Una revisione inclusa.'],['EXTRA','Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.']];
+  T.forEach((t,i)=>{ const x=i%2?108:L, yy=y+Math.floor(i/2)*16; doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(t[0],x,yy); doc.setFontSize(9); doc.setTextColor(...INK); doc.text(doc.splitTextToSize(t[1],80),x,yy+4.5); });
+  // firma
+  const yf=262; doc.setDrawColor(...INK); doc.line(L,yf,98,yf); doc.line(112,yf,R,yf); doc.setFontSize(8); doc.setTextColor(...MUT); doc.text('Per accettazione \u2014 firma e data',L,yf+5); doc.text(pr.nome||'',112,yf+5);
+  // piede
+  const yp=282; doc.setFontSize(7.5); doc.text(`Preventivo ${p.num} \u00B7 pagina 1 di 1`,L,yp);
+  doc.setDrawColor(...Y); doc.setLineWidth(1.2); doc.circle(R-34,yp-1,1.8,'S'); doc.setLineWidth(0.2);
+  doc.setTextColor(...MUT); doc.text('fatto con',R-30,yp); doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.text('Prevent',R-17,yp); doc.setTextColor(...Y); doc.text('IVO',R-4,yp);
+  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...MUT); doc.textWithLink(`Fai anche tu i preventivi in 10 secondi: scarica l'app su ${PARAMS.link}`, L, yp+5, {url:'https://'+PARAMS.link});
+  return doc;
+}
+function prevText(p){
+  const c=clientOf(p); const pr=S.profile; const val=new Date(p.date); val.setDate(val.getDate()+30);
+  const righe=p.rows.map(r=>`• ${r.d}${r.q>1?` × ${r.q}`:''}: ${fmt2(r.t)}`).join('\n');
+  return `Preventivo n. ${p.num} del ${fdate(p.date)}\nPer: ${c.name}\n\n${righe}\n\nTotale: ${fmt2(p.tot)}\nOperazione non soggetta a IVA (regime forfettario, art. 1 c. 54–89 L. 190/2014).\nValido fino al ${fdate(val.toISOString().slice(0,10))}.\n\nPer accettare basta rispondere a questo messaggio.\n\n${pr.nome||''}${pr.piva?' · P.IVA '+pr.piva:''}${pr.contatti?'\n'+pr.contatti:''}`;
+}
+async function sendPrev(id){
+  if(!S.profile.nome){ needProfile(()=>sendPrev(id)); return; }
+  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const text=prevText(p); const subject=`Preventivo ${p.num} — ${S.profile.nome||'PreventIVO'}`;
+  const fname=`Preventivo-${p.num}.pdf`;
+  let file=null; try{ const blob=buildPDF(p).output('blob'); file=new File([blob],fname,{type:'application/pdf'}); }catch(e){}
+  const canFiles = file && navigator.canShare && navigator.canShare({files:[file]});
+  const wa=(c.wa||'').replace(/[^\d]/g,''); const waNum = wa? (wa.startsWith('39')||wa.length>10? wa : '39'+wa) : '';
+  window._shareFile=file;
+  sheet(`
+    <h3>Invia a ${esc(c.name)}</h3>
+    <div class="row2" style="margin:6px 0 12px"><input class="qin sm" id="smail" type="email" value="${esc(c.email||'')}" placeholder="Mail del cliente" onchange="setContact(${c.id},'email',this.value)"><input class="qin sm" id="swa" type="tel" value="${esc(c.wa||'')}" placeholder="WhatsApp" onchange="setContact(${c.id},'wa',this.value)"></div>
+    <div class="opts">
+      ${canFiles?`<button class="opt" onclick="shareFile(${JSON.stringify(subject)},${JSON.stringify(text)})"><span>Invia il PDF<small>Mail, WhatsApp, AirDrop… con il PDF allegato</small></span>›</button>`:''}
+      <a class="opt" href="mailto:${encodeURIComponent(c.email||'')}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(text)}" onclick="closeSheet();go('list')"><span>Mail, solo testo<small>${c.email?'a '+esc(c.email):'scegli tu il destinatario'}</small></span>›</a>
+      <a class="opt" href="https://wa.me/${waNum}?text=${encodeURIComponent(text)}" target="_blank" rel="noopener" onclick="closeSheet();go('list')"><span>WhatsApp, solo testo<small>${waNum?'al numero salvato':'scegli tu il contatto'}</small></span>›</a>
+      <button class="opt" onclick="downloadPDF(${p.id})"><span>Scarica il PDF</span>›</button>
+      <button class="opt" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(text)});toast('Copiato');closeSheet();go('list')"><span>Copia il testo</span>›</button>
+    </div>
+    ${canFiles?'':'<div class="stima">Su questo browser il PDF non si allega da solo: scaricalo e allegalo tu.</div>'}`);
+}
+function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); const p=S.prev.find(x=>x.client===id); if(p) sendPrev(p.id); }
+async function shareFile(title,text){ try{ await navigator.share({title,text,files:[window._shareFile]}); closeSheet(); go('list'); }catch(e){} }
+function downloadPDF(id){ if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; } const p=S.prev.find(x=>x.id===id); try{ buildPDF(p).save(`Preventivo-${p.num}.pdf`); }catch(e){ makePDF(id); } }
+function dupPrev(id){ const p=S.prev.find(x=>x.id===id); $('msg').value=p.rows.map(r=>`${r.q>1?r.q+' ':''}${r.d} ${r.p}`).join('\n'); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); }
+function delPrev(id){ if(!confirm('Eliminare questo preventivo?')) return; S.prev=S.prev.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
+
+/* ---------- CLIENTI ---------- */
+function renderClients(){
+  const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
+  const cp=calc(pres);
+  $('presunto').textContent=fmt(pres);
+  $('presuntosub').textContent = pres? `Tasse stimate ${fmt(cp.tasse)} · netto ${fmt(cp.netto)} · ${pres>PARAMS.soglia?`sopra la soglia di ${fmt(pres-PARAMS.soglia)}`:`sotto la soglia di ${fmt(PARAMS.soglia-pres)}`}` : 'Metti l\'incasso atteso per ogni cliente: vedi tasse e netto dell\'anno prima di fatturare.';
+  const inc=S.clients.map(c=>({c,v:S.prev.filter(p=>p.client===c.id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0)})).filter(x=>x.v>0);
+  const tot=inc.reduce((a,x)=>a+x.v,0);
+  $('chart').innerHTML=inc.map(x=>`<i style="width:${x.v/tot*100}%;background:${x.c.color}"></i>`).join('');
+  $('leg').innerHTML=inc.length? inc.map(x=>`<span><b style="background:${x.c.color}"></b>${esc(x.c.name)} ${Math.round(x.v/tot*100)}%</span>`).join('') : '<span>Incassato per cliente: ancora niente.</span>';
+  $('clist').innerHTML = S.clients.length? S.clients.map(c=>{ const incas=S.prev.filter(p=>p.client===c.id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return `
+    <div class="cl" onclick="openClient(${c.id})"><span class="dot" style="background:${c.color}"></span><div class="nm">${esc(c.name)}<div class="mt">atteso ${fmt(c.atteso||0)} · incassato ${fmt(incas)}${att?` · <span class="danger">in attesa ${fmt(att)}</span>`:''}</div></div><span style="color:var(--mut)">›</span></div>`;}).join('') : `<div class="empty">Nessun cliente. Aggiungilo qui o scrivilo in un preventivo.</div>`;
+  $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
+}
+function addClient(){ const n=$('newclient').value.trim(); if(!n) return; getClient(n,true); $('newclient').value=''; save(); renderAll(); }
+function openClient(id){
+  const c=S.clients.find(x=>x.id===id); const P=S.prev.filter(p=>p.client===id);
+  sheet(`
+    <h3>${esc(c.name)}</h3>
+    <label class="l">Incasso atteso quest'anno (presunto)</label>
+    <input id="att" type="number" inputmode="numeric" value="${c.atteso||''}" placeholder="es. 12000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
+    <label class="l">Mail · WhatsApp</label>
+    <div class="row2"><input id="cemail" type="email" value="${esc(c.email||'')}" placeholder="mail" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="cwa2" type="tel" value="${esc(c.wa||'')}" placeholder="WhatsApp" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"></div>
+    <label class="l">Nome</label>
+    <input id="cname" value="${esc(c.name)}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
+    <button class="btn" onclick="saveClient(${id})">Salva</button>
+    <h2>Preventivi (${P.length})</h2>
+    ${P.map(p=>`<div class="kv" onclick="openPrev(${p.id})"><span>${p.num} · ${fdate(p.date)} <span class="st ${p.status}">${p.status}</span></span><span>${fmt(p.tot)}</span></div>`).join('')||'<div class="hint">Nessuno.</div>'}
+    <button class="btn ghost danger" onclick="delClient(${id})" style="margin-top:16px">Elimina cliente</button>
+  `);
+}
+function saveClient(id){ const c=S.clients.find(x=>x.id===id); c.atteso=+$('att').value||0; c.email=$('cemail').value.trim(); c.wa=$('cwa2').value.trim(); c.name=$('cname').value.trim()||c.name; save(); renderAll(); closeSheet(); toast('Salvato'); }
+function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei preventivi: elimina prima quelli.'); return; } if(!confirm('Eliminare?')) return; S.clients=S.clients.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
+
+/* ---------- ANNO ---------- */
+function renderYear(){
+  const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
+  const tot=inc.reduce((a,p)=>a+p.tot,0);
+  const c=calc(tot,{contribPrec:S.profile.contribPrec||null});
+  const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
+  $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
+  const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
+  $('ytax').textContent=fmt(c.tasse); donut('dy','ly',c);
+  $('d1').textContent=fmt(c.imposta*0.5); $('d2').textContent=fmt(c.imposta*0.5); $('due3').textContent=fmt(c.inps); $('d4').textContent=fmt(S.profile.messoVia||0);
+  $('yin').textContent=fmt(tot); $('ynet').textContent=fmt(c.netto);
+  $('ysoglia').textContent= tot>PARAMS.soglia? `superata di ${fmt(tot-PARAMS.soglia)}` : fmt(PARAMS.soglia-tot);
+  $('ysoglia').style.color = tot>PARAMS.soglia?'var(--red)':'';
+  const proj=Math.max(tot,pres); $('yproj').textContent=fmt(proj); $('yproj').style.color=proj>PARAMS.soglia?'var(--red)':'';
+  const m=Array(12).fill(0); inc.forEach(p=>{ m[+p.hist.incassato.slice(5,7)-1]+=p.tot; });
+  const mx=Math.max(...m,1); const now=new Date().getMonth();
+  $('bars').innerHTML=m.map((v,i)=>`<div class="${v?'f':(i<=now?'':'p')}" style="height:${Math.max(2,v/mx*100)}%" title="${fmt(v)}"></div>`).join('');
+  // barra sempre visibile
+  const pct=Math.min(100,tot/PARAMS.soglia*100);
+  if($('yearbar')) $('yearbar').innerHTML=`
+    <div><div class="k">Incassato ${PARAMS.anno}</div><div class="v">${fmt(tot)}</div><div class="bar ${tot>PARAMS.soglia?'over':(tot>PARAMS.soglia*0.8?'warn':'')}"><i style="width:${pct}%"></i></div></div>
+    <div><div class="k">Netto</div><div class="v" style="color:var(--acc)">${fmt(c.netto)}</div><div class="bar" style="visibility:hidden"></div></div>
+    <div><div class="k">Tasse</div><div class="v" style="color:var(--red)">${fmt(c.tasse)}</div><div class="bar" style="visibility:hidden"></div></div>`;
+}
+function exportCSV(){
+  const inc=S.prev.filter(p=>p.status==='incassato');
+  const rows=[['Numero','Data preventivo','Data incasso','Cliente','Importo','Voci'],...inc.map(p=>[p.num,p.date,p.hist.incassato,clientOf(p).name,p.tot.toFixed(2).replace('.',','),p.rows.map(r=>`${r.q}x ${r.d} ${r.p}`).join(' | ')])];
+  dl(`incassi-${PARAMS.anno}.csv`, rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n'), 'text/csv');
+}
+function backup(){ dl(`preventivo-backup-${today()}.json`, JSON.stringify(S), 'application/json'); }
+function dl(name,content,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); }
+
+/* ---------- PDF ---------- */
+function makePDF(id){
+  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const pr=S.profile;
+  const val=new Date(p.date); val.setDate(val.getDate()+30);
+  const SYM=`<svg width="26" height="26" viewBox="0 0 60 60" style="vertical-align:-6px;margin-right:8px"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg>`;
+  $('pdfroot').innerHTML=`
+  <style>
+    @page{size:A4;margin:0}
+    .pg{font-family:Inter,system-ui,sans-serif;color:#111;padding:16mm 18mm 14mm;position:relative;font-variant-numeric:tabular-nums;min-height:297mm;box-sizing:border-box;display:flex;flex-direction:column}
+    .pg::before{content:"";position:absolute;left:0;top:0;right:0;height:7px;background:linear-gradient(90deg,#FFD54A 0 77%,#FF4D4D 77% 100%)}
+    .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-top:6px}
+    .pb{font-weight:800;font-size:24px;letter-spacing:-.02em}.pb small{display:block;font-weight:400;font-size:11px;color:#7a7a82;margin-top:6px;line-height:1.55;white-space:pre-line;letter-spacing:0}
+    .pm{text-align:right;font-size:11px;color:#7a7a82;line-height:1.6}.pm b{display:block;color:#111;font-size:30px;font-weight:800;margin-bottom:4px;letter-spacing:-.02em}
+    .pm b i{font-style:normal;color:#FFD54A}
+    .pp{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:30px 0 22px;padding:16px 0;border-top:1px solid #e6e6ea;border-bottom:1px solid #e6e6ea;font-size:13px;line-height:1.5}
+    .pl{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;margin-bottom:6px}
+    table{width:100%;border-collapse:collapse;font-size:13px}th{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;font-weight:500;text-align:left;padding:0 0 10px}
+    th.n,td.n{text-align:right}td{padding:12px 0;border-top:1px solid #e6e6ea;vertical-align:top}
+    .pt{display:flex;justify-content:flex-end;margin-top:10px}.pt div{min-width:280px}
+    .pr{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;color:#7a7a82}
+    .pr.t{border-top:2px solid #111;margin-top:6px;padding-top:14px;color:#111;font-size:20px;font-weight:800;align-items:baseline}.pr.t span:last-child{font-size:28px;letter-spacing:-.02em}
+    .pf{font-size:10px;color:#7a7a82;margin-top:10px;line-height:1.5}
+    .terms{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:12px;line-height:1.6}
+    .terms h4{margin:0 0 5px;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;font-weight:500}.terms p{margin:0}
+    .ps{margin-top:auto;padding-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:11px;color:#7a7a82}.ps div{border-top:1px solid #111;padding-top:8px}
+    .pfoot{margin-top:22px;font-size:10px;color:#7a7a82;display:flex;justify-content:space-between;align-items:center}
+    .pfoot b{color:#111;font-weight:800}.pfoot b i{font-style:normal;color:#FFD54A}
+  </style>
+  <div class="pg">
+    <div class="ph">
+      <div class="pb">${esc(pr.nome||'Il tuo nome')}<small>${esc(pr.piva?('P.IVA '+pr.piva):'')}${pr.contatti?'\n'+esc(pr.contatti):''}</small></div>
+      <div class="pm"><b>Prevent<i>IVO</i></b>N. ${p.num} · ${fdate(p.date)}<br>Valido fino al ${fdate(val.toISOString().slice(0,10))}</div>
+    </div>
+    <div class="pp">
+      <div><div class="pl">Per</div><strong>${esc(c.name)}</strong>${c.email?'<br>'+esc(c.email):''}${c.wa?'<br>'+esc(c.wa):''}</div>
+      <div><div class="pl">Oggetto</div>${esc(p.rows.map(r=>r.d).join(', '))}</div>
+    </div>
+    <table><thead><tr><th>Descrizione</th><th class="n">Q.tà</th><th class="n">Prezzo</th><th class="n">Totale</th></tr></thead><tbody>
+    ${p.rows.map(r=>`<tr><td>${esc(r.d)}</td><td class="n">${r.q}</td><td class="n">${fmt2(r.p)}</td><td class="n">${fmt2(r.t)}</td></tr>`).join('')}
+    </tbody></table>
+    <div class="pt"><div>
+      <div class="pr"><span>Imponibile</span><span>${fmt2(p.tot)}</span></div>
+      <div class="pr"><span>IVA</span><span>non applicata</span></div>
+      <div class="pr t"><span>Totale</span><span>${fmt2(p.tot)}</span></div>
+      <p class="pf">Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54–89, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 € per importi superiori a 77,47 €.</p>
+    </div></div>
+    <div class="terms">
+      <div><h4>Pagamento</h4><p>Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.</p></div>
+      <div><h4>Validità</h4><p>30 giorni dalla data del preventivo.</p></div>
+      <div><h4>Incluso</h4><p>Quanto descritto nelle voci. Una revisione inclusa.</p></div>
+      <div><h4>Extra</h4><p>Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.</p></div>
+    </div>
+    <div class="ps"><div>Per accettazione — firma e data</div><div>${esc(pr.nome||'')}</div></div>
+    <div class="pfoot"><span>Preventivo ${p.num} · pagina 1 di 1 · <a href="https://${PARAMS.link}" style="color:#7a7a82">scarica l'app: ${PARAMS.link}</a></span><span>${SYM}fatto con <b>Prevent<i>IVO</i></b></span></div>
+  </div>`;
+  closeSheet();
+  setTimeout(()=>window.print(),150);
+}
+
+/* ---------- SETTINGS / SETUP ---------- */
+let _after=null;
+function askAct(first,after){
+  _after=after||null; const pr=S.profile;
+  sheet(`
+    <h3>${first?'Una domanda sola':'Cosa fai?'}</h3>
+    <div class="sub">${first?'Serve per calcolare bene le tasse. Si cambia quando vuoi.':''}</div>
+    <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
+    <select id="a-act" onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
+    <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
+    <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
+    <label class="l">La partita IVA ha meno di 5 anni ed è un'attività nuova? <span class="why" onclick="why('start')">?</span></label>
+    <div class="seg"><button id="a-y" class="${pr.start===true?'on':''}" onclick="aStart(true)">Sì · 5%</button><button id="a-n" class="${pr.start===false?'on':''}" onclick="aStart(false)">No · 15%</button><button id="a-u" class="${pr.start==null?'on':''}" onclick="aStart(null)">Non lo so</button></div>
+    <div class="hint" id="a-shint" style="margin:8px 2px 0">${pr.start==null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':''}</div>
+    <button class="btn" onclick="saveAct()">${first?'Vai':'Salva'}</button>
+    <div class="stima">Se scegli "Altro" usiamo il coefficiente più comune (78%): il tuo lo trovi sul codice ATECO, chiedilo al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
+}
+let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
+function saveAct(){ S.profile.act=$('a-act').value; S.profile.actName=($('a-altro').value||'').trim(); if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
+function needProfile(after){
+  const pr=S.profile; if(pr.nome) { after(); return; }
+  sheet(`
+    <h3>I tuoi dati sul preventivo</h3>
+    <div class="sub">Una volta sola. Vanno in alto a sinistra nel PDF.</div>
+    <input id="n-nome" placeholder="Nome e cognome" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
+    <input id="n-piva" placeholder="Partita IVA" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
+    <input id="n-cont" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <button class="btn" onclick="saveProfileQuick()">Continua</button>`);
+  window._afterProfile=after;
+}
+function saveProfileQuick(){ S.profile.nome=$('n-nome').value.trim(); S.profile.piva=$('n-piva').value.trim(); S.profile.contatti=$('n-cont').value.trim(); save(); closeSheet(); renderHello(); const f=window._afterProfile; window._afterProfile=null; if(f) setTimeout(f,50); }
+function settingsHTML(first){
+  const pr=S.profile;
+  return `
+    <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'}</h3>
+    <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
+    <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
+    <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
+    <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
+    <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
+    <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
+    <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
+    <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
+    <input id="s-contrib" type="number" inputmode="numeric" value="${pr.contribPrec||''}" placeholder="es. 4500" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <label class="l">Già messo via per le tasse quest'anno</label>
+    <input id="s-via" type="number" inputmode="numeric" value="${pr.messoVia||''}" placeholder="es. 2000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <h2>Per il PDF del preventivo</h2>
+    <input id="s-nome" value="${esc(pr.nome)}" placeholder="Nome e cognome" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
+    <input id="s-piva" value="${esc(pr.piva)}" placeholder="Partita IVA" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
+    <input id="s-cont" value="${esc(pr.contatti)}" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
+    ${first?'':'<button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
+    <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
+}
+let tmpStart='unset';
+function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
+function saveSettings(){
+  S.profile.act=$('s-act').value; S.profile.inps=$('s-inps').value; if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
+  S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
+  S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim();
+  S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
+}
+function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json'; i.onchange=()=>{ const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); renderAll(); closeSheet(); toast('Ripristinato'); }catch(e){ alert('File non valido'); } }; r.readAsText(i.files[0]); }; i.click(); }
+function wipe(){ if(!confirm('Cancellare tutto? Non si torna indietro.')) return; localStorage.removeItem(KEY); location.reload(); }
+
+/* ---------- PERCHÉ ---------- */
+const WHY={
+  via:['Da mettere via','INPS più imposta, arrotondati per eccesso del 5%. È la cifra da spostare sul conto tasse appena incassi. Meglio avanzare che mancare.'],
+  inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti hanno anche una quota fissa.'],
+  imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
+  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per video e consulenza il 78%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
+  start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
+  stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
+  attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
+};
+function why(k){ const w=WHY[k]; sheet(`<h3>${w[0]}</h3><p style="line-height:1.6;color:var(--txt)">${w[1]}</p><button class="btn ghost" onclick="closeSheet()">Ok</button>`); }
+
+/* ---------- NAV / SHEET / TOAST ---------- */
+function go(v){ document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
+document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
+function sheet(html){ $('sheetin').innerHTML=html; $('sheet').classList.add('on'); }
+function closeSheet(){ $('sheet').classList.remove('on'); }
+$('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
+function openSheet(k){ if(k==='settings') sheet(settingsHTML(false)); }
+let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'),1400); }
+function renderAll(){ renderList(); renderClients(); renderYear(); }
+
+/* ---------- AVVIO ---------- */
+renderAll(); renderCalc(); ring0(0); renderRate(); renderHello();
+</script>
+</body>
+</html>
