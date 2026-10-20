@@ -375,6 +375,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
+  ver: '1.4',
   link: 'partitaivo.it',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -682,18 +683,35 @@ async function sendPrev(id){
 function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); const p=S.prev.find(x=>x.client===id); if(p) sendPrev(p.id); }
 async function shareFile(title,text){ try{ await navigator.share({title,text,files:[window._shareFile]}); closeSheet(); go('list'); }catch(e){} }
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/.test(navigator.platform));
+const standalone = window.navigator.standalone===true || matchMedia('(display-mode: standalone)').matches;
+let _pdfURL=null;
+function pdfBlob(p){ if(!window.jspdf){ throw new Error('nojspdf'); } return buildPDF(p).output('blob'); }
 async function downloadPDF(id){
   if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; }
   const p=S.prev.find(x=>x.id===id); const fname=`Preventivo-${p.num}.pdf`;
-  let doc; try{ doc=buildPDF(p); }catch(e){ makePDF(id); return; }
-  const blob=doc.output('blob');
-  // Telefono: il foglio di condivisione (Salva in File, AirDrop, Mail, WhatsApp) è l'unico modo affidabile su iPhone
-  if(isMobile && navigator.canShare){ const file=new File([blob],fname,{type:'application/pdf'}); if(navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:fname}); return; }catch(e){ if(e&&e.name==='AbortError') return; } } }
-  // Fallback telefono: apri il PDF in una scheda (Safari lo mostra con il tasto Condividi)
-  if(isMobile){ const url=URL.createObjectURL(blob); const w=window.open(url,'_blank'); if(w) return; location.href=url; return; }
-  // Computer: download classico
-  try{ doc.save(fname); }catch(e){ const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); }
+  let blob; try{ blob=pdfBlob(p); }catch(e){ if(e.message==='nojspdf'){ sheet(`<h3>Serve internet una volta</h3><div class="sub">Il modulo che crea il PDF non si è caricato. Collegati a internet, chiudi e riapri l'app, poi riprova.</div><button class="btn" onclick="location.reload()">Ricarica</button>`); return; } makePDF(id); return; }
+  if(!isMobile){ try{ buildPDF(p).save(fname); }catch(e){ const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); } return; }
+  // Telefono: prova subito il foglio di condivisione (deve partire dal tocco)
+  const file=new File([blob],fname,{type:'application/pdf'}); window._shareFile=file;
+  if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:fname}); toast('PDF condiviso'); return; }catch(e){ if(e&&e.name==='AbortError') return; } }
+  pdfSheet(p,blob,fname);
 }
+function pdfSheet(p,blob,fname){
+  if(_pdfURL) URL.revokeObjectURL(_pdfURL); _pdfURL=URL.createObjectURL(blob);
+  const can = !!(navigator.canShare && navigator.canShare({files:[window._shareFile]}));
+  sheet(`
+    <h3>${fname}</h3>
+    <div class="sub">Su iPhone il PDF non si "scarica": si salva o si manda dal foglio di condivisione.</div>
+    <div class="opts">
+      ${can?`<button class="opt" onclick="sharePDF()"><span>Condividi il PDF<small>Salva in File, AirDrop, Mail, WhatsApp</small></span>›</button>`:''}
+      <a class="opt" href="${_pdfURL}" target="_blank" rel="noopener"><span>Apri in Safari<small>poi tasto Condividi → Salva in File</small></span>›</a>
+      <button class="opt" onclick="previewPDF()"><span>Guarda il PDF qui<small>anteprima dentro l'app</small></span>›</button>
+    </div>
+    ${can?'':'<div class="stima">Questo iPhone non permette di allegare file da qui (serve iOS 15 o più): usa "Apri in Safari".</div>'}
+    <div class="stima">v${PARAMS.ver}${standalone?' · app dalla Home':' · in Safari'}</div>`);
+}
+async function sharePDF(){ try{ await navigator.share({files:[window._shareFile],title:window._shareFile.name}); closeSheet(); toast('PDF condiviso'); }catch(e){ if(!(e&&e.name==='AbortError')) toast('Non riesco: '+(e&&e.message||'errore')); } }
+function previewPDF(){ sheet(`<h3>Anteprima</h3><iframe src="${_pdfURL}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fff"></iframe><button class="btn" onclick="closeSheet()">Chiudi</button>`); }
 function dupPrev(id){ const p=S.prev.find(x=>x.id===id); cur.rows=p.rows.map(r=>({d:r.d,q:r.q,p:r.p,t:r.t})); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); loadCond(condOf(p)); }
 function delPrev(id){ if(!confirm('Eliminare questo preventivo?')) return; S.prev=S.prev.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
 
@@ -881,7 +899,7 @@ function saveProfileQuick(){ S.profile.nome=$('n-nome').value.trim(); S.profile.
 function settingsHTML(first){
   const pr=S.profile;
   return `
-    <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'}</h3>
+    <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'} <small style="color:var(--mut);font-weight:400;font-size:12px">v${PARAMS.ver}</small></h3>
     <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
     <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
