@@ -2,1004 +2,435 @@
 <html lang="it">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>PreventIVO — Quanto ti resta? Preventivi per forfettari</title>
+<meta name="description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF, inviato su WhatsApp. 9,99 € una volta, niente account.">
+<link rel="canonical" href="https://preventivo-app.com/">
+<meta name="robots" content="index,follow">
+<meta name="author" content="Elvis Iacobuta">
 <meta name="theme-color" content="#161616">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="PreventIVO">
-<title>PreventIVO</title>
-<link rel="icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221024%22%20height%3D%221024%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20fill%3D%22%23161616%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%20font-family%3D%22Inter%2CArial%22%20font-weight%3D%22800%22%20font-size%3D%2276%22%20letter-spacing%3D%22-4%22%20fill%3D%22%23FFD54A%22%3EIVO%3C%2Ftext%3E%3C%2Fsvg%3E%0A">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%221024%22%20height%3D%221024%22%20viewBox%3D%220%200%20180%20180%22%3E%3Crect%20width%3D%22180%22%20height%3D%22180%22%20fill%3D%22%23161616%22%2F%3E%3Ctext%20x%3D%2290%22%20y%3D%22118%22%20text-anchor%3D%22middle%22%20font-family%3D%22Inter%2CArial%22%20font-weight%3D%22800%22%20font-size%3D%2276%22%20letter-spacing%3D%22-4%22%20fill%3D%22%23FFD54A%22%3EIVO%3C%2Ftext%3E%3C%2Fsvg%3E%0A">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PreventIVO">
+<meta property="og:locale" content="it_IT">
+<meta property="og:url" content="https://preventivo-app.com/">
+<meta property="og:title" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta property="og:description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF su WhatsApp. 9,99 € una volta.">
+<meta property="og:image" content="https://preventivo-app.com/img/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="PreventIVO — Quanto ti resta? In 10 secondi.">
+<meta name="twitter:description" content="Partita IVA forfettaria: scrivi la cifra, vedi quanto è tuo e quanto va al fisco. Preventivo in PDF su WhatsApp. 9,99 € una volta.">
+<meta name="twitter:image" content="https://preventivo-app.com/img/og.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 60 60'%3E%3Crect width='60' height='60' rx='14' fill='%23161616'/%3E%3Ccircle cx='30' cy='30' r='17' fill='none' stroke='%23FFD54A' stroke-width='10'/%3E%3Ccircle cx='30' cy='30' r='17' fill='none' stroke='%23FF4D4D' stroke-width='10' stroke-dasharray='25 82' transform='rotate(-90 30 30)'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="img/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "@id": "https://preventivo-app.com/#app",
+      "name": "PreventIVO",
+      "url": "https://preventivo-app.com/",
+      "description": "App per partite IVA in regime forfettario: stima quanto resta di un incasso o di un preventivo, crea il preventivo in PDF e lo invia su WhatsApp o per mail. I dati restano sul telefono. Le cifre sono stime: il calcolo definitivo spetta al commercialista.",
+      "applicationCategory": "FinanceApplication",
+      "operatingSystem": "iOS, Android, Web",
+      "inLanguage": "it",
+      "image": "https://preventivo-app.com/img/og.png",
+      "screenshot": [
+        "https://preventivo-app.com/img/s1-home.png",
+        "https://preventivo-app.com/img/s2-preventivo.png",
+        "https://preventivo-app.com/img/s4-preventivi.png",
+        "https://preventivo-app.com/img/s5-anno.png"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "9.99",
+        "priceCurrency": "EUR",
+        "availability": "https://schema.org/PreOrder",
+        "url": "https://preventivo-app.com/#prezzo"
+      },
+      "author": { "@id": "https://preventivo-app.com/#author" },
+      "publisher": { "@id": "https://preventivo-app.com/#org" }
+    },
+    {
+      "@type": "Person",
+      "@id": "https://preventivo-app.com/#author",
+      "name": "Elvis Iacobuta",
+      "email": "elvisiacobuta@gmail.com",
+      "address": { "@type": "PostalAddress", "addressLocality": "Aosta", "addressCountry": "IT" }
+    },
+    {
+      "@type": "Organization",
+      "@id": "https://preventivo-app.com/#org",
+      "name": "PreventIVO",
+      "url": "https://preventivo-app.com/",
+      "logo": "https://preventivo-app.com/img/icon.png",
+      "email": "elvisiacobuta@gmail.com",
+      "founder": { "@id": "https://preventivo-app.com/#author" },
+      "address": { "@type": "PostalAddress", "addressLocality": "Aosta", "addressCountry": "IT" }
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://preventivo-app.com/#site",
+      "url": "https://preventivo-app.com/",
+      "name": "PreventIVO",
+      "inLanguage": "it",
+      "publisher": { "@id": "https://preventivo-app.com/#org" }
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://preventivo-app.com/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "È per me?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te." }
+        },
+        {
+          "@type": "Question",
+          "name": "I calcoli sono esatti?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sono stime, fatte con i coefficienti e le aliquote pubbliche del forfettario: coefficiente della tua attività, INPS gestione separata o artigiani e commercianti, imposta al 5% o al 15%. Servono a sapere subito dove sei. Il conto definitivo lo fa il tuo commercialista: l'app non dà consulenza fiscale." }
+        },
+        {
+          "@type": "Question",
+          "name": "Sostituisce il commercialista?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e a novembre. C'è l'export in CSV apposta." }
+        },
+        {
+          "@type": "Question",
+          "name": "Dove vanno i miei dati?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo." }
+        },
+        {
+          "@type": "Question",
+          "name": "Perché a pagamento e non gratis?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari." }
+        },
+        {
+          "@type": "Question",
+          "name": "Posso provarla prima?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto." }
+        }
+      ]
+    }
+  ]
+}
+</script>
 <style>
-:root{
-  --bg:#161616; --sur:#222222; --sur2:#2C2C2C; --txt:#F4F4F4; --mut:#9A9A9A; --line:#333333;
-  --acc:#FFD54A; --red:#FF4D4D; --green:#4CD97B; --orange:#FF9F43;
-}
-*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;font-variant-numeric:tabular-nums;-webkit-font-smoothing:antialiased}
-body{min-height:100dvh;display:flex;flex-direction:column;padding-bottom:calc(72px + env(safe-area-inset-bottom))}
-button,input,textarea,select{font:inherit;color:inherit}
-button{background:none;border:0;cursor:pointer}
-.app{max-width:480px;width:100%;margin:0 auto;padding:0 16px}
-.hdr{display:flex;align-items:center;justify-content:space-between;padding:calc(18px + env(safe-area-inset-top)) 0 18px}
-.logo{font-weight:800;font-size:18px;letter-spacing:-.02em}.logo b{color:var(--acc)}
-.hdr .ico{color:var(--mut);font-size:20px;padding:6px}
-.year{display:grid;grid-template-columns:1.4fr 1fr 1fr;gap:8px;margin:4px 0 14px}
-.year .k{font-size:10px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;white-space:nowrap}
-.year .v{font-size:17px;font-weight:700;margin-top:2px}
-.year > div{background:var(--sur);border-radius:14px;padding:10px 12px;display:flex;flex-direction:column;justify-content:space-between}
-.bar{height:6px;background:var(--sur2);border-radius:3px;margin-top:8px;position:relative;overflow:hidden}
-.bar i{display:block;height:100%;background:var(--acc);border-radius:3px;transition:width .4s}
-.bar.over i{background:var(--red)}
-.bar.warn i{background:#FFB44A}
-.card{background:var(--sur);border-radius:20px;padding:20px;margin-bottom:14px}
-textarea.msg{width:100%;background:transparent;border:0;padding:4px 0;min-height:64px;resize:none;font-size:22px;font-weight:500;line-height:1.4;outline:none;overflow:hidden}
-textarea.msg::placeholder{color:var(--mut)}
-.hint{font-size:12px;color:var(--mut);margin:8px 2px 0;line-height:1.5}
-.rows{margin-top:10px}.rows:empty{display:none}
-.yr{background:var(--sur2);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid transparent}.yr.now{border-color:#FFD54A55}
-.yh{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;font-weight:700}.yh b{font-size:24px;color:var(--red)}.yh small{font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
-.yd{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);padding:5px 0;border-top:1px solid #2a2a2a}.yd:first-of-type{margin-top:8px}
-.yn{font-size:13px;color:var(--mut);line-height:1.45;margin-top:8px}
-.vr{display:flex;gap:6px;align-items:center;padding:5px 0}
-.vr input{background:var(--sur2);border:0;border-radius:10px;padding:11px 10px;outline:none;color:var(--txt);font-size:16px;min-width:0;font-family:inherit}
-.vr .vd{flex:1}.vr .vq{width:46px;text-align:center;padding-left:4px;padding-right:4px}.vr .vp{width:82px;text-align:right}.vr .vx{background:none;border:0;color:var(--mut);font-size:22px;padding:0 2px;line-height:1}
-.vh{display:flex;gap:6px;font-size:10px;letter-spacing:1px;color:var(--mut);margin-top:16px}.vh span:first-child{flex:1}.vh span:nth-child(2){width:46px;text-align:center}.vh span:nth-child(3){width:82px;text-align:right}.vh span:last-child{width:26px}
-.addv{display:block;width:100%;background:transparent;border:1px dashed #3a3a3a;border-radius:12px;padding:12px;color:var(--txt);font-size:15px;margin-top:8px;font-family:inherit}
-.quick{display:flex;gap:6px;align-items:center;margin-top:10px}.quick textarea{font-size:16px!important;min-height:0!important;padding:10px 12px!important;background:var(--sur2)!important;border-radius:10px!important;flex:1}
-.quick button{background:var(--acc);color:#111;border:0;border-radius:10px;padding:11px 14px;font-weight:700;font-family:inherit;display:none}.quick.has button{display:block}
-.cond{margin-top:16px;border-top:1px solid var(--sur2);padding-top:6px}.cond summary{cursor:pointer;color:var(--mut);font-size:14px;padding:8px 0;list-style:none}.cond summary::before{content:'› ';}.cond[open] summary::before{content:'⌄ '}
-.cond label{display:block;font-size:10px;letter-spacing:1px;color:var(--mut);margin:10px 0 4px}.cond textarea{width:100%;background:var(--sur2);border:0;border-radius:10px;padding:10px 12px;color:var(--txt);font-size:14px;outline:none;resize:none;font-family:inherit;line-height:1.4}
-.row{display:flex;justify-content:space-between;align-items:baseline;padding:7px 0;font-size:14px;color:var(--mut)}
-.row .d{color:var(--mut)}.row .q{color:var(--mut);font-size:12px;margin-left:6px}
-.row .n{font-weight:600}
-.big{display:flex;flex-direction:column;align-items:flex-start;margin-top:28px}
-.big .lab{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
-.big .net{font-size:64px;font-weight:800;color:var(--acc);letter-spacing:-.04em;line-height:1}
-.big .sub{font-size:13px;color:var(--mut);margin-top:4px}
-.big .sub b{color:var(--red);font-weight:600}
-.split{display:flex;gap:8px;margin-top:22px}.split.off{display:none}
-.pill{flex:1;padding:0}
-.pill .k{font-size:11px;color:var(--mut)}.pill .v{font-size:15px;font-weight:600;margin-top:2px}
-.pill.red .v{color:var(--red)}
-.why{color:var(--mut);font-size:11px;margin-left:4px;border:1px solid var(--line);border-radius:50%;width:16px;height:16px;display:inline-flex;align-items:center;justify-content:center}
-.field{display:flex;gap:8px;margin-top:26px}
-.field input{flex:1;background:transparent;border:0;border-bottom:1px solid var(--line);border-radius:0;padding:10px 0;font-size:16px;outline:none}
-.field input::placeholder{color:var(--mut)}
-.btn{background:var(--acc);color:#111;font-weight:700;border-radius:16px;padding:16px 18px;width:100%;font-size:16px;margin-top:18px}
-.btn:disabled{opacity:.18}
-.btn.ghost{background:var(--sur2);color:var(--txt);font-weight:600}
-.btn.small{width:auto;padding:10px 14px;font-size:14px;margin-top:0}
-.stima{font-size:11px;color:var(--mut);text-align:center;margin-top:10px;line-height:1.5}
-.tabs{position:fixed;left:0;right:0;bottom:0;background:rgba(22,22,22,.94);backdrop-filter:blur(14px);border-top:1px solid var(--line);display:flex;justify-content:space-around;padding:8px 0 calc(8px + env(safe-area-inset-bottom))}
-.tabs button{display:flex;flex-direction:column;align-items:center;gap:2px;color:var(--mut);font-size:11px;padding:4px 14px;font-weight:500}
-.tabs button.on{color:var(--acc)}
-.tabs svg{width:22px;height:22px}
-.view{display:none}.view.on{display:block}
-h2{font-size:13px;color:var(--mut);text-transform:uppercase;letter-spacing:.12em;font-weight:600;margin:18px 2px 10px}
-.list .it{display:flex;align-items:center;gap:12px;padding:12px 0;border-top:1px solid var(--line)}
-.list .it:first-child{border-top:0}
-.dot{width:10px;height:10px;border-radius:50%;flex:none}
-.it .t{flex:1;min-width:0}
-.it .t .a{font-weight:600;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.it .t .b{font-size:12px;color:var(--mut);margin-top:2px}
-.it .amt{text-align:right}.it .amt .g{font-weight:700}.it .amt .nn{font-size:12px;color:var(--acc)}
-.st{font-size:11px;font-weight:600;padding:4px 9px;border-radius:999px;background:var(--sur2);color:var(--mut);white-space:nowrap}
-.st.inviato{color:var(--txt)}.st.accettato{color:#FFB44A}.st.fatturato{color:var(--red)}.st.incassato{color:var(--acc)}.st.perso{opacity:.5;text-decoration:line-through}
-.empty{color:var(--mut);text-align:center;padding:40px 10px;font-size:14px;line-height:1.6}
-.sheet{position:fixed;inset:0;background:rgba(0,0,0,.6);display:none;align-items:flex-end;z-index:20}
-.sheet.on{display:flex}
-.sheet .in{position:relative;background:var(--sur);width:100%;max-width:480px;margin:0 auto;border-radius:22px 22px 0 0;padding:26px 16px calc(18px + env(safe-area-inset-bottom));max-height:88dvh;overflow:auto}
-.sheet .in::before{content:'';position:absolute;top:8px;left:50%;transform:translateX(-50%);width:36px;height:4px;border-radius:2px;background:#3a3a3a}
-.sx{position:absolute;top:14px;right:12px;width:34px;height:34px;border-radius:50%;background:var(--sur2);color:var(--txt);font-size:20px;line-height:34px;text-align:center;z-index:2}
-.sheet h3{padding-right:40px}
-.sback{display:inline-flex;align-items:center;gap:6px;color:var(--mut);font-size:14px;margin-bottom:10px}
-.sheet h3{margin:0 0 4px;font-size:18px}
-.sheet .sub{color:var(--mut);font-size:13px;margin-bottom:14px}
-.opts{display:flex;flex-direction:column;gap:8px;margin:10px 0}
-.opt{background:var(--sur2);border-radius:14px;padding:14px;text-align:left;display:flex;justify-content:space-between;align-items:center;font-size:15px;color:var(--txt);text-decoration:none}
-.opt.on{outline:2px solid var(--acc)}
-.opt small{color:var(--mut);display:block;font-size:12px;margin-top:2px}
-.kv{display:flex;justify-content:space-between;padding:10px 0;border-top:1px solid var(--line);font-size:14px}
-.kv:first-child{border-top:0}
-.kv span:last-child{font-weight:600}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.due{background:var(--sur2);border-radius:14px;padding:12px}
-.due .k{font-size:11px;color:var(--mut)}.due .v{font-size:18px;font-weight:700;margin-top:2px}
-.huge{font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1.05}
-.tiles{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:14px}.tiles button{background:var(--sur);border-radius:16px;padding:14px 10px;text-align:left;color:var(--txt)}.tiles button.on{outline:2px solid var(--acc)}.tiles .k{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}.tiles .v{font-size:20px;font-weight:800;margin-top:4px;letter-spacing:-.03em;white-space:nowrap}.tiles .v.red{color:var(--red)}.tiles .v.acc{color:var(--acc)}.tiles .n{font-size:12px;color:var(--mut);margin-top:2px}
-.tiles2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.tiles2 .k{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em;margin-bottom:4px}
-.cl{padding:14px 0}.cl .nm{font-size:17px}.cl .mt{font-size:13px;margin-top:3px}
-.it{padding:14px 0}.it .a{font-size:17px}.it .g{font-size:18px}
-.huge.acc{color:var(--acc)}.huge.red{color:var(--red)}
-.chart{display:flex;height:14px;border-radius:7px;overflow:hidden;margin:12px 0 8px;background:var(--sur2)}
-.chart i{display:block;height:100%}
-.leg{display:flex;gap:14px;font-size:12px;color:var(--mut);flex-wrap:wrap}
-.leg b{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px}
-.bars{display:flex;align-items:flex-end;gap:4px;height:110px;margin-top:4px}
-.bars div{flex:1;background:var(--sur2);border-radius:4px 4px 0 0;position:relative;min-height:2px}
-.bars div.f{background:var(--acc)}
-.bars div.p{background:#3a3a3a}
-.ml{display:flex;gap:4px;font-size:10px;color:var(--mut);margin-top:4px}.ml span{flex:1;text-align:center}
-.toast{position:fixed;left:50%;transform:translateX(-50%);top:calc(64px + env(safe-area-inset-top));background:var(--acc);color:#111;font-weight:600;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:30}
-.toast.on{opacity:1}
-.cl{display:flex;align-items:center;gap:10px;padding:12px 0;border-top:1px solid var(--line)}
-.cl .nm{flex:1;font-weight:600}
-.cl .mt{font-size:12px;color:var(--mut)}
-.inl{display:flex;gap:8px;align-items:center}
-.inl input{flex:1}
-select{background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;width:100%;outline:none;-webkit-appearance:none}
-label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
-.seg{display:flex;background:var(--sur2);border-radius:12px;padding:3px}
-.seg button{flex:1;padding:9px;border-radius:10px;font-size:13px;font-weight:600;color:var(--mut)}
-#rateseg button{padding:12px;font-size:14px}#rateseg button.on{background:var(--acc);color:#111}
-.seg button.on{background:var(--sur);color:var(--txt)}
-.link{color:var(--acc);font-weight:600;font-size:14px;padding:8px 0}
-.danger{color:var(--red)}
-#pdfroot{display:none}
-.step{display:none;padding-top:10px}.step.on{display:block;animation:in .25s ease}
-@keyframes in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
-.q{font-size:30px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin:8px 0 18px}
-.qsub{color:var(--mut);font-size:14px;line-height:1.5;margin:-10px 0 16px}.qsub em{color:var(--txt);font-style:normal}
-.choice{display:block;width:100%;text-align:left;background:var(--sur);border-radius:18px;padding:18px 20px;font-size:18px;font-weight:600;margin-bottom:10px}
-.choice small{display:block;font-weight:400;font-size:13px;color:var(--mut);margin-top:4px}
-.choice:active{background:var(--sur2)}
-.choice.main{background:var(--acc);color:#111}.choice.main small{color:#5a4a10}
-.back{color:var(--mut);font-size:28px;line-height:1;padding:0 4px 8px;margin-left:-4px}
-.qin{width:100%;background:transparent;border:0;border-bottom:1px solid var(--line);padding:10px 0;font-size:22px;font-weight:500;outline:none}
-.qin::placeholder{color:#555}
-.big-in{font-size:56px;font-weight:800;letter-spacing:-.04em;color:var(--acc)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
-.chip{background:var(--sur);border-radius:999px;padding:8px 14px;font-size:14px}
-.viaquick{margin-top:14px;font-size:16px}.viaquick b{color:var(--red)}
-.stima{cursor:pointer}
-input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}input[type=number]{-moz-appearance:textfield}
-.amtwrap{display:flex;align-items:baseline;gap:8px}.amtwrap .qin{flex:1;border-bottom:0}.eur{font-size:40px;font-weight:700;color:var(--mut)}
-.quick{display:flex;gap:24px;margin:10px 0 30px;min-height:58px}
-.quick .k{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.08em}
-.quick .v{font-size:30px;font-weight:800;letter-spacing:-.03em;margin-top:2px}.quick .v.acc{color:var(--acc)}.quick .v.red{color:var(--red)}
-.choices{margin-top:6px}
-.row2{display:flex;gap:8px}.row2 .btn{margin-top:10px}
-.qin.sm{font-size:15px;font-weight:400;flex:1;min-width:0}
-.hero{position:relative;width:225px;height:225px;margin:0 auto 8px}
-.ring{width:100%;height:100%;display:block}
-.ring circle{transition:stroke-dasharray .45s cubic-bezier(.2,.8,.2,1)}
-.herotxt{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
-.hero .amtwrap{justify-content:center;gap:4px}
-.hero .big-in{width:140px;text-align:center;font-size:46px;background:transparent}
-.hero .eur{font-size:28px}
-.herosub{font-size:12px;color:var(--mut);letter-spacing:.08em;text-transform:uppercase}
-.legend.h{flex-direction:row;justify-content:space-between;margin:4px 0 22px}
-.legend.h div{flex-direction:column;align-items:flex-start;gap:4px}
-.legend.h b{margin-left:0}
-.pad{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:6px 0 18px}
-.pad button{background:var(--sur);border-radius:14px;padding:13px 0;font-size:21px;font-weight:600}
-.pad button:active{background:var(--sur2)}
-.pad .del{color:var(--mut);font-size:20px}
-.pad .ok{grid-column:1/-1;background:var(--acc);color:#111;font-size:17px;padding:14px 0}
-@media (min-height:900px){.pad button{padding:20px 0}}
-.k2{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em;margin-bottom:12px}
-.kpi .k{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.1em}
-.gauge{position:relative;height:14px;background:var(--sur2);border-radius:7px;margin:8px 0 28px}
-.gfill{height:100%;border-radius:7px;background:var(--acc);transition:width .5s}
-.gfill.warn{background:#FF9F43}.gfill.over{background:var(--red)}
-.gtick{position:absolute;top:-4px;width:2px;height:22px;background:var(--txt);opacity:.7}
-.gtick span{position:absolute;top:24px;left:50%;transform:translateX(-50%);font-size:10px;color:var(--mut)}
-.tl{position:relative;padding-left:22px}.tl::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:2px;background:var(--line)}
-.tli{position:relative;display:flex;align-items:baseline;gap:10px;padding:8px 0}
-.tli .k{flex:1;font-size:14px;color:var(--mut)}.tli .v{font-size:17px;font-weight:700}
-.dot2{position:absolute;left:-22px;top:12px;width:14px;height:14px;border-radius:50%;background:var(--red);border:3px solid var(--bg)}
-.dot2.ok{background:var(--acc)}
-.bars div.f{background:var(--acc)}
-.donutwrap{display:flex;align-items:center;gap:22px;margin:6px 0 26px;min-height:150px}
-.donut{width:140px;height:140px;flex:none}
-.donut text{font-family:Inter,system-ui,sans-serif}
-.legend{display:flex;flex-direction:column;gap:10px;flex:1}
-.legend div{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--mut)}
-.legend i{width:12px;height:12px;border-radius:4px;flex:none}
-.legend b{color:var(--txt);font-weight:700;font-size:16px;margin-left:auto;white-space:nowrap}
-.legend div{white-space:nowrap}
-.legend .ico{width:22px;height:22px;flex:none;color:var(--mut)}
-.donutwrap.empty .donut{opacity:.9}
-@media print{
-  body{background:#fff;color:#111;padding:0;display:block}
-  .app,.tabs,.sheet,.toast{display:none!important}
-  #pdfroot{display:block}
-}
+:root{--bg:#161616;--sur:#1f1f1f;--sur2:#2a2a2a;--txt:#F4F4F4;--mut:#9A9A9A;--acc:#FFD54A;--red:#FF4D4D;--line:#2e2e2e;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-behavior:smooth}
+@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important}}
+body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
+a{color:inherit}
+:focus{outline:none}
+:focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:6px}
+.btn:focus-visible,.demo .ctrl button:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:8px;background:var(--acc);color:#111;padding:10px 14px;border-radius:10px;font-weight:700;z-index:100;text-decoration:none}
+.skip:focus{left:8px}
+.w{max-width:1100px;margin:0 auto;padding:0 20px}
+b,strong{font-weight:700}
+.y{color:var(--acc)}.r{color:var(--red)}
+/* nav */
+nav{position:sticky;top:0;z-index:10;background:rgba(22,22,22,.85);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
+nav .w{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none}
+.logo svg{width:28px;height:28px}
+.logo i{font-style:normal;color:var(--acc)}
+.navlinks{display:flex;gap:22px;font-size:14px;color:var(--mut)}
+.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--txt)}
+@media(max-width:720px){.navlinks{display:none}}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;border-radius:14px;padding:16px 24px;text-decoration:none;font-size:17px;border:0;cursor:pointer;transition:transform .15s;text-align:center}
+.btn:hover{transform:translateY(-1px)}
+.btn.sm{padding:10px 16px;font-size:14px;border-radius:10px}
+.btn.ghost{background:var(--sur2);color:var(--txt)}
+.btn.ghost:hover{background:#333}
+/* hero */
+.hero{padding:72px 0 40px;position:relative;overflow:hidden}
+.hero .w{display:grid;grid-template-columns:1.1fr .9fr;gap:40px;align-items:center}
+@media(max-width:860px){.hero .w{grid-template-columns:1fr}.hero{padding-top:40px}}
+.kick{display:inline-flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--mut);margin-bottom:22px}
+.kick b{color:var(--red)}
+h1{font-size:clamp(40px,7vw,74px);line-height:1.02;letter-spacing:-.04em;margin:0 0 20px;font-weight:900}
+.lead{font-size:clamp(17px,2vw,21px);color:var(--mut);max-width:520px;margin:0 0 30px}
+.lead b{color:var(--txt)}
+.ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.sub{font-size:13px;color:var(--mut);margin-top:14px}
+.phone{position:relative;width:min(340px,80vw);margin:0 auto;aspect-ratio:390/844;border-radius:44px;background:#000;padding:10px;box-shadow:0 40px 80px rgba(0,0,0,.6),0 0 0 1px #333 inset}
+.phone img{width:100%;height:100%;object-fit:cover;border-radius:36px;display:block}
+.glow{position:absolute;inset:auto;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,213,74,.18),transparent 60%);filter:blur(20px);pointer-events:none;right:-80px;top:-40px;z-index:-1}
+/* strip */
+.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sur)}
+.strip ul{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 20px;font-size:14px;color:var(--mut);list-style:none;margin:0 auto}
+.strip li b{color:var(--txt)}
+/* sections */
+section{padding:84px 0}
+@media(max-width:720px){section{padding:56px 0}}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:12px}
+h2{font-size:clamp(30px,4.5vw,48px);letter-spacing:-.035em;line-height:1.08;margin:0 0 14px;font-weight:800}
+.p{color:var(--mut);font-size:18px;max-width:640px;margin:0}
+.feat{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center;margin-top:60px}
+.feat.rev .ph{order:-1}
+@media(max-width:860px){.feat{grid-template-columns:1fr;gap:28px;margin-top:40px}.feat.rev .ph{order:0}}
+.feat h3{font-size:clamp(26px,3.4vw,38px);letter-spacing:-.03em;line-height:1.1;margin:0 0 14px;font-weight:800}
+.feat p{color:var(--mut);font-size:17px;margin:0 0 18px}
+.feat ul{margin:0;padding:0;list-style:none;color:var(--mut)}
+.feat li{padding:8px 0 8px 18px;border-top:1px solid var(--line);position:relative}
+.feat li::before{content:"";position:absolute;left:0;top:16px;width:8px;height:8px;border-radius:50%;background:var(--acc)}
+.feat li b{color:var(--txt)}
+.ph{width:min(300px,78vw);margin:0 auto;border-radius:38px;background:#000;padding:8px;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 0 1px #333 inset}
+.ph img{width:100%;height:auto;display:block;border-radius:32px}
+/* ad blocks */
+.ad{background:linear-gradient(135deg,#FFD54A,#ffc61a);color:#111;border-radius:24px;padding:36px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
+.ad.red{background:linear-gradient(135deg,#FF4D4D,#ff2f2f);color:#fff}
+.ad h3{margin:0 0 6px;font-size:clamp(24px,3.4vw,34px);letter-spacing:-.03em;line-height:1.1;font-weight:900}
+.ad p{margin:0;font-size:16px;opacity:.85}
+.ad .btn{background:#111;color:#fff;white-space:nowrap}
+.ad.red .btn{background:#fff;color:#111}
+.ad .btn:focus-visible{outline-color:#111}
+@media(max-width:720px){.ad{grid-template-columns:1fr;padding:26px}.ad .btn{white-space:normal}}
+/* steps */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:40px;list-style:none;padding:0}
+@media(max-width:720px){.steps{grid-template-columns:1fr}}
+.step{background:var(--sur);border:1px solid var(--line);border-radius:20px;padding:26px}
+.step .n{width:40px;height:40px;border-radius:50%;background:var(--acc);color:#111;font-weight:800;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:18px}
+.step h3{margin:0 0 8px;font-size:20px;letter-spacing:-.02em}
+.step p{margin:0;color:var(--mut);font-size:15px}
+/* ring demo */
+.demo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:36px;display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:center;margin-top:40px}
+@media(max-width:720px){.demo{grid-template-columns:1fr;padding:24px;text-align:center}}
+.ring{width:220px;height:220px;position:relative;margin:0 auto}
+.ring svg{width:100%;height:100%;transform:rotate(-90deg)}
+.ring .c{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring .c b{font-size:44px;letter-spacing:-.04em;color:var(--acc);font-weight:900;line-height:1}
+.ring .c small{font-size:12px;color:var(--mut);letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.demo .ctrl{display:flex;gap:10px;flex-wrap:wrap;margin:14px 0 20px;justify-content:inherit}
+.demo .ctrl button{background:var(--sur2);border:0;color:var(--txt);border-radius:12px;padding:12px 18px;font-size:17px;font-weight:700;cursor:pointer;font-family:inherit}
+.demo .ctrl button[aria-pressed="true"]{background:var(--acc);color:#111}
+.demo .leg{display:flex;gap:22px;color:var(--mut);font-size:15px;flex-wrap:wrap;justify-content:inherit}
+.demo .leg i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:6px}
+.demo .leg b{color:var(--txt)}
+.demo .note{color:var(--mut);font-size:13px;margin:16px 0 0}
+/* pricing */
+.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}
+@media(max-width:720px){.plans{grid-template-columns:1fr}}
+.plan{background:var(--sur);border:1px solid var(--line);border-radius:24px;padding:30px;position:relative}
+.plan.hi{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
+.plan .tag{position:absolute;top:-13px;left:24px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;letter-spacing:.05em}
+.plan h3{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:700}
+.price{font-size:56px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:12px 0 4px}
+.price s{color:var(--mut);font-size:26px;font-weight:600;margin-left:8px;letter-spacing:-.02em}
+.price small{font-size:15px;color:var(--mut);font-weight:500;letter-spacing:0;margin-left:6px}
+@media(max-width:720px){.price{font-size:48px}.price small{display:block;margin:8px 0 0}}
+.plan ul{list-style:none;padding:0;margin:20px 0 24px;color:var(--mut)}
+.plan li{padding:9px 0;border-top:1px solid var(--line)}
+.plan li b{color:var(--txt)}
+.plan .btn{width:100%}
+/* faq */
+.faq{max-width:760px;margin:30px auto 0}
+details{border-top:1px solid var(--line);padding:18px 0}
+details:last-child{border-bottom:1px solid var(--line)}
+summary{cursor:pointer;font-size:18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--acc);font-weight:700;font-size:22px;line-height:1}
+details[open] summary::after{content:"–"}
+details p{color:var(--mut);margin:12px 0 0;font-size:16px}
+/* ivo */
+.ivo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:40px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
+@media(max-width:720px){.ivo{grid-template-columns:1fr;padding:26px}}
+.ivo .av{width:96px;height:96px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;color:#111;letter-spacing:-.04em}
+.ivo blockquote{margin:0;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.02em;line-height:1.25;font-weight:600}
+.ivo .cite{display:block;font-style:normal;color:var(--mut);font-size:14px;margin-top:12px}
+/* final */
+.final{text-align:center;padding:100px 0}
+.final h2{font-size:clamp(36px,6vw,64px)}
+footer{border-top:1px solid var(--line);padding:36px 0;color:var(--mut);font-size:13px}
+footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
+footer a{text-decoration:none}footer a:hover{color:var(--txt)}
+footer nav{position:static;background:none;border:0;backdrop-filter:none}
+footer nav ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}
+.disc{font-size:12px;color:var(--mut);max-width:760px;margin:12px auto 0}
 </style>
 </head>
 <body>
-<div class="app">
-  <div class="hdr">
-    <div class="logo"><svg width="22" height="22" viewBox="0 0 60 60" style="vertical-align:-4px;margin-right:8px"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg>Prevent<b>IVO</b></div>
-    <button class="ico" onclick="openSheet('settings')" aria-label="Impostazioni">⚙︎</button>
+<a class="skip" href="#main">Vai al contenuto</a>
+
+<nav aria-label="Principale"><div class="w">
+  <a class="logo" href="#" aria-label="PreventIVO, torna all'inizio"><svg viewBox="0 0 60 60" aria-hidden="true" focusable="false"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg><span>Prevent<i>IVO</i></span></a>
+  <div class="navlinks"><a href="#come">Provalo</a><a href="#funzioni">Cosa fa</a><a href="#prezzo">Prezzo</a><a href="#faq">Domande</a></div>
+  <a class="btn sm" href="app/">Provala ora</a>
+</div></nav>
+
+<main id="main">
+<header class="hero"><div class="glow" aria-hidden="true"></div><div class="w">
+  <div>
+    <p class="kick"><b>Prezzo di lancio</b> 5,99 € invece di 9,99 € · per le prime 3 settimane</p>
+    <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
+    <p class="lead">Hai appena aperto la partita IVA forfettaria. Ti pagano 1.000 €: <b>quanto è tuo?</b> Scrivi la cifra, il cerchio risponde. Poi fai il preventivo in PDF e lo mandi su WhatsApp. <b>Senza Excel, senza modelli Word.</b></p>
+    <div class="ctas">
+      <a class="btn" href="app/" id="cta1">Provala ora, gratis nel browser</a>
+      <a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20quando%20PreventIVO%20%C3%A8%20su%20App%20Store%20e%20Google%20Play.%20Telefono%3A%20iPhone%20%2F%20Android" id="cta2">Avvisami quando è sugli store</a>
+    </div>
+    <p class="sub">In arrivo su App Store e Google Play · 9,99 € una volta, nessun abbonamento · niente account, i dati restano sul tuo telefono</p>
+  </div>
+  <div class="phone"><img src="img/s1-home.png" width="1170" height="2532" fetchpriority="high" decoding="async" alt="Schermata principale di PreventIVO: 1.500 € incassati, il cerchio giallo e rosso mostra che il 77% è tuo"></div>
+</div></header>
+
+<div class="strip"><ul class="w">
+  <li><b>Solo forfettari.</b> Fatta per chi ha appena aperto</li>
+  <li><b>Niente account.</b> I dati restano sul telefono</li>
+  <li><b>Un prezzo, una volta.</b> Nessun abbonamento</li>
+  <li><b>Sono stime.</b> Il conto vero lo fa il commercialista</li>
+</ul></div>
+
+<section id="come" aria-labelledby="h-come"><div class="w">
+  <p class="eyebrow">Provalo qui</p>
+  <h2 id="h-come">Ti pagano. Quanto è tuo davvero?</h2>
+  <p class="p">Tocca una cifra. Giallo è tuo, rosso va al fisco. L'app fa questo a ogni preventivo e a ogni incasso.</p>
+  <div class="demo">
+    <div class="ring">
+      <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false"><circle cx="100" cy="100" r="84" fill="none" stroke="#2a2a2a" stroke-width="18"/><circle id="ry" cx="100" cy="100" r="84" fill="none" stroke="#FFD54A" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 999"/><circle id="rr" cx="100" cy="100" r="84" fill="none" stroke="#FF4D4D" stroke-width="18" stroke-linecap="round" stroke-dasharray="0 999"/></svg>
+      <div class="c" aria-live="polite"><b id="dnet">—</b><small>è tuo</small></div>
+    </div>
+    <div>
+      <p class="eyebrow" id="h-ctrl" style="margin-bottom:4px">Hai incassato</p>
+      <div class="ctrl" id="ctrl" role="group" aria-labelledby="h-ctrl"><button type="button" data-v="300" aria-pressed="false">300 €</button><button type="button" data-v="1000" aria-pressed="true">1.000 €</button><button type="button" data-v="2500" aria-pressed="false">2.500 €</button><button type="button" data-v="5000" aria-pressed="false">5.000 €</button></div>
+      <div class="leg"><span><i style="background:#FFD54A" aria-hidden="true"></i>tuoi <b id="lnet">—</b></span><span><i style="background:#FF4D4D" aria-hidden="true"></i>imposta <b id="limp">—</b></span><span><i style="background:#B33A3A" aria-hidden="true"></i>INPS <b id="linps">—</b></span></div>
+      <p class="note">Stima: forfettario al 5%, coefficiente 78%, INPS gestione separata. Nell'app scegli la tua attività e se sei al 5% o al 15%. Il conto definitivo lo fa il commercialista.</p>
+    </div>
+  </div>
+</div></section>
+
+<section id="funzioni" style="padding-top:0" aria-labelledby="h-funzioni"><div class="w">
+  <p class="eyebrow">Cosa fa</p>
+  <h2 id="h-funzioni">Tre cose. Nient'altro.</h2>
+
+  <div class="feat">
+    <div>
+      <h3>Il preventivo in 10 secondi, dal telefono.</h3>
+      <p>Metti le voci e il prezzo. L'app ti mostra subito quanto ti resta su quel lavoro. Poi lo mandi.</p>
+      <ul><li>Voci con quantità e prezzo, quante vuoi</li><li>Condizioni (pagamento, validità, incluso, extra) scritte una volta: restano</li><li>PDF con il tuo nome e la tua partita IVA, numerato e con validità</li><li>Due tasti: <b>Invia su WhatsApp</b>, <b>Invia per mail</b>. Con il PDF allegato</li></ul>
+    </div>
+    <div class="ph"><img src="img/s2-preventivo.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Schermata preventivo di PreventIVO: elenco voci con quantità e prezzo, totale e netto stimato"></div>
   </div>
 
-
-  <!-- VIEW: NUOVO (guidata) -->
-  <section class="view on" id="v-new">
-    <div class="step on" id="st0">
-      <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
-      <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
-      <div class="seg" id="rateseg" style="margin:0 0 10px"><button id="rate5" onclick="setRate(true)">Forfettario 5%</button><button id="rate15" onclick="setRate(false)">Forfettario 15%</button></div>
-      <div class="hero">
-        <svg class="ring" viewBox="0 0 200 200" id="ring0">
-          <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="16"/>
-          <circle id="r0y" cx="100" cy="100" r="82" fill="none" stroke="#FFD54A" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
-          <circle id="r0r" cx="100" cy="100" r="82" fill="none" stroke="#FF4D4D" stroke-width="16" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
-        </svg>
-        <div class="herotxt">
-          <div class="amtwrap"><input class="qin big-in" id="q0" type="number" inputmode="decimal" placeholder="0" enterkeyhint="done"><span class="eur">€</span></div>
-          <div class="herosub" id="herosub">inserisci la cifra</div>
-        </div>
-      </div>
-      <div class="pad" id="pad">
-        <button>1</button><button>2</button><button>3</button>
-        <button>4</button><button>5</button><button>6</button>
-        <button>7</button><button>8</button><button>9</button>
-        <button>00</button><button>0</button><button class="del">⌫</button>
-      </div>
-      <div class="legend h" id="l0" style="display:none"></div>
-      <div class="hint" style="text-align:center;margin:-8px 0 14px" id="actline"></div>
-      <div class="choices">
-        <button class="choice main" onclick="fromHome('prev')">Fai il preventivo da mandare<small>Voci, PDF con il tuo logo, invio in un tocco</small></button>
-        <button class="choice" onclick="fromHome('inc')">Li ho già incassati<small>Segnali nell'anno e sai quanto mettere via</small></button>
-        <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
-      </div>
+  <div class="feat rev">
+    <div>
+      <h3>Sai sempre chi ti deve cosa.</h3>
+      <p>Ogni preventivo ha uno stato: inviato, accettato, fatturato, incassato. In alto vedi quanto aspetti e da chi. I fermi da più di 30 giorni diventano rossi.</p>
+      <ul><li>I clienti si creano da soli dal primo preventivo</li><li>Mail e WhatsApp del cliente salvati per la volta dopo</li><li>Quando incassi, ti dice quanto mettere via per le tasse</li></ul>
     </div>
+    <div class="ph"><img src="img/s4-preventivi.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Elenco preventivi di PreventIVO con stato inviato, accettato, fatturato e incassato"></div>
+  </div>
 
-    <div class="step" id="st1">
-      <button class="back" onclick="step(0)">‹</button>
-      <div class="q" style="font-size:26px;margin-bottom:14px">Preventivo</div>
-      <input class="qin" id="client" list="clients" placeholder="Per chi è?" autocomplete="off" enterkeyhint="next" style="font-size:19px">
-      <datalist id="clients"></datalist>
-      <div class="chips" id="recent"></div>
-      <div class="vh"><span>VOCE</span><span>Q.TÀ</span><span>PREZZO</span><span></span></div>
-      <div class="rows" id="rows"></div>
-      <button class="addv" onclick="addRow()">+ Aggiungi voce</button>
-      <textarea class="msg" id="msg" style="display:none"></textarea><div id="quick" style="display:none"></div>
-      <details class="cond" id="cond">
-        <summary>Condizioni del preventivo (pagamento, validità, incluso, extra)</summary>
-        <label>PAGAMENTO</label><textarea id="c-pag" rows="2"></textarea>
-        <label>VALIDITÀ</label><textarea id="c-val" rows="1"></textarea>
-        <label>INCLUSO</label><textarea id="c-inc" rows="2"></textarea>
-        <label>EXTRA</label><textarea id="c-ext" rows="2"></textarea>
-        <div class="hint" style="margin-top:8px">Quello che scrivi qui resta come predefinito per i prossimi preventivi. <span class="link" onclick="resetCond()">Rimetti i testi standard</span></div>
-      </details>
-      <div class="big" id="bigres" style="margin-top:18px">
-        <div class="net" id="net" style="font-size:48px">0 €</div>
-        <div class="sub" id="netsub">ti resta · stima</div>
-      </div>
-      <div class="viaquick" id="via3" style="margin:8px 0 6px"></div>
-      <div class="split" id="split" style="display:none"><span id="via"></span><span id="inps"></span><span id="imp"></span></div>
-      <button class="btn" id="save" onclick="savePrev('send')" disabled>Salva e invia</button>
-      <div class="row2"><button class="btn ghost" id="save2" onclick="savePrev()" disabled>Solo salva</button><button class="btn ghost" id="save3" onclick="savePrev('pdf')" disabled>Salva e PDF</button></div>
-      <div class="stima" onclick="why('stima')">perché è una stima?</div>
+  <div class="feat">
+    <div>
+      <h3>Cosa paghi, e quando. Prima che arrivi.</h3>
+      <p>Il forfettario ha trappole che nessuno ti spiega: il secondo anno paghi quasi il doppio, dopo cinque anni il 5% finisce, oltre 85.000 € esci dal regime. L'app te lo dice in base all'anno di partita IVA in cui sei.</p>
+      <ul><li>Tasse stimate dell'anno e cosa paghi a giugno e a novembre</li><li>Quanto manca alla soglia degli 85.000 €</li><li>Incassi mese per mese ed export CSV per il commercialista</li></ul>
     </div>
+    <div class="ph"><img src="img/s5-anno.png" width="1170" height="2532" loading="lazy" decoding="async" alt="Schermata anno di PreventIVO: tasse stimate, scadenze di giugno e novembre e distanza dalla soglia di 85.000 €"></div>
+  </div>
+</div></section>
 
-    <div class="step" id="st10">
-      <button class="back" onclick="step(0)">‹</button>
-      <div class="q">Quanto hai incassato?</div>
-      <input class="qin big-in" id="inc" type="number" inputmode="decimal" placeholder="0" enterkeyhint="done">
-      <div class="big" id="incres" style="display:none">
-        <div class="net" id="incnet">0 €</div>
-        <div class="sub">è tuo · stima</div>
-        <div class="viaquick" id="incvia"></div>
-      </div>
-      <input class="qin" id="incclient" list="clients" placeholder="Da chi? (facoltativo)" autocomplete="off" style="margin-top:18px">
-      <button class="btn" id="incsave" onclick="saveIncasso()" disabled>Segna come incassato</button>
+<section style="padding-top:0" aria-label="Il PDF del preventivo"><div class="w">
+  <div class="ad">
+    <div><h3>Il PDF che mandi parla per te.</h3><p>Nome, partita IVA, voci chiare, condizioni, firma. Il cliente capisce al volo. Tu non devi spiegare niente.</p></div>
+    <a class="btn" href="app/">Fai il tuo primo preventivo</a>
+  </div>
+</div></section>
+
+<section id="passi" style="padding-top:0" aria-labelledby="h-passi"><div class="w">
+  <p class="eyebrow">Come funziona</p>
+  <h2 id="h-passi">Tre passi, poi non ci pensi più.</h2>
+  <ol class="steps">
+    <li class="step"><div class="n" aria-hidden="true">1</div><h3>Dimmi cosa fai</h3><p>Una domanda sola: la tua attività e se sei al 5% o al 15%. Se non lo sai, l'app conta il 15%: così non ti trovi a corto.</p></li>
+    <li class="step"><div class="n" aria-hidden="true">2</div><h3>Scrivi la cifra</h3><p>Un preventivo o un incasso. Il cerchio si riempie: quanto è tuo, quanto va in imposta, quanto in INPS. E quanto mettere via.</p></li>
+    <li class="step"><div class="n" aria-hidden="true">3</div><h3>Manda il PDF</h3><p>Nome, partita IVA, voci, condizioni e firma. Su WhatsApp o per mail, in un tocco. Poi segna quando ti pagano.</p></li>
+  </ol>
+</div></section>
+
+<section id="prezzo" style="padding-top:0" aria-labelledby="h-prezzo"><div class="w">
+  <p class="eyebrow">Prezzo</p>
+  <h2 id="h-prezzo">Una volta. Non ogni mese.</h2>
+  <p class="p">9,99 € ed è tua. Niente abbonamenti, niente versione gratuita che si blocca a metà.</p>
+  <div class="plans">
+    <div class="plan hi"><span class="tag">PREZZO DI LANCIO</span>
+      <h3>PreventIVO</h3>
+      <p class="price">5,99 €<s><span class="vh">invece di </span>9,99 €</s><small>una volta</small></p>
+      <ul><li><b>Tutto:</b> quanto ti resta, preventivi, PDF, clienti, anno</li><li>PDF con il tuo nome e la tua partita IVA</li><li>Invio su WhatsApp e mail con allegato</li><li>Cosa paghi a giugno e novembre, soglia 85.000 €</li><li>Niente account, niente dati raccolti</li></ul>
+      <a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Telefono%3A%20iPhone%20%2F%20Android">Avvisami al prezzo di lancio</a>
     </div>
-  </section>
-
-  <!-- VIEW: PREVENTIVI -->
-  <section class="view" id="v-list">
-    <div class="q" style="margin-bottom:4px">I tuoi preventivi</div>
-    <div class="qsub" id="lsub" style="margin:0 0 14px"></div>
-    <div class="tiles" id="ltiles"></div>
-    <div class="seg" id="filter">
-      <button class="on" data-f="">Tutti</button><button data-f="inviato">Inviati</button><button data-f="accettato">Accettati</button><button data-f="fatturato">Fatturati</button><button data-f="incassato">Incassati</button>
+    <div class="plan">
+      <h3>Il tuo brand</h3>
+      <p class="price">+6 €<small>una volta, dentro l'app</small></p>
+      <ul><li>Il PDF con <b>il tuo logo e i tuoi colori</b></li><li>Piede con i tuoi dati, senza il marchio PreventIVO</li><li>Per chi ha già uno studio, un'agenzia, un'immagine</li><li>Si attiva quando vuoi, dall'app</li></ul>
+      <a class="btn ghost" href="#faq">In arrivo dopo il lancio</a>
     </div>
-    <div class="card list" id="list" style="margin-top:12px"></div>
-    <button class="btn" onclick="go('new');step(0)" style="margin-top:14px">+ Nuovo preventivo</button>
-  </section>
+  </div>
+  <p class="disc">Prezzi indicativi, IVA inclusa, come appariranno su App Store e Google Play. "Il tuo brand" arriva nei mesi successivi al lancio.</p>
+</div></section>
 
-  <!-- VIEW: CLIENTI -->
-  <section class="view" id="v-clients">
-    <div class="q" style="margin-bottom:4px">I tuoi clienti</div>
-    <div class="qsub" id="csub" style="margin:0 0 14px"></div>
-    <div class="card" onclick="why('presunto')">
-      <div class="tiles2">
-        <div><div class="k">incassato</div><div class="huge acc" id="cinc" style="font-size:32px">0 €</div></div>
-        <div><div class="k">previsto a fine anno</div><div class="huge" id="presunto" style="font-size:32px">0 €</div></div>
-      </div>
-      <div class="hint" id="presuntosub" style="margin-top:8px"></div>
-      <div class="chart" id="chart"></div>
-      <div class="leg" id="leg"></div>
+<section style="padding-top:0" aria-label="Partita IVO"><div class="w">
+  <figure class="ivo" style="margin:0">
+    <div class="av" aria-hidden="true">IVO</div>
+    <div>
+      <blockquote>"Mi hanno pagato 2.000 euro. Sono andato a fare la spesa come se fossero 2.000 euro. Erano 1.540. Adesso prima guardo il cerchio."</blockquote>
+      <figcaption class="cite">Partita IVO è un personaggio inventato dall'autore dell'app. Non è una recensione. Lo trovi su Instagram e TikTok.</figcaption>
     </div>
-    <div class="card list" id="clist"></div>
-    <div class="card">
-      <div class="inl"><input id="newclient" placeholder="Nuovo cliente" style="background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><button class="btn small" onclick="addClient()">Aggiungi</button></div>
-    </div>
-  </section>
+  </figure>
+</div></section>
 
-  <!-- VIEW: ANNO -->
-  <section class="view" id="v-year">
-    <div class="q" style="margin-bottom:6px">Quest'anno</div>
-    <div class="qsub" id="ylabel"></div>
+<section id="faq" style="padding-top:0" aria-labelledby="h-faq"><div class="w">
+  <p class="eyebrow">Domande</p>
+  <h2 id="h-faq">Le cose che chiedono tutti.</h2>
+  <div class="faq">
+    <details open><summary><h3 style="margin:0;font:inherit">È per me?</h3></summary><p>Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">I calcoli sono esatti?</h3></summary><p>Sono stime, fatte con i coefficienti e le aliquote pubbliche del forfettario: coefficiente della tua attività, INPS gestione separata o artigiani e commercianti, imposta al 5% o al 15%. Servono a sapere subito dove sei. Il conto definitivo lo fa il tuo commercialista: l'app non dà consulenza fiscale.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Sostituisce il commercialista?</h3></summary><p>No. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e a novembre. C'è l'export in CSV apposta.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Dove vanno i miei dati?</h3></summary><p>Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Perché a pagamento e non gratis?</h3></summary><p>Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">Posso provarla prima?</h3></summary><p>Sì: la versione nel browser è aperta a tutti, gratis. Aprila da Safari o Chrome sul telefono e aggiungila alla schermata Home. Quella degli store è la stessa, con l'invio dei PDF più diretto.</p></details>
+  </div>
+</div></section>
 
-    <div class="card">
-      <div class="kpi"><div class="k">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
-      <div class="donutwrap" style="margin-bottom:6px"><svg class="donut" viewBox="0 0 120 120" id="dy"></svg><div class="legend" id="ly"></div></div>
-    </div>
+<section style="padding-top:0" aria-label="Prezzo di lancio"><div class="w">
+  <div class="ad red">
+    <div><h3>Le prime 3 settimane a 5,99 €. Poi 9,99 €.</h3><p>Prezzo di lancio sugli store. Lascia la mail e ti avviso il giorno che esce.</p></div>
+    <a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Telefono%3A%20iPhone%20%2F%20Android">Avvisami</a>
+  </div>
+</div></section>
 
-    <div class="card">
-      <div class="k2">Soglia forfettario</div>
-      <div class="hero" style="width:200px;height:200px;margin-bottom:18px">
-        <svg class="ring" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="14"/>
-          <circle id="gfill" cx="100" cy="100" r="82" fill="none" stroke="#FFD54A" stroke-width="14" stroke-linecap="round" stroke-dasharray="0 999" transform="rotate(-90 100 100)"/>
-          <line x1="100" y1="8" x2="100" y2="28" stroke="var(--txt)" stroke-width="3" stroke-linecap="round" transform="rotate(306 100 100)"/>
-        </svg>
-        <div class="herotxt"><div class="big-in" style="font-size:40px;color:var(--txt)" id="gpct">0%</div><div class="herosub">di 85.000 €</div></div>
-      </div>
-      <div class="kv"><span>Incassato</span><span id="yin">0 €</span></div>
-      <div class="kv"><span>Netto reale</span><span id="ynet" style="color:var(--acc)">0 €</span></div>
-      <div class="kv"><span>Alla soglia mancano</span><span id="ysoglia">85.000 €</span></div>
-      <div class="kv"><span>Con il presunto arrivi a</span><span id="yproj">0 €</span></div>
-    </div>
+<section class="final" aria-labelledby="h-final"><div class="w">
+  <h2 id="h-final">Quanto ti resta?<br><span class="y">Scoprilo adesso.</span></h2>
+  <p class="p" style="margin:0 auto 28px">Gratis nel browser, oggi. Sugli store, tra poco.</p>
+  <div class="ctas" style="justify-content:center"><a class="btn" href="app/">Provala ora</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store">Avvisami quando esce</a></div>
+</div></section>
+</main>
 
-    <div class="card">
-      <div class="k2">Cosa paghi e quando</div>
-      <div class="qsub" id="yatt" style="margin:-4px 0 12px"></div>
-      <div id="piano"></div>
-      <div class="tl" style="margin-top:6px">
-        <div class="tli"><div class="dot2 ok"></div><div class="k">Già messo via</div><div class="v" id="d4" style="color:var(--acc)">—</div></div>
-      </div>
-      <div class="hint" style="text-align:center">stime sugli incassi di quest'anno, come se restassero uguali · il conto vero lo fa il commercialista</div>
-    </div>
-
-    <div class="card">
-      <div class="k2">Incassi per mese</div>
-      <div class="bars" id="bars"></div>
-      <div class="ml"><span>G</span><span>F</span><span>M</span><span>A</span><span>M</span><span>G</span><span>L</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
-    </div>
-
-    <button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
-    <button class="btn ghost" onclick="backup()">Backup</button>
-    <div style="height:10px"></div>
-  </section>
+<footer><div class="w">
+  <div>© 2026 Elvis Iacobuta · P.IVA IT01292500079 · Aosta</div>
+  <nav aria-label="Pagine legali e contatti"><ul><li><a href="privacy.html">Privacy</a></li><li><a href="termini.html">Termini d'uso</a></li><li><a href="mailto:elvisiacobuta@gmail.com">Contatti</a></li></ul></nav>
 </div>
-
-<nav class="tabs">
-  <button class="on" data-v="new"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Nuovo</button>
-  <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
-  <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
-  <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
-</nav>
-
-<div class="sheet" id="sheet"><div class="in" id="sheetin"></div></div>
-<div class="toast" id="toast"></div>
-<div id="pdfroot"></div>
+<p class="disc" style="text-align:center;padding:0 20px">PreventIVO calcola stime per il regime forfettario italiano e non fornisce consulenza fiscale, contabile o legale. Apple, App Store, Google Play e WhatsApp sono marchi dei rispettivi proprietari.</p>
+</footer>
 
 <script>
-const $=id=>document.getElementById(id);
-/* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
-const PARAMS = {
-  ver: '2.1',
-  link: 'partitaivo.it',   // ← dominio da comprare; sostituire con il link dello store al lancio
-  anno: 2026,
-  soglia: 85000, sogliaOut: 100000,
-  aliquotaStart: 0.05, aliquotaStd: 0.15,
-  inps: { separata: 0.2607, artigiani: 0.24, commercianti: 0.2448 },
-  // "cosa fai?" → coefficiente di redditività (ATECO di riferimento, indicativi — verificare)
-  attivita: [
-    {id:'prof78',  n:'Libero professionista, consulenza, creativi', c:0.78, ateco:'varie'},
-    {id:'video',   n:'Video, foto, contenuti, grafica', c:0.78, ateco:'74.20 / 74.10 / 59.11'},
-    {id:'consul',  n:'Consulenza, marketing, comunicazione', c:0.78, ateco:'70.22 / 73.11'},
-    {id:'it',      n:'Sviluppo software, siti, IT', c:0.67, ateco:'62.01'},
-        {id:'artig',   n:'Artigiano, servizi alla persona', c:0.67, ateco:'varie'},
-    {id:'comm',    n:'Commercio', c:0.40, ateco:'47'},
-    {id:'ecomm',   n:'Commercio online', c:0.40, ateco:'47.91'},
-    {id:'ediliz',  n:'Edilizia, immobiliare', c:0.86, ateco:'41–43'},
-    {id:'ristor',  n:'Ristorazione, alloggio', c:0.40, ateco:'55–56'},
-    {id:'cassa',   n:'Avvocato, architetto, ingegnere, medico… (con cassa)', c:0.78, ateco:'varie', cassa:true},
-    {id:'altro',   n:'Altro: scrivi cosa fai', c:0.78, ateco:'—'},
-    {id:'no',      n:'Ho una SRL o sono in regime ordinario', c:0.78, ateco:'—', no:true}
-  ]
-};
-/* ---------- STATO ---------- */
-const KEY='preventivo.v1';
-let S = load() || { setup:false, profile:{act:'prof78', inps:'separata', start:null, nome:'', piva:'', contatti:'', contribPrec:0, messoVia:0}, prev:[], clients:[], seq:0 };
-function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ return null; } }
-function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
-
-/* ---------- CALCOLO ---------- */
-function coef(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
-/* anno di attività: 1 = anno di apertura della P.IVA */
-function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
-function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || n<=5); }
-function ordinale(n){ return n+'°'; }
-function calc(lordo, opts={}){
-  const imponibile = lordo * coef();
-  const inps = imponibile * PARAMS.inps[S.profile.inps];
-  const aliq = is5() ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
-  // imposta su imponibile meno contributi (approssimati con l'INPS stesso se non noti)
-  const ded = opts.contribPrec!=null ? opts.contribPrec : inps;
-  const imposta = Math.max(0, imponibile - ded) * aliq;
-  const tasse = inps + imposta;
-  const via = Math.ceil(tasse * 1.05 / 5) * 5; // arrotonda per eccesso +5%
-  return { lordo, imponibile, inps, imposta, tasse, netto: lordo - tasse, via };
-}
-const fmt = n => (Math.round(n)).toLocaleString('it-IT') + ' €';
-const fmt2 = n => n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €';
-
-/* ---------- PARSER "come un messaggio" ---------- */
-function parse(text){
-  const out=[];
-  text.split(/\n|,|;|\+/).map(s=>s.trim()).filter(Boolean).forEach(seg=>{
-    const nums = [...seg.matchAll(/(\d+(?:[.,]\d+)?)/g)].map(m=>m[1].replace('.','').replace(',','.'));
-    let desc = seg.replace(/[\d.,]+\s*€?/g,' ').replace(/\bx\b|\bper\b|\bda\b|\ba\b|\beuro\b/gi,' ').replace(/\s+/g,' ').trim();
-    if(!nums.length) return;
-    let q=1, p=parseFloat(nums[0]);
-    if(nums.length>=2){ const a=parseFloat(nums[0]), b=parseFloat(nums[1]); if(a<=50 && b>a){q=a;p=b;} else if(b<=50 && a>b){q=b;p=a;} else {q=1;p=a;} }
-    if(!desc) desc='Voce';
-    desc = desc.charAt(0).toUpperCase()+desc.slice(1);
-    out.push({d:desc,q,p,t:q*p});
-  });
-  return out;
-}
-
-/* ---------- CIAMBELLA ---------- */
-const ICONS={
-  net:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="12" rx="2"/><path d="M3 11h18M7 15h3"/></svg>',
-  imp:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 21V9l8-5 8 5v12"/><path d="M9 21v-6h6v6"/></svg>',
-  inps:'<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>'
-};
-function donut(svgId, legId, c){
-  const svg=$(svgId), leg=$(legId); if(!svg) return;
-  const tot=c.lordo||0;
-  const parts=[
-    {k:'net', n:'tuoi', v:Math.max(0,c.netto), col:'#FFD54A'},
-    {k:'imp', n:'imposta', v:c.imposta, col:'#FF4D4D', why:'imp'},
-    {k:'inps',n:'INPS', v:c.inps, col:'#B33A3A', why:'inps'}
-  ];
-  const R=46, C=2*Math.PI*R; let off=0;
-  const arcs = tot? parts.map(p=>{ const L=p.v/tot*C; const el=`<circle r="${R}" cx="60" cy="60" fill="none" stroke="${p.col}" stroke-width="16" stroke-dasharray="${L} ${C-L}" stroke-dashoffset="${-off}" transform="rotate(-90 60 60)" stroke-linecap="butt"/>`; off+=L; return el; }).join('') : `<circle r="${R}" cx="60" cy="60" fill="none" stroke="#FFD54A" stroke-width="16"/><circle r="${R}" cx="60" cy="60" fill="none" stroke="#FF4D4D" stroke-width="16" stroke-dasharray="${C*0.23} ${C*0.77}" transform="rotate(-90 60 60)"/>`;
-  const pct = tot? Math.round(c.netto/tot*100) : 0;
-  svg.innerHTML = arcs + `<text x="60" y="56" text-anchor="middle" font-size="22" font-weight="800" fill="var(--txt)">${tot?pct+'%':'—'}</text><text x="60" y="72" text-anchor="middle" font-size="9" fill="var(--mut)" letter-spacing="1">${tot?'È TUO':''}</text>`;
-  leg.innerHTML = parts.map(p=>`<div ${p.why?`onclick="why('${p.why}')"`:''}><i style="background:${p.col}"></i>${ICONS[p.k]}${p.n}<b>${tot?fmt(p.v):'—'}</b></div>`).join('');
-  svg.parentElement.classList.toggle('empty',!tot);
-}
-/* ---------- UI: NUOVO (guidata) ---------- */
-function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
-function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
-function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
-function renderActLine(){ $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
-function setRate(five){ if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
-function renderHello(){}
-function renderRate(){ $('rate5').classList.toggle('on',is5()); $('rate15').classList.toggle('on',!is5()); }
-function ring0(v){
-  const c=calc(v); const C=2*Math.PI*82;
-  const fy=v? Math.max(0,c.netto)/v : 0, fr=v? c.tasse/v : 0;
-  $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
-  $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
-  $('herosub').textContent = v? `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}` : 'scrivi la cifra';
-  const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
-  leg.innerHTML=[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']].map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
-}
-$('q0').addEventListener('input',()=>ring0(parseFloat($('q0').value)||0));
-renderActLine();
-$('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.classList.contains('ok')) return; const i=$('q0'); let v=i.value; if(b.classList.contains('del')) v=v.slice(0,-1); else if(v.length<7) v+=b.textContent; i.value=v; i.dispatchEvent(new Event('input')); });
-$('q0').setAttribute('readonly','');
-let padOpen=true;
-function setPad(o){ padOpen=o; $('pad').style.display=o?'':'none'; $('l0').style.display=(o||!$('q0').value)?'none':''; document.querySelector('#st0 .choices').style.display=o?'none':''; }
-$('q0').addEventListener('click',()=>setPad(true));
-document.querySelector('#st0 .amtwrap').addEventListener('click',()=>setPad(true));
-$('pad').insertAdjacentHTML('beforeend','<button class="ok">OK</button>');
-$('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&b.classList.contains('ok')){ if($('q0').value) setPad(false); } });
-setPad(true);
-function fromHome(k){
-  if(!S.setup){ askAct(true,()=>fromHome(k)); return; }
-  const v=parseFloat($('q0').value)||0;
-  if(k==='prev'){ cur.rows = v? [{d:'',q:1,p:v,t:v}] : []; step(1); }
-  else { if(v) $('inc').value=String(v); step(10); $('inc').dispatchEvent(new Event('input')); }
-}
-function step(n){
-  document.querySelectorAll('#v-new .step').forEach(x=>x.classList.toggle('on',x.id==='st'+n));
-  if(n===1){ renderRecent(); renderRows(); renderCalc(); loadCond(); setTimeout(()=>{ if(!$('client').value) $('client').focus(); else { const d=document.querySelector('#rows .vd'); if(d&&!d.value) d.focus(); } },50); }
-  if(n===0){ $('q0').value=''; ring0(0); setPad(true); }
-  if(n===10){ setTimeout(()=>{ if(!$('inc').value) $('inc').focus(); },50); }
-  window.scrollTo(0,0);
-}
-function renderRecent(){
-  const r=[...new Set([...S.prev.map(p=>clientOf(p).name), ...S.clients.slice().reverse().map(c=>c.name)])].filter(n=>n&&n!=='—'&&n!=='Senza cliente').slice(0,8);
-  $('recent').innerHTML=r.map(n=>`<button class="chip" onclick="$('client').value=${JSON.stringify(n)};focusRow()">${esc(n)}</button>`).join('');
-  $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
-}
-function focusRow(){ const d=document.querySelector('#rows .vd'); if(d) d.focus(); else addRow(); }
-$('client').addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); focusRow(); } });
-
-$('inc').addEventListener('input',()=>{ const v=parseFloat($('inc').value)||0; const c=calc(v); $('incres').style.display=v?'':'none'; $('incnet').textContent=fmt(c.netto); $('incvia').innerHTML=`Metti via <b>${fmt(c.via)}</b> sul conto tasse`; $('incsave').disabled=!v; });
-function saveIncasso(){
-  const v=parseFloat($('inc').value)||0; if(!v) return;
-  const cl=getClient($('incclient').value.trim()||'Senza cliente',true);
-  S.seq++;
-  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:today()} });
-  save(); $('inc').value=''; $('incclient').value=''; $('incres').style.display='none'; $('incsave').disabled=true; renderAll(); toast('Incassato. Metti via '+fmt(calc(v).via)); step(0); go('year');
-}
-
-let cur={rows:[],tot:0};
-/* voci editabili */
-function renderRows(){
-  $('rows').innerHTML = cur.rows.map((r,i)=>`<div class="vr">
-    <input class="vd" placeholder="Es. Video evento" value="${esc(r.d)}" oninput="updRow(${i},'d',this.value)" enterkeyhint="next">
-    <input class="vq" type="number" inputmode="numeric" min="1" value="${r.q}" oninput="updRow(${i},'q',this.value)">
-    <input class="vp" type="number" inputmode="decimal" placeholder="€" value="${r.p||''}" oninput="updRow(${i},'p',this.value)" enterkeyhint="done">
-    <button class="vx" onclick="delRow(${i})" aria-label="Togli">×</button></div>`).join('');
-}
-function updRow(i,k,v){ const r=cur.rows[i]; if(!r) return; if(k==='d') r.d=v; else if(k==='q') r.q=Math.max(1,parseInt(v)||1); else r.p=parseFloat(String(v).replace(',','.'))||0; r.t=r.q*r.p; renderCalc(); }
-function addRow(){ cur.rows.push({d:'',q:1,p:0,t:0}); renderRows(); renderCalc(); const all=document.querySelectorAll('#rows .vd'); all[all.length-1].focus(); }
-function delRow(i){ cur.rows.splice(i,1); renderRows(); renderCalc(); }
-function addFromMsg(){ const t=$('msg').value.trim(); if(!t) return; const nr=parse(t); if(!nr.length){ toast('Scrivi almeno una cifra, es. "800 video"'); return; } cur.rows.push(...nr); $('msg').value=''; $('quick').classList.remove('has'); renderRows(); renderCalc(); }
-$('msg').addEventListener('input', ()=>{ $('quick').classList.toggle('has',!!$('msg').value.trim()); });
-$('msg').addEventListener('keydown', e=>{ if(e.key==='Enter'){ e.preventDefault(); addFromMsg(); } });
-
-/* condizioni modificabili */
-const DEF_COND={pag:'Bonifico a 30 giorni dalla fattura. Fattura emessa alla consegna.', val:'30 giorni dalla data del preventivo.', inc:'Quanto descritto nelle voci. Una revisione inclusa.', ext:'Ogni richiesta fuori da questo preventivo viene quotata a parte prima di essere fatta.'};
-function condOf(p){ return Object.assign({},DEF_COND,S.profile.cond||{},p&&p.cond||{}); }
-function loadCond(c){ c=c||condOf(null); $('c-pag').value=c.pag; $('c-val').value=c.val; $('c-inc').value=c.inc; $('c-ext').value=c.ext; }
-function readCond(){ return {pag:$('c-pag').value.trim()||DEF_COND.pag, val:$('c-val').value.trim()||DEF_COND.val, inc:$('c-inc').value.trim()||DEF_COND.inc, ext:$('c-ext').value.trim()||DEF_COND.ext}; }
-function resetCond(){ S.profile.cond=null; save(); loadCond(DEF_COND); toast('Testi standard ripristinati'); }
-
-function renderCalc(){
-  cur.rows.forEach(r=>{ r.t=(r.q||1)*(r.p||0); }); cur.tot=cur.rows.reduce((a,r)=>a+r.t,0);
-  const c=calc(cur.tot);
-  $('net').textContent=fmt(c.netto);
-  const ok=cur.tot>0; ['save','save2','save3'].forEach(i=>{ if($(i)) $(i).disabled=!ok; }); $('bigres').style.opacity=ok?1:.3;
-  $('via').textContent=fmt(c.via); $('inps').textContent=fmt(c.inps); $('imp').textContent=fmt(c.imposta); if($('via3')) $('via3').innerHTML=ok?`Metti via <b>${fmt(c.via)}</b> · INPS ${fmt(c.inps)} · imposta ${fmt(c.imposta)}`:'';
-  $('netsub').textContent = cur.tot>0 ? `ti resta su ${fmt(c.lordo)} · stima` : 'ti resta · stima';
-}
-function savePrev(mode){
-  if((mode==='send'||mode==='pdf') && !S.profile.nome){ needProfile(()=>savePrev(mode)); return; }
-  const name=$('client').value.trim()||'Senza cliente';
-  const cl=getClient(name,true);
-  const rows=cur.rows.filter(r=>r.p>0).map((r,i)=>({d:(r.d||'').trim()||('Voce '+(i+1)),q:r.q||1,p:r.p,t:(r.q||1)*r.p}));
-  if(!rows.length){ toast('Metti almeno una voce con un prezzo'); return; }
-  const tot=rows.reduce((a,r)=>a+r.t,0);
-  const cond=readCond(); S.profile.cond=cond;
-  S.seq++;
-  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows, tot, cond, status:'inviato', hist:{inviato:today()} });
-  save(); const nid=S.prev[0].id; cur.rows=[]; $('msg').value=''; $('client').value=''; renderRows(); renderCalc(); renderAll(); toast('Preventivo salvato'); step(0); if(mode==='pdf'){ downloadPDF(nid); go('list'); } else if(mode==='send'){ sendPrev(nid); } else go('list');
-}
-function getClient(name,create){
-  let c=S.clients.find(x=>x.name.toLowerCase()===name.toLowerCase());
-  if(!c && create){ c={id:Date.now(),name,color:pickColor(),atteso:0}; S.clients.push(c); }
-  return c;
-}
-const COLORS=['#FFD54A','#FF4D4D','#5BE38B','#4AA8FF','#C77DFF','#FF9F4A','#4AE0D8','#FF6FB5'];
-function pickColor(){ return COLORS[S.clients.length%COLORS.length]; }
-function today(){ return new Date().toISOString().slice(0,10); }
-function esc(s){ return String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c])); }
-
-/* ---------- LISTA ---------- */
-let filt='';
-function setFilt(f){ filt=f; [...$('filter').children].forEach(x=>x.classList.toggle('on',x.dataset.f===f)); renderList(); }
-$('filter').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; setFilt(b.dataset.f); });
-$('ltiles').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; setFilt(filt===b.dataset.f?'':b.dataset.f); });
-function renderList(){
-  const L=S.prev.filter(p=>!filt||p.status===filt);
-  $('list').innerHTML = L.length? L.map(p=>{ const c=clientOf(p); const n=calc(p.tot); return `
-    <div class="it" onclick="openPrev(${p.id})">
-      ${miniRing(p)}
-      <div class="t"><div class="a">${esc(c.name)}</div><div class="b">${p.num} · ${fdate(p.date)}${p.status==='fatturato'&&days(p.hist.fatturato)>30?` · <span class="danger">fermo da ${days(p.hist.fatturato)} giorni</span>`:''}</div></div>
-      <div class="amt"><div class="g">${fmt(p.tot)}</div><div class="nn">${fmt(n.netto)} netti</div></div>
-      <span class="st ${p.status}">${p.status}</span>
-    </div>`;}).join('') : `<div class="empty">${filt?'Nessun preventivo in questo stato.':'Ancora nessun preventivo.<br>Fallo dalla scheda Nuovo: ci vogliono 10 secondi.'}</div>`;
-  const sum=st=>S.prev.filter(p=>st.includes(p.status)).reduce((a,p)=>a+p.tot,0), cnt=st=>S.prev.filter(p=>st.includes(p.status)).length;
-  const attesa=sum(['accettato','fatturato']), inv=sum(['inviato']), inc=sum(['incassato']);
-  $('lsub').innerHTML = S.prev.length? `${S.prev.length} preventivi quest'anno · ${cnt(['perso'])} persi` : 'Qui trovi tutti i preventivi che fai, con il loro stato. Tocca uno per cambiarlo, mandarlo o rifarlo.';
-  $('ltiles').innerHTML = `
-    <button data-f="inviato" class="${filt==='inviato'?'on':''}"><div class="k">inviati</div><div class="v">${fmt(inv)}</div><div class="n">${cnt(['inviato'])} in attesa di risposta</div></button>
-    <button data-f="accettato" class="${filt==='accettato'||filt==='fatturato'?'on':''}"><div class="k">da incassare</div><div class="v red">${fmt(attesa)}</div><div class="n">${cnt(['accettato','fatturato'])} accettati o fatturati</div></button>
-    <button data-f="incassato" class="${filt==='incassato'?'on':''}"><div class="k">incassati</div><div class="v acc">${fmt(inc)}</div><div class="n">${cnt(['incassato'])} chiusi</div></button>`;
-}
-function clientOf(p){ return S.clients.find(c=>c.id===p.client)||{name:'—',color:'#555'}; }
-function fdate(d){ const [y,m,g]=d.split('-'); return `${g}/${m}/${y}`; }
-function days(d){ return Math.floor((Date.now()-new Date(d))/864e5); }
-
-const STATES=['inviato','accettato','fatturato','incassato','perso'];
-function miniRing(p){ const i=Math.max(0,STATES.indexOf(p.status)); const f=p.status==='perso'?0:(i+1)/4; const C=2*Math.PI*14; const col=p.status==='incassato'?'#FFD54A':(p.status==='perso'?'#555':'#FF4D4D');
-  return `<svg width="36" height="36" viewBox="0 0 36 36" style="flex:none"><circle cx="18" cy="18" r="14" fill="none" stroke="var(--sur2)" stroke-width="5"/><circle cx="18" cy="18" r="14" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${f*C} ${C}" transform="rotate(-90 18 18)"/></svg>`; }
-function openPrev(id){
-  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const n=calc(p.tot);
-  sheet(`
-    <h3>${esc(c.name)} · ${fmt(p.tot)}</h3>
-    <div class="sub">${p.num} · ${fdate(p.date)} · netto stimato <b style="color:var(--acc)">${fmt(n.netto)}</b></div>
-    ${p.rows.map(r=>`<div class="kv"><span>${esc(r.d)}${r.q>1?` × ${r.q}`:''}</span><span>${fmt(r.t)}</span></div>`).join('')}
-    <label class="l">Stato</label>
-    <div class="opts">${STATES.map(s=>`<button class="opt ${p.status===s?'on':''}" onclick="setStatus(${p.id},'${s}')"><span>${s.charAt(0).toUpperCase()+s.slice(1)}${p.hist[s]?`<small>${fdate(p.hist[s])}</small>`:''}</span>${p.status===s?'●':''}</button>`).join('')}</div>
-    <button class="btn" onclick="sendPrev(${p.id})">Invia (mail, WhatsApp…)</button>
-    <button class="btn ghost" onclick="downloadPDF(${p.id});closeSheet()">Apri / salva il PDF</button>
-    <button class="btn ghost" onclick="dupPrev(${p.id})">Riusa come nuovo</button>
-    <button class="btn ghost danger" onclick="delPrev(${p.id})">Elimina</button>
-  `);
-}
-function setStatus(id,s){ const p=S.prev.find(x=>x.id===id); p.status=s; p.hist[s]=today(); save(); renderAll(); openPrev(id); if(s==='incassato') toast('Incassato. Metti via '+fmt(calc(p.tot).via)); }
-function buildPDF(p){
-  const { jsPDF } = window.jspdf; const doc=new jsPDF({unit:'mm',format:'a4'});
-  const c=clientOf(p); const pr=S.profile; const val=new Date(p.date); val.setDate(val.getDate()+30);
-  const W=210, L=18, R=192; let y=0;
-  const Y=[255,213,74], RD=[255,77,77], INK=[17,17,17], MUT=[122,122,130], LINE=[230,230,234];
-  const eur=n=>n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2})+' \u20AC';
-  // barra brand
-  doc.setFillColor(...Y); doc.rect(0,0,W*0.77,2.5,'F'); doc.setFillColor(...RD); doc.rect(W*0.77,0,W*0.23,2.5,'F');
-  // intestazione
-  y=22; doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.setFontSize(17); doc.text(pr.nome||'Il tuo nome',L,y);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MUT);
-  let yy=y+5; if(pr.piva){ doc.text('P.IVA '+pr.piva,L,yy); yy+=4; } if(pr.contatti){ doc.text(pr.contatti,L,yy); }
-  doc.setFont('helvetica','bold'); doc.setFontSize(20); doc.setTextColor(...INK);
-  const w1=doc.getTextWidth('Prevent'), w2=doc.getTextWidth('IVO'); doc.text('Prevent',R-w1-w2,y); doc.setTextColor(...Y); doc.text('IVO',R-w2,y);
-  doc.setFont('helvetica','normal'); doc.setFontSize(8.5); doc.setTextColor(...MUT);
-  doc.text(`N. ${p.num} \u00B7 ${fdate(p.date)}`,R,y+5,{align:'right'}); doc.text(`Valido fino al ${fdate(val.toISOString().slice(0,10))}`,R,y+9,{align:'right'});
-  // per / oggetto
-  y=44; doc.setDrawColor(...LINE); doc.line(L,y,R,y); y+=7;
-  doc.setFontSize(7); doc.setTextColor(...MUT); doc.text('PER',L,y); doc.text('OGGETTO',108,y);
-  doc.setFontSize(10); doc.setTextColor(...INK); doc.setFont('helvetica','bold'); doc.text(c.name,L,y+5); doc.setFont('helvetica','normal');
-  let yc=y+5; if(c.email){ yc+=4.5; doc.setFontSize(9); doc.text(c.email,L,yc); } if(c.wa){ yc+=4.5; doc.setFontSize(9); doc.text(c.wa,L,yc); }
-  doc.setFontSize(10); const ogg=doc.splitTextToSize(p.rows.map(r=>r.d).join(', '),80); doc.text(ogg,108,y+5);
-  y=Math.max(yc,y+5+ogg.length*4.5)+6; doc.line(L,y,R,y); y+=8;
-  // tabella
-  doc.setFontSize(7); doc.setTextColor(...MUT); doc.text('DESCRIZIONE',L,y); doc.text('Q.T\u00C0',140,y,{align:'right'}); doc.text('PREZZO',165,y,{align:'right'}); doc.text('TOTALE',R,y,{align:'right'}); y+=3;
-  doc.setFontSize(10); doc.setTextColor(...INK);
-  p.rows.forEach(r=>{ doc.line(L,y,R,y); y+=6; const d=doc.splitTextToSize(r.d,100); doc.text(d,L,y); doc.text(String(r.q),140,y,{align:'right'}); doc.text(eur(r.p),165,y,{align:'right'}); doc.text(eur(r.t),R,y,{align:'right'}); y+=d.length*4.5+2; });
-  // totali
-  y+=6; const X0=118; doc.setTextColor(...MUT); doc.setFontSize(9.5);
-  doc.text('Imponibile',X0,y); doc.text(eur(p.tot),R,y,{align:'right'}); y+=6; doc.text('IVA',X0,y); doc.text('non applicata',R,y,{align:'right'}); y+=4;
-  doc.setDrawColor(...INK); doc.setLineWidth(0.6); doc.line(X0,y,R,y); doc.setLineWidth(0.2); y+=8;
-  doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.setFontSize(14); doc.text('Totale',X0,y); doc.setFontSize(18); doc.text(eur(p.tot),R,y,{align:'right'});
-  y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MUT);
-  doc.text(doc.splitTextToSize("Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54\u201389, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 \u20AC per importi superiori a 77,47 \u20AC.",74),X0,y);
-  // condizioni
-  y+=18; const cd=condOf(p); const T=[['PAGAMENTO',cd.pag],['VALIDIT\u00C0',cd.val],['INCLUSO',cd.inc],['EXTRA',cd.ext]];
-  let rowH=[0,0]; T.forEach((t,i)=>{ const x=i%2?108:L, yy=y+(i>1?rowH[0]:0); doc.setFontSize(7); doc.setTextColor(...MUT); doc.text(t[0],x,yy); doc.setFontSize(9); doc.setTextColor(...INK); const lines=doc.splitTextToSize(t[1],80); doc.text(lines,x,yy+4.5); const h=8+lines.length*4; if(i<2) rowH[0]=Math.max(rowH[0],h); });
-  // firma
-  const yf=262; doc.setDrawColor(...INK); doc.line(L,yf,98,yf); doc.line(112,yf,R,yf); doc.setFontSize(8); doc.setTextColor(...MUT); doc.text('Per accettazione \u2014 firma e data',L,yf+5); doc.text(pr.nome||'',112,yf+5);
-  // piede
-  const yp=282; doc.setFontSize(7.5); doc.text(`Preventivo ${p.num} \u00B7 pagina 1 di 1`,L,yp);
-  doc.setDrawColor(...Y); doc.setLineWidth(1.2); doc.circle(R-34,yp-1,1.8,'S'); doc.setLineWidth(0.2);
-  doc.setTextColor(...MUT); doc.text('fatto con',R-30,yp); doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.text('Prevent',R-17,yp); doc.setTextColor(...Y); doc.text('IVO',R-4,yp);
-  doc.setFont('helvetica','normal'); doc.setFontSize(7.5); doc.setTextColor(...MUT); doc.textWithLink(`Fai anche tu i preventivi in 10 secondi: scarica l'app su ${PARAMS.link}`, L, yp+5, {url:'https://'+PARAMS.link});
-  return doc;
-}
-function prevText(p){
-  const c=clientOf(p); const pr=S.profile; const val=new Date(p.date); val.setDate(val.getDate()+30);
-  const righe=p.rows.map(r=>`• ${r.d}${r.q>1?` × ${r.q}`:''}: ${fmt2(r.t)}`).join('\n');
-  const cd=condOf(p);
-  return `Preventivo n. ${p.num} del ${fdate(p.date)}\nPer: ${c.name}\n\n${righe}\n\nTotale: ${fmt2(p.tot)}\nOperazione non soggetta a IVA (regime forfettario, art. 1 c. 54–89 L. 190/2014).\n\nPagamento: ${cd.pag}\nValidità: ${cd.val}\nIncluso: ${cd.inc}\nExtra: ${cd.ext}\n\nPer accettare basta rispondere a questo messaggio.\n\n${pr.nome||''}${pr.piva?' · P.IVA '+pr.piva:''}${pr.contatti?'\n'+pr.contatti:''}`;
-}
-async function sendPrev(id){
-  if(!S.profile.nome){ needProfile(()=>sendPrev(id)); return; }
-  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const text=prevText(p); const subject=`Preventivo ${p.num} — ${S.profile.nome||'PreventIVO'}`;
-  const fname=`Preventivo-${p.num}.pdf`;
-  let file=null; try{ const blob=buildPDF(p).output('blob'); file=new File([blob],fname,{type:'application/pdf'}); }catch(e){}
-  const canFiles = !!(file && navigator.canShare && navigator.canShare({files:[file]}));
-  const wa=(c.wa||'').replace(/[^\d]/g,''); const waNum = wa? (wa.startsWith('39')||wa.length>10? wa : '39'+wa) : '';
-  window._send={p,file,text,subject,fname,email:c.email||'',waNum,canFiles};
-  sheet(`
-    <h3>Invia a ${esc(c.name)}</h3>
-    <div class="sub">Il PDF del preventivo, allegato.</div>
-    <div class="row2" style="margin:6px 0 14px"><input class="qin sm" id="smail" type="email" value="${esc(c.email||'')}" placeholder="Mail del cliente" onchange="setContact(${c.id},'email',this.value)"><input class="qin sm" id="swa" type="tel" value="${esc(c.wa||'')}" placeholder="WhatsApp" onchange="setContact(${c.id},'wa',this.value)"></div>
-    <button class="btn" onclick="sendVia('wa')">Invia su WhatsApp</button>
-    <button class="btn" style="margin-top:10px" onclick="sendVia('mail')">Invia per mail</button>
-    <div class="hint" style="text-align:center;margin-top:14px">${isMobile?'Si apre il foglio di condivisione: scegli WhatsApp o la tua app di posta, il PDF è già dentro.':'Il PDF si scarica e si apre il messaggio: trascina il file nell\'allegato.'}</div>
-    <div class="hint" style="text-align:center;margin-top:6px"><span class="link" onclick="copyText()">copia solo il testo</span> · <span class="link" onclick="openPDF()">apri il PDF</span></div>`);
-}
-function copyText(){ const d=window._send; navigator.clipboard&&navigator.clipboard.writeText(d.text); toast('Testo copiato'); }
-function openPDF(){ const d=window._send; const url=pdfURLFor(d.p); const w=window.open(url,'_blank'); if(!w) location.href=url; }
-async function sendVia(k){
-  const d=window._send; if(!d) return;
-  // 1) testo negli appunti: se l'app scelta non prende il testo insieme al file, lo incolli
-  try{ await navigator.clipboard.writeText(d.text); }catch(e){}
-  if(isMobile){
-    // 2) foglio di condivisione con il PDF (unica via che un sito ha per allegare un file)
-    if(d.canFiles){
-      try{ await navigator.share({files:[d.file],title:d.subject}); closeSheet(); go('list'); toast('Testo del preventivo copiato: incollalo nel messaggio'); return; }
-      catch(e){ if(e&&e.name==='AbortError') return; }
-    }
-    // 3) non riesce (bug iOS dall'icona Home, browser interno): apre il PDF, da lì Condividi → WhatsApp/mail
-    closeSheet(); toast(k==='wa'?'Si apre il PDF: tocca Condividi in basso e scegli WhatsApp':'Si apre il PDF: tocca Condividi in basso e scegli la tua posta');
-    setTimeout(()=>openPDF(),600); return;
-  }
-  // computer: scarica il PDF e apre il messaggio
-  try{ buildPDF(d.p).save(d.fname); }catch(e){}
-  if(k==='wa') window.open(`https://wa.me/${d.waNum}?text=${encodeURIComponent(d.text)}`,'_blank');
-  else location.href=`mailto:${encodeURIComponent(d.email)}?subject=${encodeURIComponent(d.subject)}&body=${encodeURIComponent(d.text)}`;
-  closeSheet(); go('list');
-}
-function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); }
-const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/.test(navigator.platform));
-const standalone = window.navigator.standalone===true || matchMedia('(display-mode: standalone)').matches;
-let _pdfURL=null;
-function pdfURLFor(p){ try{ if(_pdfURL) URL.revokeObjectURL(_pdfURL); _pdfURL=URL.createObjectURL(pdfBlob(p)); return _pdfURL; }catch(e){ return '#'; } }
-function pdfBlob(p){ if(!window.jspdf){ throw new Error('nojspdf'); } return buildPDF(p).output('blob'); }
-async function downloadPDF(id){
-  if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; }
-  const p=S.prev.find(x=>x.id===id); const fname=`Preventivo-${p.num}.pdf`;
-  let blob; try{ blob=pdfBlob(p); }catch(e){ if(e.message==='nojspdf'){ sheet(`<h3>Serve internet una volta</h3><div class="sub">Il modulo che crea il PDF non si è caricato. Collegati a internet, chiudi e riapri l'app, poi riprova.</div><button class="btn" onclick="location.reload()">Ricarica</button>`); return; } makePDF(id); return; }
-  if(!isMobile){ try{ buildPDF(p).save(fname); }catch(e){ const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=fname; document.body.appendChild(a); a.click(); a.remove(); } return; }
-  // Telefono: prova subito il foglio di condivisione (deve partire dal tocco)
-  const file=new File([blob],fname,{type:'application/pdf'}); window._shareFile=file;
-  if(navigator.canShare && navigator.canShare({files:[file]})){ try{ await navigator.share({files:[file],title:fname}); toast('PDF condiviso'); return; }catch(e){ if(e&&e.name==='AbortError') return; } }
-  pdfSheet(p,blob,fname);
-}
-function pdfSheet(p,blob,fname){
-  if(_pdfURL) URL.revokeObjectURL(_pdfURL); _pdfURL=URL.createObjectURL(blob);
-  const can = !!(navigator.canShare && navigator.canShare({files:[window._shareFile]}));
-  sheet(`
-    <h3>${fname}</h3>
-    <div class="sub">Su iPhone il PDF non si "scarica": si salva o si manda dal foglio di condivisione.</div>
-    <div class="opts">
-      ${can?`<button class="opt" onclick="sharePDF()"><span>Condividi il PDF<small>Salva in File, AirDrop, Mail, WhatsApp</small></span>›</button>`:''}
-      <a class="opt" href="${_pdfURL}" target="_blank" rel="noopener"><span>Apri in Safari<small>poi tasto Condividi → Salva in File</small></span>›</a>
-      <button class="opt" onclick="previewPDF()"><span>Guarda il PDF qui<small>anteprima dentro l'app</small></span>›</button>
-    </div>
-    ${can?'':'<div class="stima">Questo iPhone non permette di allegare file da qui (serve iOS 15 o più): usa "Apri in Safari".</div>'}
-    <div class="stima">v${PARAMS.ver}${standalone?' · app dalla Home':' · in Safari'}</div>`);
-}
-async function sharePDF(){ try{ await navigator.share({files:[window._shareFile],title:window._shareFile.name}); closeSheet(); toast('PDF condiviso'); }catch(e){ if(!(e&&e.name==='AbortError')) toast('Non riesco: '+(e&&e.message||'errore')); } }
-function previewPDF(){ sheet(`<h3>Anteprima</h3><iframe src="${_pdfURL}" style="width:100%;height:70vh;border:0;border-radius:12px;background:#fff"></iframe><button class="btn" onclick="closeSheet()">Chiudi</button>`); }
-function dupPrev(id){ const p=S.prev.find(x=>x.id===id); cur.rows=p.rows.map(r=>({d:r.d,q:r.q,p:r.p,t:r.t})); $('client').value=clientOf(p).name; closeSheet(); go('new'); step(1); loadCond(condOf(p)); }
-function delPrev(id){ if(!confirm('Eliminare questo preventivo?')) return; S.prev=S.prev.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
-
-/* ---------- CLIENTI ---------- */
-function renderClients(){
-  const clInc=c=>S.prev.filter(p=>p.client===c.id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0);
-  const clAtt=c=>S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0);
-  // previsto per cliente: il massimo tra quello che hai scritto tu (atteso) e quello che risulta dai preventivi (incassato + da incassare)
-  const clPrev=c=>Math.max(+c.atteso||0, clInc(c)+clAtt(c));
-  const totInc=S.clients.reduce((a,c)=>a+clInc(c),0);
-  const pres=S.clients.reduce((a,c)=>a+clPrev(c),0);
-  const cp=calc(pres);
-  $('cinc').textContent=fmt(totInc); $('presunto').textContent=fmt(pres);
-  $('csub').innerHTML = S.clients.length? `${S.clients.length} clienti · tocca un cliente per mail, WhatsApp e incasso atteso` : 'I clienti si creano da soli quando fai un preventivo. Tocca un cliente per mail, WhatsApp e incasso atteso.';
-  $('presuntosub').innerHTML = pres? `Su ${fmt(pres)}: tasse stimate <b style="color:var(--red)">${fmt(cp.tasse)}</b> · netto <b style="color:var(--acc)">${fmt(cp.netto)}</b> · ${pres>PARAMS.soglia?`<b style="color:var(--red)">sopra la soglia di ${fmt(pres-PARAMS.soglia)}</b>`:`alla soglia mancano ${fmt(PARAMS.soglia-pres)}`} <span class="why">?</span>` : 'Il previsto si aggiorna da solo con i preventivi accettati e incassati. Per un cliente fisso puoi scrivere tu l\'incasso atteso. <span class="why">?</span>';
-  const inc=S.clients.map(c=>({c,v:clInc(c)})).filter(x=>x.v>0);
-  const tot=inc.reduce((a,x)=>a+x.v,0);
-  $('chart').innerHTML=inc.map(x=>`<i style="width:${x.v/tot*100}%;background:${x.c.color}"></i>`).join('');
-  $('leg').innerHTML=inc.length? inc.map(x=>`<span><b style="background:${x.c.color}"></b>${esc(x.c.name)} ${Math.round(x.v/tot*100)}%</span>`).join('') : '<span>Incassato per cliente: ancora niente.</span>';
-  $('clist').innerHTML = S.clients.length? S.clients.map(c=>{ const incas=S.prev.filter(p=>p.client===c.id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return `
-    <div class="cl" onclick="openClient(${c.id})"><span class="dot" style="background:${c.color}"></span><div class="nm">${esc(c.name)}<div class="mt"><span style="color:var(--acc)">incassato ${fmt(incas)}</span>${att?` · <span class="danger">da incassare ${fmt(att)}</span>`:''} · previsto ${fmt(clPrev(c))}</div></div><span style="color:var(--mut)">›</span></div>`;}).join('') : `<div class="empty">Nessun cliente. Aggiungilo qui o scrivilo in un preventivo.</div>`;
-  $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
-}
-function addClient(){ const n=$('newclient').value.trim(); if(!n) return; getClient(n,true); $('newclient').value=''; save(); renderAll(); }
-function openClient(id){
-  const c=S.clients.find(x=>x.id===id); const P=S.prev.filter(p=>p.client===id);
-  sheet(`
-    <h3>${esc(c.name)}</h3>
-    <label class="l">Incasso atteso quest'anno (presunto)</label>
-    <input id="att" type="number" inputmode="numeric" value="${c.atteso||''}" placeholder="es. 12000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
-    <label class="l">Mail · WhatsApp</label>
-    <div class="row2"><input id="cemail" type="email" value="${esc(c.email||'')}" placeholder="mail" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="cwa2" type="tel" value="${esc(c.wa||'')}" placeholder="WhatsApp" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"></div>
-    <label class="l">Nome</label>
-    <input id="cname" value="${esc(c.name)}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
-    <button class="btn" onclick="saveClient(${id})">Salva</button>
-    <h2>Preventivi (${P.length})</h2>
-    ${P.map(p=>`<div class="kv" onclick="openPrev(${p.id})"><span>${p.num} · ${fdate(p.date)} <span class="st ${p.status}">${p.status}</span></span><span>${fmt(p.tot)}</span></div>`).join('')||'<div class="hint">Nessuno.</div>'}
-    <button class="btn ghost danger" onclick="delClient(${id})" style="margin-top:16px">Elimina cliente</button>
-  `);
-}
-function saveClient(id){ const c=S.clients.find(x=>x.id===id); c.atteso=+$('att').value||0; c.email=$('cemail').value.trim(); c.wa=$('cwa2').value.trim(); c.name=$('cname').value.trim()||c.name; save(); renderAll(); closeSheet(); toast('Salvato'); }
-function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei preventivi: elimina prima quelli.'); return; } if(!confirm('Eliminare?')) return; S.clients=S.clients.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
-
-/* ---------- ANNO ---------- */
-/* piano per anno: cosa paghi nel 2026, nel 2027… in base all'anno di attività */
-function renderPiano(c){
-  const n=annoAtt(), Y=PARAMS.anno, I=c.imposta, N=c.inps;
-  const aliqNext = (S.profile.start===true && (n==null || n+1<=5)) ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
-  const Inext = Math.max(0,c.imponibile-N)*aliqNext;
-  $('yatt').innerHTML = n ? `Sei nel <b style="color:var(--txt)">${ordinale(n)} anno</b> di partita IVA (aperta nel ${S.profile.apertura}) · <span class="link" onclick="askAct(false)">cambia</span>` : `<span class="link" onclick="askAct(false)">Dimmi in che anno hai aperto la P.IVA</span>: acconti e aliquota cambiano col tempo. Intanto conto come se non fosse il primo anno.`;
-  const anni=[];
-  if(n===1){
-    anni.push({y:Y, giu:0, nov:0, tot:0, note:`Primo anno: non paghi nulla. Metti via lo stesso ${fmt(c.via)}, perché il conto arriva tutto nel ${Y+1}.`});
-    anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`});
-  } else {
-    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`});
-    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===5?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
-  }
-  $('piano').innerHTML = anni.map((a,i)=>`
-    <div class="yr${i===0?' now':''}">
-      <div class="yh"><span>Nel ${a.y}${i===0?' <small>quest\'anno</small>':''}</span><b>${fmt(a.tot)}</b></div>
-      <div class="yd"><span>giugno</span><span>${fmt(a.giu)}</span></div>
-      <div class="yd"><span>novembre</span><span>${fmt(a.nov)}</span></div>
-      <div class="yn">${a.note}</div>
-    </div>`).join('');
-}
-function renderYear(){
-  const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
-  const tot=inc.reduce((a,p)=>a+p.tot,0);
-  const c=calc(tot,{contribPrec:S.profile.contribPrec||null});
-  const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
-  $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
-  const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
-  $('ytax').textContent=fmt(c.tasse); donut('dy','ly',c);
-  renderPiano(c); $('d4').textContent=fmt(S.profile.messoVia||0);
-  $('yin').textContent=fmt(tot); $('ynet').textContent=fmt(c.netto);
-  $('ysoglia').textContent= tot>PARAMS.soglia? `superata di ${fmt(tot-PARAMS.soglia)}` : fmt(PARAMS.soglia-tot);
-  $('ysoglia').style.color = tot>PARAMS.soglia?'var(--red)':'';
-  const proj=Math.max(tot,pres); $('yproj').textContent=fmt(proj); $('yproj').style.color=proj>PARAMS.soglia?'var(--red)':'';
-  const m=Array(12).fill(0); inc.forEach(p=>{ m[+p.hist.incassato.slice(5,7)-1]+=p.tot; });
-  const mx=Math.max(...m,1); const now=new Date().getMonth();
-  $('bars').innerHTML=m.map((v,i)=>`<div class="${v?'f':(i<=now?'':'p')}" style="height:${Math.max(2,v/mx*100)}%" title="${fmt(v)}"></div>`).join('');
-  // barra sempre visibile
-  const pct=Math.min(100,tot/PARAMS.soglia*100);
-  if($('yearbar')) $('yearbar').innerHTML=`
-    <div><div class="k">Incassato ${PARAMS.anno}</div><div class="v">${fmt(tot)}</div><div class="bar ${tot>PARAMS.soglia?'over':(tot>PARAMS.soglia*0.8?'warn':'')}"><i style="width:${pct}%"></i></div></div>
-    <div><div class="k">Netto</div><div class="v" style="color:var(--acc)">${fmt(c.netto)}</div><div class="bar" style="visibility:hidden"></div></div>
-    <div><div class="k">Tasse</div><div class="v" style="color:var(--red)">${fmt(c.tasse)}</div><div class="bar" style="visibility:hidden"></div></div>`;
-}
-function exportCSV(){
-  const inc=S.prev.filter(p=>p.status==='incassato');
-  const rows=[['Numero','Data preventivo','Data incasso','Cliente','Importo','Voci'],...inc.map(p=>[p.num,p.date,p.hist.incassato,clientOf(p).name,p.tot.toFixed(2).replace('.',','),p.rows.map(r=>`${r.q}x ${r.d} ${r.p}`).join(' | ')])];
-  dl(`incassi-${PARAMS.anno}.csv`, rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n'), 'text/csv');
-}
-function backup(){ dl(`preventivo-backup-${today()}.json`, JSON.stringify(S), 'application/json'); }
-function dl(name,content,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); }
-
-/* ---------- PDF ---------- */
-function makePDF(id){
-  const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const pr=S.profile;
-  const val=new Date(p.date); val.setDate(val.getDate()+30);
-  const SYM=`<svg width="26" height="26" viewBox="0 0 60 60" style="vertical-align:-6px;margin-right:8px"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg>`;
-  $('pdfroot').innerHTML=`
-  <style>
-    @page{size:A4;margin:0}
-    .pg{font-family:Inter,system-ui,sans-serif;color:#111;padding:16mm 18mm 14mm;position:relative;font-variant-numeric:tabular-nums;min-height:297mm;box-sizing:border-box;display:flex;flex-direction:column}
-    .pg::before{content:"";position:absolute;left:0;top:0;right:0;height:7px;background:linear-gradient(90deg,#FFD54A 0 77%,#FF4D4D 77% 100%)}
-    .ph{display:flex;justify-content:space-between;align-items:flex-start;margin-top:6px}
-    .pb{font-weight:800;font-size:24px;letter-spacing:-.02em}.pb small{display:block;font-weight:400;font-size:11px;color:#7a7a82;margin-top:6px;line-height:1.55;white-space:pre-line;letter-spacing:0}
-    .pm{text-align:right;font-size:11px;color:#7a7a82;line-height:1.6}.pm b{display:block;color:#111;font-size:30px;font-weight:800;margin-bottom:4px;letter-spacing:-.02em}
-    .pm b i{font-style:normal;color:#FFD54A}
-    .pp{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin:30px 0 22px;padding:16px 0;border-top:1px solid #e6e6ea;border-bottom:1px solid #e6e6ea;font-size:13px;line-height:1.5}
-    .pl{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;margin-bottom:6px}
-    table{width:100%;border-collapse:collapse;font-size:13px}th{font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;font-weight:500;text-align:left;padding:0 0 10px}
-    th.n,td.n{text-align:right}td{padding:12px 0;border-top:1px solid #e6e6ea;vertical-align:top}
-    .pt{display:flex;justify-content:flex-end;margin-top:10px}.pt div{min-width:280px}
-    .pr{display:flex;justify-content:space-between;padding:8px 0;font-size:13px;color:#7a7a82}
-    .pr.t{border-top:2px solid #111;margin-top:6px;padding-top:14px;color:#111;font-size:20px;font-weight:800;align-items:baseline}.pr.t span:last-child{font-size:28px;letter-spacing:-.02em}
-    .pf{font-size:10px;color:#7a7a82;margin-top:10px;line-height:1.5}
-    .terms{margin-top:26px;display:grid;grid-template-columns:1fr 1fr;gap:18px;font-size:12px;line-height:1.6}
-    .terms h4{margin:0 0 5px;font-size:10px;text-transform:uppercase;letter-spacing:.12em;color:#7a7a82;font-weight:500}.terms p{margin:0}
-    .ps{margin-top:auto;padding-top:40px;display:grid;grid-template-columns:1fr 1fr;gap:24px;font-size:11px;color:#7a7a82}.ps div{border-top:1px solid #111;padding-top:8px}
-    .pfoot{margin-top:22px;font-size:10px;color:#7a7a82;display:flex;justify-content:space-between;align-items:center}
-    .pfoot b{color:#111;font-weight:800}.pfoot b i{font-style:normal;color:#FFD54A}
-  </style>
-  <div class="pg">
-    <div class="ph">
-      <div class="pb">${esc(pr.nome||'Il tuo nome')}<small>${esc(pr.piva?('P.IVA '+pr.piva):'')}${pr.contatti?'\n'+esc(pr.contatti):''}</small></div>
-      <div class="pm"><b>Prevent<i>IVO</i></b>N. ${p.num} · ${fdate(p.date)}<br>Valido fino al ${fdate(val.toISOString().slice(0,10))}</div>
-    </div>
-    <div class="pp">
-      <div><div class="pl">Per</div><strong>${esc(c.name)}</strong>${c.email?'<br>'+esc(c.email):''}${c.wa?'<br>'+esc(c.wa):''}</div>
-      <div><div class="pl">Oggetto</div>${esc(p.rows.map(r=>r.d).join(', '))}</div>
-    </div>
-    <table><thead><tr><th>Descrizione</th><th class="n">Q.tà</th><th class="n">Prezzo</th><th class="n">Totale</th></tr></thead><tbody>
-    ${p.rows.map(r=>`<tr><td>${esc(r.d)}</td><td class="n">${r.q}</td><td class="n">${fmt2(r.p)}</td><td class="n">${fmt2(r.t)}</td></tr>`).join('')}
-    </tbody></table>
-    <div class="pt"><div>
-      <div class="pr"><span>Imponibile</span><span>${fmt2(p.tot)}</span></div>
-      <div class="pr"><span>IVA</span><span>non applicata</span></div>
-      <div class="pr t"><span>Totale</span><span>${fmt2(p.tot)}</span></div>
-      <p class="pf">Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54–89, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 € per importi superiori a 77,47 €.</p>
-    </div></div>
-    <div class="terms">
-      <div><h4>Pagamento</h4><p>${esc(condOf(p).pag)}</p></div>
-      <div><h4>Validità</h4><p>${esc(condOf(p).val)}</p></div>
-      <div><h4>Incluso</h4><p>${esc(condOf(p).inc)}</p></div>
-      <div><h4>Extra</h4><p>${esc(condOf(p).ext)}</p></div>
-    </div>
-    <div class="ps"><div>Per accettazione — firma e data</div><div>${esc(pr.nome||'')}</div></div>
-    <div class="pfoot"><span>Preventivo ${p.num} · pagina 1 di 1 · <a href="https://${PARAMS.link}" style="color:#7a7a82">scarica l'app: ${PARAMS.link}</a></span><span>${SYM}fatto con <b>Prevent<i>IVO</i></b></span></div>
-  </div>`;
-  closeSheet();
-  setTimeout(()=>window.print(),150);
-}
-
-/* ---------- SETTINGS / SETUP ---------- */
-let _after=null;
-function askAct(first,after){
-  _after=after||null; const pr=S.profile;
-  sheet(`
-    <h3>${first?'Una domanda sola':'Cosa fai?'}</h3>
-    <div class="sub">${first?'Serve per calcolare bene le tasse. Si cambia quando vuoi.':''}</div>
-    <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="a-act" onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
-    <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
-    <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
-    <label class="l">In che anno hai aperto la partita IVA?</label>
-    <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
-    <div class="hint" style="margin:8px 2px 0">Serve per sapere in che anno di attività sei: cambiano acconti e, dopo il 5°, l'aliquota.</div>
-    <label class="l">La partita IVA ha meno di 5 anni ed è un'attività nuova? <span class="why" onclick="why('start')">?</span></label>
-    <div class="seg"><button id="a-y" class="${pr.start===true?'on':''}" onclick="aStart(true)">Sì · 5%</button><button id="a-n" class="${pr.start===false?'on':''}" onclick="aStart(false)">No · 15%</button><button id="a-u" class="${pr.start==null?'on':''}" onclick="aStart(null)">Non lo so</button></div>
-    <div class="hint" id="a-shint" style="margin:8px 2px 0">${pr.start==null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':''}</div>
-    <button class="btn" onclick="saveAct()">${first?'Vai':'Salva'}</button>
-    <div class="stima">Se scegli "Altro" usiamo il coefficiente più comune (78%): il tuo lo trovi sul codice ATECO, chiedilo al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
-}
-let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
-function saveAct(){ S.profile.act=$('a-act').value; S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
-function needProfile(after){
-  const pr=S.profile; if(pr.nome) { after(); return; }
-  sheet(`
-    <h3>I tuoi dati sul preventivo</h3>
-    <div class="sub">Una volta sola. Vanno in alto a sinistra nel PDF.</div>
-    <input id="n-nome" placeholder="Nome e cognome" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
-    <input id="n-piva" placeholder="Partita IVA" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
-    <input id="n-cont" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
-    <button class="btn" onclick="saveProfileQuick()">Continua</button>`);
-  window._afterProfile=after;
-}
-function saveProfileQuick(){ S.profile.nome=$('n-nome').value.trim(); S.profile.piva=$('n-piva').value.trim(); S.profile.contatti=$('n-cont').value.trim(); save(); closeSheet(); renderHello(); const f=window._afterProfile; window._afterProfile=null; if(f) setTimeout(f,50); }
-function settingsHTML(first){
-  const pr=S.profile;
-  return `
-    <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'} <small style="color:var(--mut);font-weight:400;font-size:12px">v${PARAMS.ver}</small></h3>
-    <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
-    <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
-    <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
-    <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
-    <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
-    <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
-    <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
-    <input id="s-contrib" type="number" inputmode="numeric" value="${pr.contribPrec||''}" placeholder="es. 4500" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
-    <label class="l">Già messo via per le tasse quest'anno</label>
-    <input id="s-via" type="number" inputmode="numeric" value="${pr.messoVia||''}" placeholder="es. 2000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
-    <h2>Per il PDF del preventivo</h2>
-    <input id="s-nome" value="${esc(pr.nome)}" placeholder="Nome e cognome" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
-    <input id="s-piva" value="${esc(pr.piva)}" placeholder="Partita IVA" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:8px">
-    <input id="s-cont" value="${esc(pr.contatti)}" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
-    <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
-    ${first?'':'<button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
-    <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
-}
-let tmpStart='unset';
-function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
-function saveSettings(){
-  S.profile.act=$('s-act').value; S.profile.inps=$('s-inps').value; if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
-  S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
-  S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim();
-  S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
-}
-function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json'; i.onchange=()=>{ const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); renderAll(); closeSheet(); toast('Ripristinato'); }catch(e){ alert('File non valido'); } }; r.readAsText(i.files[0]); }; i.click(); }
-function wipe(){ if(!confirm('Cancellare tutto? Non si torna indietro.')) return; localStorage.removeItem(KEY); location.reload(); }
-
-/* ---------- PERCHÉ ---------- */
-const WHY={
-  via:['Da mettere via','INPS più imposta, arrotondati per eccesso del 5%. È la cifra da spostare sul conto tasse appena incassi. Meglio avanzare che mancare.'],
-  inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti hanno anche una quota fissa.'],
-  imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
-  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per video e consulenza il 78%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
-  start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
-  stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
-  attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
-};
-WHY.presunto=['Incassato e previsto',"Incassato: i preventivi segnati come incassati quest'anno. Previsto a fine anno: per ogni cliente, il più alto tra l'incasso atteso che scrivi tu (tocca il cliente) e quello che risulta dai preventivi accettati, fatturati e incassati. Serve a vedere prima tasse, netto e soglia dell'anno."];
-function why(k){ const w=WHY[k]; sheet(`<h3>${w[0]}</h3><p style="line-height:1.6;color:var(--txt)">${w[1]}</p><button class="btn ghost" onclick="closeSheet()">Ok</button>`); }
-
-/* ---------- NAV / SHEET / TOAST ---------- */
-function go(v){ document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
-document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
-function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
-function closeSheet(){ $('sheet').classList.remove('on'); }
-$('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
-function openSheet(k){ if(k==='settings') sheet(settingsHTML(false)); }
-let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'),1400); }
-function renderAll(){ renderList(); renderClients(); renderYear(); }
-
-/* ---------- AVVIO ---------- */
-if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
-renderAll(); renderCalc(); ring0(0); renderRate(); renderHello();
+// demo del cerchio: stessa formula dell'app (coefficiente 78%, INPS 26,07%, imposta 5%)
+const C=2*Math.PI*84;
+function calc(v){ const imp=v*0.78, inps=imp*0.2607, tax=Math.max(0,imp-inps)*0.05; return {net:v-inps-tax,inps,tax}; }
+const fmt=n=>Math.round(n).toLocaleString('it-IT')+' €';
+function show(v){ const c=calc(v); const fy=c.net/v, fr=(c.inps+c.tax)/v;
+  const ry=document.getElementById('ry'), rr=document.getElementById('rr');
+  ry.setAttribute('stroke-dasharray',`${fy*C} ${C}`); rr.setAttribute('stroke-dasharray',`${fr*C} ${C}`); rr.setAttribute('transform',`rotate(${fy*360} 100 100)`);
+  document.getElementById('dnet').textContent=fmt(c.net); document.getElementById('lnet').textContent=fmt(c.net); document.getElementById('limp').textContent=fmt(c.tax); document.getElementById('linps').textContent=fmt(c.inps); }
+document.getElementById('ctrl').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return; [...e.currentTarget.children].forEach(x=>x.setAttribute('aria-pressed',x===b?'true':'false')); show(+b.dataset.v); });
+show(1000);
 </script>
 </body>
 </html>
