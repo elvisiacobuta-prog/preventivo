@@ -387,7 +387,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '1.9',
+  ver: '2.0',
   link: 'partitaivo.it',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -698,13 +698,13 @@ async function sendPrev(id){
       <a class="opt" href="https://wa.me/${waNum}?text=${encodeURIComponent(text)}" target="_blank" rel="noopener" onclick="closeSheet();go('list')"><span>WhatsApp, solo testo<small>${waNum?'al numero salvato':'scegli tu il contatto'}</small></span>›</a>
       <button class="opt" onclick="downloadPDF(${p.id})"><span>Apri / salva il PDF<small>Si apre il foglio di condivisione: Salva in File, AirDrop…</small></span>›</button>
       <button class="opt" onclick="navigator.clipboard&&navigator.clipboard.writeText(${JSON.stringify(text)});toast('Copiato');closeSheet();go('list')"><span>Copia il testo</span>›</button>
-      ${canFiles?'':`<a class="opt" href="${pdfURLFor(p)}" target="_blank" rel="noopener"><span>Apri il PDF in Safari e allegalo da lì<small>si apre il PDF → tasto Condividi → Mail o WhatsApp</small></span>›</a>`}
+      <a class="opt" href="${pdfURLFor(p)}" target="_blank" rel="noopener"><span>Apri il PDF in Safari e allegalo da lì<small>si apre il PDF → tasto Condividi → Gmail, Mail o WhatsApp</small></span>›</a>
     </div>
     <div class="stima" style="text-align:center">v${PARAMS.ver} · ${standalone?'app dalla Home':'browser'} · allegati: ${canFiles?'sì':'no'} · ${/CriOS/.test(navigator.userAgent)?'Chrome':(/FBAN|FBAV|Instagram|TikTok/i.test(navigator.userAgent)?'browser interno di un social':'Safari')}</div>`);
 }
 function setContact(id,k,v){ const c=S.clients.find(x=>x.id===id); if(!c) return; c[k]=v.trim(); save(); const p=S.prev.find(x=>x.client===id); if(p) sendPrev(p.id); }
 async function shareText(title,text){ try{ await navigator.share({title,text}); closeSheet(); go('list'); }catch(e){ if(!(e&&e.name==='AbortError')) toast('Non riesco: '+(e&&e.message||'errore')); } }
-async function shareFile(title,text){ try{ await navigator.share({title,text,files:[window._shareFile]}); closeSheet(); go('list'); }catch(e){} }
+async function shareFile(title,text){ try{ await navigator.share({files:[window._shareFile],title}); closeSheet(); go('list'); }catch(e){ if(e&&e.name==='AbortError') return; try{ await navigator.share({files:[window._shareFile]}); closeSheet(); go('list'); return; }catch(e2){ toast('Allegato non riuscito: '+(e2&&(e2.name+' '+e2.message)||'errore')+'. Usa "Apri il PDF in Safari".'); } } }
 const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent) || (navigator.maxTouchPoints>1 && /Mac/.test(navigator.platform));
 const standalone = window.navigator.standalone===true || matchMedia('(display-mode: standalone)').matches;
 let _pdfURL=null;
