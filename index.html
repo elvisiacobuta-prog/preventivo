@@ -984,6 +984,7 @@ let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('o
 function renderAll(){ renderList(); renderClients(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
+if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
 renderAll(); renderCalc(); ring0(0); renderRate(); renderHello();
 </script>
 </body>
