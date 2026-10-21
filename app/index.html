@@ -151,6 +151,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .impprev{margin:14px 0}.impsum{font-size:14px;margin-bottom:8px}.impprev .kv small{color:var(--mut);font-size:11px}
 .cinc{background:var(--sur2);border-radius:12px;padding:10px 14px;margin:8px 0 4px}.cinc small{display:block;font-size:12px;color:var(--mut)}.cinc b{font-size:22px;color:var(--acc)}
 .mkinc{flex:none;padding:8px 12px;border-radius:999px;background:#FFD54A1f;color:var(--acc);font-weight:700;font-size:12.5px;border:1px solid #FFD54A66}
+.mbar{display:flex;height:14px;border-radius:999px;overflow:hidden;background:var(--sur2);margin:10px 0 8px}.mbar i{display:block;height:100%}.md{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:8px;vertical-align:1px}.kv.tot{font-weight:800;border-top:1px solid var(--line);margin-top:4px;padding-top:8px}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
@@ -363,8 +364,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <p class="disc0" style="text-align:left;margin:0 0 12px">Stime: importi e scadenze vanno confermati dal commercialista.</p>
     <button class="impbtn" onclick="need(importStart)"><b>Hai già i tuoi incassi in Excel?</b><small>Caricali qui (Excel o CSV): l'anno si aggiorna da solo.</small><span>↥</span></button>
 
+    <div class="card" id="ymoney"></div>
+    <div class="seg" id="ymodeseg" style="margin:0 0 12px"><button id="ym0" onclick="setYMode(0)">Solo incassato</button><button id="ym1" onclick="setYMode(1)">Con quelli da incassare</button></div>
     <div class="card">
-      <div class="kpi"><div class="k">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
+      <div class="kpi"><div class="k" id="ytaxk">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
       <div class="donutwrap" style="margin-bottom:6px"><svg class="donut" viewBox="0 0 120 120" id="dy"></svg><div class="legend" id="ly"></div></div>
     </div>
 
@@ -421,7 +424,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.5',
+  ver: '3.6',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -953,16 +956,31 @@ function renderPiano(c){
       <div class="yn">${a.note}${F?` Le 4 rate fisse INPS (${fmt(fr)} l'una) si pagano sempre, anche se incassi poco.`:''}</div>
     </div>`).join('') + `<div class="yn" style="margin-top:4px">Saldo e acconti si calcolano sull'anno prima: qui li stimiamo con gli incassi che hai segnato. Le date sono quelle ordinarie (30 giugno, 30 novembre${F?'; INPS fisso 18 maggio, 20 agosto, 16 novembre, 16 febbraio':''}): conferma con il commercialista.</div>`;
 }
+function setYMode(m){ S.yMode=m; save(); renderYear(); }
 function renderYear(){
   const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
-  const tot=inc.reduce((a,p)=>a+p.tot,0);
+  const real=inc.reduce((a,p)=>a+p.tot,0);
+  const yr=p=>String((p.hist&&(p.hist[p.status]))||p.date||'').startsWith(PARAMS.anno)||String(p.date||'').startsWith(PARAMS.anno);
+  const fatt=S.prev.filter(p=>p.status==='fatturato'&&yr(p)).reduce((a,p)=>a+p.tot,0);
+  const acc=S.prev.filter(p=>p.status==='accettato'&&yr(p)).reduce((a,p)=>a+p.tot,0);
+  const prevTot=real+fatt+acc, mode=S.yMode?1:0, tot=mode?prevTot:real;
+  $('ym0').classList.toggle('on',!mode); $('ym1').classList.toggle('on',!!mode);
+  $('ytaxk').textContent=mode?`tasse stimate su ${fmt(prevTot)} (incassato + da incassare)`:`tasse stimate su ${fmt(real)} incassati`;
+  const W=v=>prevTot?Math.max(v?1.5:0,v/prevTot*100):0;
+  $('ymoney').innerHTML=`<div class="k2">I tuoi soldi del ${PARAMS.anno}</div>
+    <div class="mbar"><i style="width:${W(real)}%;background:#FFD54A"></i><i style="width:${W(fatt)}%;background:#FF9F43"></i><i style="width:${W(acc)}%;background:#7d7d86"></i></div>
+    <div class="kv"><span><i class="md" style="background:#FFD54A"></i>Incassato</span><span>${fmt(real)}</span></div>
+    <div class="kv"><span><i class="md" style="background:#FF9F43"></i>Fatturato, da incassare</span><span>${fmt(fatt)}</span></div>
+    <div class="kv"><span><i class="md" style="background:#7d7d86"></i>Accettato, da fatturare</span><span>${fmt(acc)}</span></div>
+    <div class="kv tot"><span>Totale previsto</span><span>${fmt(prevTot)}</span></div>
+    <div class="hint" style="margin-top:6px">Contano solo i preventivi accettati, fatturati e incassati. Quelli solo inviati no: non sono ancora sicuri.${prevTot>PARAMS.soglia?` <b style="color:var(--red)">Con tutto il previsto superi la soglia di 85.000 €.</b>`:''}</div>`;
   const c=calc(tot,{contribPrec:S.profile.contribPrec||null, annual:true});
   const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
   $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
   const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
   $('ytax').textContent=fmt(c.tasse); donut('dy','ly',c);
   renderPiano(c); $('d4').textContent=fmt(S.profile.messoVia||0);
-  $('yin').textContent=fmt(tot); $('ynet').textContent=fmt(c.netto);
+  $('yin').textContent=fmt(real); $('ynet').textContent=fmt(c.netto);
   $('ysoglia').textContent= tot>PARAMS.soglia? `superata di ${fmt(tot-PARAMS.soglia)}` : fmt(PARAMS.soglia-tot);
   $('ysoglia').style.color = tot>PARAMS.soglia?'var(--red)':'';
   const proj=Math.max(tot,pres); $('yproj').textContent=fmt(proj); $('yproj').style.color=proj>PARAMS.soglia?'var(--red)':'';
