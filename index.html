@@ -157,7 +157,7 @@ h1{font-size:clamp(46px,7vw,96px);line-height:.94;letter-spacing:-.05em;margin:0
 /* scene */
 .scene{position:relative;min-height:88svh;display:flex;align-items:center;overflow:hidden;background:#0b0b0b}
 .scene picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0 40%}
-@media(min-width:900px){.scene#cifra picture img{width:120%;left:0}}
+@media(min-width:900px){.scene#cifra picture img,.scene#set picture img{width:115%;left:0}}
 .scene .sh{position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,22,22,.9) 0%,rgba(22,22,22,.5) 40%,rgba(22,22,22,0) 70%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 20%,rgba(22,22,22,0) 85%,#161616 100%)}
 .scene .w{position:relative;padding:120px 24px}
 .scene h2{font-size:clamp(40px,6vw,80px);line-height:.95;letter-spacing:-.05em;margin:0 0 18px;font-weight:900;max-width:620px}
@@ -229,9 +229,9 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </div></section>
 
 <section class="scene" id="cifra">
-  <picture><source media="(max-width:720px)" srcset="img/scene/cucina-mobile.jpg"><img src="img/scene/cucina-2560.jpg" srcset="img/scene/cucina-1280.jpg 1280w, img/scene/cucina-2560.jpg 2560w" sizes="100vw" alt="Un freelance in cucina, di sera, guarda quanto gli resta sul telefono" width="2560" height="1428" loading="lazy"></picture>
+  <picture><source media="(max-width:720px)" srcset="img/scene/cucina-mobile.jpg"><img src="img/scene/cucina-2560.jpg" srcset="img/scene/cucina-1280.jpg 1280w, img/scene/cucina-2560.jpg 2560w" sizes="100vw" alt="Un freelance in cucina, di sera, scrive un preventivo sul telefono: voci, totale e quanto gli resta" width="2560" height="1428" loading="lazy"></picture>
   <div class="sh" aria-hidden="true"></div>
-  <div class="w"><div><h2>Ti pagano.<br><span class="y">Sai quanto è tuo.</span></h2><p>Giallo è tuo. Rosso va al fisco. Prima di spenderli.</p></div></div>
+  <div class="w"><div><h2>Scrivi le voci.<br><span class="y">Vedi quanto resta.</span></h2><p>Il preventivo in dieci secondi. Giallo è tuo, rosso va al fisco.</p></div></div>
 </section>
 
 <section class="slide" id="preventivo"><div class="w">
@@ -243,6 +243,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <div><p class="num">Invio</p><h2>Due tasti.<br><span class="y">Il PDF è già dentro.</span></h2><p>WhatsApp o mail. Con il tuo nome e la tua partita IVA.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: invio su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div></div>
 </div></section>
+
+<section class="scene" id="set">
+  <picture><source media="(max-width:720px)" srcset="img/scene/set-mobile.jpg"><img src="img/scene/set-2560.jpg" srcset="img/scene/set-1280.jpg 1280w, img/scene/set-2560.jpg 2560w" sizes="100vw" alt="Un videomaker sul set risponde al cliente mandando il preventivo in PDF da WhatsApp" width="2560" height="1428" loading="lazy"></picture>
+  <div class="sh" aria-hidden="true"></div>
+  <div class="w"><div><h2>Il cliente chiede.<br><span class="y">Tu rispondi. Subito.</span></h2><p>Anche in mezzo a un lavoro. Il PDF parte da dove sei.</p></div></div>
+</section>
 
 <section class="slide" id="stati"><div class="w">
   <div><p class="num">Preventivi</p><h2>Chi ti deve<br><span class="y">cosa.</span></h2><p>Inviato, accettato, fatturato, incassato. A colpo d'occhio.</p></div>
