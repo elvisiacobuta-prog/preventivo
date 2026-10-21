@@ -251,12 +251,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 
 <section class="slide" id="preventivo"><div class="w">
   <div><p class="num">Preventivo</p><h2>Voci, prezzo.<br><span class="y">Fatto.</span></h2><p>Dal telefono, in dieci secondi. Mentre scrivi vedi quanto ti resta.</p></div>
-  <div class="ph"><div class="phone" style="--poster:url(video/preventivo.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: creazione di un preventivo"><source src="video/preventivo.mp4" type="video/mp4"></video></div></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/preventivo.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: creazione di un preventivo"><source src="video/preventivo.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
 <section class="slide rev" id="invio"><div class="w">
   <div><p class="num">Invio</p><h2>Due tasti.<br><span class="y">Il PDF è già dentro.</span></h2><p>WhatsApp o mail. Con il tuo nome e la tua partita IVA.</p></div>
-  <div class="ph"><div class="phone" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: invio su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: invio su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
 <section class="scene" id="set">
@@ -267,12 +267,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 
 <section class="slide" id="stati"><div class="w">
   <div><p class="num">Preventivi</p><h2>Chi ti deve<br><span class="y">cosa.</span></h2><p>Inviato, accettato, fatturato, incassato. A colpo d'occhio.</p></div>
-  <div class="ph"><div class="phone" style="--poster:url(video/stati.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: stati dei preventivi"><source src="video/stati.mp4" type="video/mp4"></video></div></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/stati.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: stati dei preventivi"><source src="video/stati.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
 <section class="slide rev" id="clienti"><div class="w">
   <div><p class="num">Clienti</p><h2>I tuoi clienti.<br><span class="y">Il tuo anno.</span></h2><p>Si creano da soli dal primo preventivo. Mail, WhatsApp, quanto vale ognuno.</p></div>
-  <div class="ph"><div class="phone" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: clienti"><source src="video/clienti.mp4" type="video/mp4"></video></div></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: clienti"><source src="video/clienti.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
 <section class="scene r" id="anno">
@@ -283,7 +283,7 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 
 <section class="slide" id="annoapp"><div class="w">
   <div><p class="num">Anno</p><h2>Quest'anno.<br><span class="y">E il prossimo.</span></h2><p>Tasse stimate, giugno e novembre, soglia 85.000 €. In base all'anno di partita IVA in cui sei.</p></div>
-  <div class="ph"><div class="phone" style="--poster:url(video/anno.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: la scheda Anno"><source src="video/anno.mp4" type="video/mp4"></video></div></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/anno.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: la scheda Anno"><source src="video/anno.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
 <section class="pricing" id="prezzo"><div class="w">
@@ -320,7 +320,14 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 <script>
 const nav=document.getElementById('nav'); addEventListener('scroll',()=>nav.classList.toggle('s',scrollY>40),{passive:true});
 const vids=[...document.querySelectorAll('video')];
-if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); } }),{threshold:.3}); vids.forEach(v=>io.observe(v)); }
+vids.forEach(v=>{v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.setAttribute('webkit-playsinline','');});
+const seen=new Set();
+const go=v=>{ if(v.readyState<2) v.load(); const p=v.play(); if(p) p.catch(()=>{}); };
+if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){ seen.add(v); go(v); } else { seen.delete(v); v.pause(); } }),{threshold:.15,rootMargin:'120px 0px'}); vids.forEach(v=>io.observe(v)); } else { vids.forEach(go); }
+const kick=()=>seen.forEach(v=>{ if(v.paused) go(v); });
+['touchstart','pointerdown','scroll','keydown'].forEach(t=>addEventListener(t,kick,{passive:true}));
+document.addEventListener('visibilitychange',()=>{ if(!document.hidden) kick(); });
+setInterval(kick,1500);
 </script>
 </body>
 </html>
