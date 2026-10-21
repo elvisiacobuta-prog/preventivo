@@ -161,6 +161,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .cassaw{background:var(--sur2);border-radius:12px;padding:4px 12px 12px;margin-top:8px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}.row3 label{font-size:11.5px;color:var(--mut);display:grid;gap:4px}.row3 input{width:100%;min-width:0;background:var(--sur);border:0;border-radius:10px;padding:10px;outline:none;font-size:15px;color:var(--txt)}
 .movebox{background:var(--sur2);border-radius:12px;padding:12px 14px;margin:14px 0 8px;display:grid;gap:6px}.movebox small{color:var(--mut);font-size:12.5px;line-height:1.45}.movebox .btn{margin:4px 0 0}
 .kform{display:grid;grid-template-columns:1.6fr 1fr;gap:8px}.kform label{display:grid;gap:4px;font-size:12px;color:var(--mut)}.kform input{width:100%;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px;outline:none;font-size:16px;color:var(--txt)}.ktab{background:var(--sur2);border-radius:12px;padding:4px 12px 8px}.kth{display:flex;justify-content:space-between;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:8px 0 4px}
+.updbar{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--acc);color:#111;font-weight:800;border-radius:14px;padding:14px;font-size:14px;box-shadow:0 8px 30px #0008}
 .xbtn{margin-left:8px;width:26px;height:26px;border-radius:50%;background:var(--sur2);color:var(--mut);font-size:12px}
 .faqsec{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px}.faqi{border-bottom:1px solid var(--sur2);padding:10px 0}.faqi summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}.faqi summary::after{content:' +';color:var(--acc)}.faqi[open] summary::after{content:' −'}.faqi p{margin:8px 0 2px;font-size:14px;line-height:1.55;color:var(--mut)}
 .faqlink{display:block;margin:4px auto 12px;font-size:13px;font-weight:700;color:var(--acc)}
@@ -440,7 +441,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.3.3',
+  ver: '4.4',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1418,6 +1419,13 @@ function renderAll(){ renderList(); renderClients(); renderMargin(); renderYear(
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
 renderAll(); renderCalc(); ring0(0); renderRate(); renderHello();
+/* aggiornamento automatico: quando riapri l'app controlla se c'è una versione nuova */
+let _lastChk=0;
+async function checkUpdate(){ if(location.protocol!=='https:') return; const now=Date.now(); if(now-_lastChk<60000) return; _lastChk=now;
+  try{ const t=await fetch(location.pathname+'?v='+now,{cache:'no-store'}).then(r=>r.text()); const m=t.match(/ver: '([^']+)'/); if(m&&m[1]!==PARAMS.ver){ if(document.activeElement&&/INPUT|TEXTAREA|SELECT/.test(document.activeElement.tagName)) return showUpd(m[1]); if($('sheet').classList.contains('on')) return showUpd(m[1]); location.reload(); } }catch(e){} }
+function showUpd(v){ if($('updbar')) return; const d=document.createElement('button'); d.id='updbar'; d.className='updbar'; d.textContent='Nuova versione '+v+' pronta · tocca per aggiornare'; d.onclick=()=>location.reload(); document.body.appendChild(d); }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible') checkUpdate(); });
+window.addEventListener('focus',checkUpdate); setTimeout(checkUpdate,3000);
 </script>
 </body>
 </html>
