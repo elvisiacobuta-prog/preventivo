@@ -137,6 +137,10 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .seg{display:flex;background:var(--sur2);border-radius:12px;padding:3px}
 .seg button{flex:1;padding:9px;border-radius:10px;font-size:13px;font-weight:600;color:var(--mut)}
 #rateseg button{padding:12px;font-size:14px}#rateseg button.on{background:var(--acc);color:#111}
+.howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
+.hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
+.hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
+.atchip{display:block;margin:0 auto 10px;padding:6px 12px;border-radius:999px;background:var(--sur2);color:var(--mut);font-size:12.5px;font-weight:600}.atchip b{color:var(--txt)}
 .seg button.on{background:var(--sur);color:var(--txt)}
 .link{color:var(--acc);font-weight:600;font-size:14px;padding:8px 0}
 .danger{color:var(--red)}
@@ -232,7 +236,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="step on" id="st0">
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
-      <div class="seg" id="rateseg" style="margin:0 0 10px"><button id="rate5" onclick="setRate(true)">Forfettario 5%</button><button id="rate15" onclick="setRate(false)">Forfettario 15%</button></div>
+      <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button><button id="rateM" onclick="askPct()">La tua %</button></div>
+      <button class="atchip" id="atchip" onclick="askAct(false)"></button>
       <div class="hero">
         <svg class="ring" viewBox="0 0 200 200" id="ring0">
           <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="16"/>
@@ -250,7 +255,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <button>7</button><button>8</button><button>9</button>
         <button>00</button><button>0</button><button class="del">⌫</button>
       </div>
-      <div class="legend h" id="l0" style="display:none"></div>
+      <div class="legend h" id="l0" style="display:none"></div><div id="how0"></div>
       <div class="hint" style="text-align:center;margin:-8px 0 14px" id="actline"></div>
       <div class="choices">
         <button class="choice main" onclick="fromHome('prev')">Fai il preventivo da mandare<small>Voci, PDF con il tuo logo, invio in un tocco</small></button>
@@ -396,7 +401,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.4',
+  ver: '2.5',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -444,6 +449,7 @@ function coef(){ const ca=coefAteco(S.profile.ateco); if(ca!=null) return ca; co
 function atecoHint(v){ const c=coefAteco(v); return !String(v||'').trim()?'Facoltativo: se lo sai, il calcolo usa il coefficiente esatto del tuo codice.':(c==null?'Codice non riconosciuto: scrivilo come 59.11 (per il 46 e il 47 servono anche le cifre dopo il punto).':'Coefficiente '+Math.round(c*100)+'%: vale questo, al posto di quello di "Cosa fai?".'); }
 /* anno di attività: 1 = anno di apertura della P.IVA */
 function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
+function isMan(o){ return !(o&&o.noMan) && !!(S.profile.useMan && S.profile.manPct>0 && S.profile.manPct<100); }
 function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || n<=5); }
 function ordinale(n){ return n+'°'; }
 function isIVS(){ return S.profile.inps==='artigiani'||S.profile.inps==='commercianti'; }
@@ -459,6 +465,11 @@ function calc(lordo, opts={}){
   const ded = opts.contribPrec!=null ? opts.contribPrec : inps;
   const imposta = Math.max(0, imponibile - ded) * aliq;
   const tasse = inps + imposta;
+  if (isMan(opts)) { // percentuale scelta dall'utente: tasse+INPS = lordo × %, ripartite come nel calcolo esatto
+    const tm = lordo * S.profile.manPct / 100, k = tasse > 0 ? tm / tasse : 0;
+    const viaM = Math.ceil(tm / 5) * 5;
+    return { lordo, imponibile, inps: inps*k, fisso: fisso*k, inpsEcc: inpsEcc*k, imposta: imposta*k, tasse: tm, netto: lordo - tm, via: viaM, manual: true, exact: tasse };
+  }
   const via = Math.ceil(tasse * 1.05 / 5) * 5; // arrotonda per eccesso +5%
   return { lordo, imponibile, inps, fisso, inpsEcc, imposta, tasse, netto: lordo - tasse, via };
 }
@@ -506,10 +517,20 @@ function donut(svgId, legId, c){
 function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
 function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
 function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
-function renderActLine(){ $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (${coefAteco(S.profile.ateco)!=null?'ATECO '+esc(S.profile.ateco)+' · ':''}coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
-function setRate(five){ if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
+function renderActLine(){ if(isMan()){ $('actline').innerHTML=`Calcolo con <b style="color:var(--txt)">la tua percentuale: ${String(S.profile.manPct).replace('.',',')}%</b> di tasse e INPS · il calcolo esatto darebbe circa il ${Math.round(calc(1000,{noMan:1}).tasse/10)}% · <span class="link" onclick="S.profile.useMan=false;save();refreshRate()" style="font-size:12px">torna all'esatto</span>`; return; } $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (${coefAteco(S.profile.ateco)!=null?'ATECO '+esc(S.profile.ateco)+' · ':''}coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
+function setRate(five){ S.profile.useMan=false; if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function renderHello(){}
-function renderRate(){ $('rate5').classList.toggle('on',is5()); $('rate15').classList.toggle('on',!is5()); }
+function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); $('rateM').classList.toggle('on',m); $('rateM').textContent=m?('La tua · '+String(S.profile.manPct).replace('.',',')+'%'):'La tua %';
+  const ca=coefAteco(S.profile.ateco); $('atchip').innerHTML = ca!=null ? `ATECO <b>${esc(S.profile.ateco)}</b> · coefficiente ${Math.round(ca*100)}% ✎` : 'Hai il codice ATECO? <b>Inseriscilo</b> per un calcolo esatto'; }
+function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
+  sheet(`<h3>La tua percentuale</h3><div class="sub">Se metti via sempre la stessa quota (per esempio il 27%), scrivila qui: l'app calcola con quella.</div>
+    <label class="l">Quanto togli da ogni incasso, tasse e INPS insieme?</label>
+    <div style="display:flex;align-items:center;gap:8px"><input id="m-pct" type="number" inputmode="decimal" min="1" max="99" step="0.5" value="${pr.manPct||''}" placeholder="27" style="flex:1;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:20px;font-weight:700"><b style="font-size:20px">%</b></div>
+    <div class="hint" style="margin:8px 2px 0">Con le tue impostazioni il calcolo esatto dà circa il <b>${ex}%</b>. La tua percentuale vale per i calcoli e il piano dell'anno, finché non torni a 5% o 15%.</div>
+    <button class="btn" onclick="savePct()">Usa questa percentuale</button>
+    ${isMan()?'<button class="btn ghost" style="margin-top:8px" onclick="S.profile.useMan=false;save();closeSheet();refreshRate()">Torna al calcolo esatto</button>':''}`); setTimeout(()=>$('m-pct').focus(),200); }
+function savePct(){ const v=parseFloat(String($('m-pct').value).replace(',','.')); if(!(v>0&&v<100)){ toast('Scrivi una percentuale tra 1 e 99'); return; } S.profile.manPct=Math.round(v*10)/10; S.profile.useMan=true; save(); closeSheet(); refreshRate(); }
+function refreshRate(){ renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function ring0(v){
   const c=calc(v); const C=2*Math.PI*82;
   const fy=v? Math.max(0,c.netto)/v : 0, fr=v? c.tasse/v : 0;
@@ -517,8 +538,19 @@ function ring0(v){
   $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
   $('herosub').textContent = v? `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}` : 'scrivi la cifra';
   const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
-  leg.innerHTML=[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']].map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
+  leg.innerHTML=(c.manual?[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','tasse e INPS ('+String(S.profile.manPct).replace('.',',')+'%)',c.tasse,null]]:[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']]).map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
+  $('how0').innerHTML=(v&&!padOpen)?`<button class="howbtn" onclick="howCalc(${v})">Come l'ho calcolato →</button>`:'';
 }
+function howCalc(v){ const e=calc(v,{noMan:1}), m=isMan()?calc(v):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=PARAMS.inps[S.profile.inps]*((isIVS()&&S.profile.rid35)?0.65:1);
+  const row=(n,t,d,b)=>`<div class="hstep"><span class="hn">${n}</span><div><b>${t}</b><small>${d}</small></div><b class="hv${b?' y':''}">${b||''}</b></div>`;
+  sheet(`<h3>Come l'ho calcolato</h3><div class="sub">Su ${fmt(v)} incassati, regime forfettario. Lo Stato non tassa tutto l'incasso: prima decide quanto è "reddito".</div>
+   ${row(1,'Quanto è reddito',`Per ${esc(actFull().split(',')[0].toLowerCase()||'la tua attività')} lo Stato considera reddito il ${Math.round(coef()*100)}% dell'incasso (coefficiente di redditività${coefAteco(S.profile.ateco)!=null?', ATECO '+esc(S.profile.ateco):''}). Il resto è come se fossero spese.`,fmt(e.imponibile))}
+   ${row(2,'INPS',`${pc(rate)}% su ${fmt(e.imponibile)}${isIVS()?' (artigiani e commercianti: in più c\'è la quota fissa annuale, la vedi nel piano dell\'anno)':' (gestione separata)'}.`,'− '+fmt(e.inps))}
+   ${row(3,'Imposta',`${al}% su ${fmt(e.imponibile)} meno l'INPS, cioè su ${fmt(Math.max(0,e.imponibile-e.inps))}.`,'− '+fmt(e.imposta))}
+   ${row('=','Tuoi',`${fmt(v)} − ${fmt(e.inps)} − ${fmt(e.imposta)}.`,fmt(e.netto))}
+   <div class="hpct">In tutto vanno via <b>${fmt(e.tasse)}</b>, cioè il <b>${pc(v?e.tasse/v:0)}%</b> dell'incasso. È questa la percentuale "da mettere via" su ogni incasso.</div>
+   ${m?`<div class="hpct" style="background:rgba(255,77,77,.12)">Stai usando la tua percentuale (${String(S.profile.manPct).replace('.',',')}%): ti tiene da parte <b>${fmt(m.tasse)}</b>, ${m.tasse>e.tasse?fmt(m.tasse-e.tasse)+' in più':fmt(e.tasse-m.tasse)+' in meno'} del calcolo esatto.</div>`:''}
+   <div class="hint" style="margin-top:12px">Stima: i contributi da togliere sarebbero quelli versati davvero nell'anno; qui li stimiamo su questo incasso. Il conto finale lo fa il commercialista.</div>`); }
 $('q0').addEventListener('input',()=>ring0(parseFloat($('q0').value)||0));
 renderActLine();
 $('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.classList.contains('ok')) return; const i=$('q0'); let v=i.value; if(b.classList.contains('del')) v=v.slice(0,-1); else if(v.length<7) v+=b.textContent; i.value=v; i.dispatchEvent(new Event('input')); });
