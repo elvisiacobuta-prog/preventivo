@@ -162,6 +162,8 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .movebox{background:var(--sur2);border-radius:12px;padding:12px 14px;margin:14px 0 8px;display:grid;gap:6px}.movebox small{color:var(--mut);font-size:12.5px;line-height:1.45}.movebox .btn{margin:4px 0 0}
 .kform{display:grid;grid-template-columns:1.6fr 1fr;gap:8px}.kform label{display:grid;gap:4px;font-size:12px;color:var(--mut)}.kform input{width:100%;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px;outline:none;font-size:16px;color:var(--txt)}.ktab{background:var(--sur2);border-radius:12px;padding:4px 12px 8px}.kth{display:flex;justify-content:space-between;font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);padding:8px 0 4px}
 .updbar{position:fixed;left:12px;right:12px;bottom:calc(76px + env(safe-area-inset-bottom));z-index:60;background:var(--acc);color:#111;font-weight:800;border-radius:14px;padding:14px;font-size:14px;box-shadow:0 8px 30px #0008}
+.bando b{font-size:16px}.bando p{font-size:13.5px;color:var(--mut);line-height:1.45;margin:6px 0 10px}.bando .btn{display:block;text-align:center;text-decoration:none;margin:0}.bguide{background:var(--sur2);border-radius:12px;padding:10px 12px;margin:0 0 10px;font-size:13px}.bguide ol{margin:6px 0 4px;padding-left:18px;line-height:1.6}.bguide small{color:var(--mut)}
+.tabs button{padding:4px 8px}
 .xbtn{margin-left:8px;width:26px;height:26px;border-radius:50%;background:var(--sur2);color:var(--mut);font-size:12px}
 .faqsec{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px}.faqi{border-bottom:1px solid var(--sur2);padding:10px 0}.faqi summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}.faqi summary::after{content:' +';color:var(--acc)}.faqi[open] summary::after{content:' −'}.faqi p{margin:8px 0 2px;font-size:14px;line-height:1.55;color:var(--mut)}
 .faqlink{display:block;margin:4px auto 12px;font-size:13px;font-weight:700;color:var(--acc)}
@@ -375,6 +377,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   </section>
 
   <!-- VIEW: ANNO -->
+  <section class="view" id="v-bandi">
+    <div class="q" style="margin-bottom:4px">Bandi e contributi</div>
+    <div class="qsub" style="margin:0 0 14px">Contributi a fondo perduto, prestiti agevolati e voucher per chi ha la partita IVA. Si aprono i siti ufficiali, sempre aggiornati.</div>
+    <div id="bandilist"></div>
+  </section>
+
   <section class="view" id="v-year">
     <div class="q" style="margin-bottom:6px">Quest'anno</div>
     <div class="qsub" id="ylabel"></div>
@@ -431,6 +439,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
   <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
   <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
+  <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 15.6 6.6 18.5l1.2-6L3.3 8.3l6.1-.7z"/></svg>Bandi</button>
 </nav>
 
 <div class="sheet" id="sheet"><div class="in" id="sheetin"></div></div>
@@ -441,7 +450,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.4.1',
+  ver: '4.5',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1383,6 +1392,21 @@ function faq(q){ const t=(q||'').trim().toLowerCase(); const L=FAQ.filter(f=>!t|
   const body=L.map(f=>{ const h=f[0]!==last?`<div class="faqsec">${esc(f[0])}</div>`:''; last=f[0]; return h+`<details class="faqi"><summary>${esc(f[1])}</summary><p>${esc(f[2])}</p></details>`; }).join('')||'<div class="hint">Nessuna risposta trovata. Chiedi al tuo commercialista: è la persona giusta per i casi particolari.</div>';
   if(q!=null&&$('faql')){ $('faql').innerHTML=body; return; }
   sheet(`<h3>Domande frequenti</h3><div class="sub">Risposte brevi, verificate sulle regole del ${PARAMS.anno}. Per il tuo caso specifico decide il commercialista.</div><input id="faqq" placeholder="Cerca: spese, acconti, soglia, ATECO…" oninput="faq(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin:6px 0 4px"><div id="faql">${body}</div>`); }
+
+/* ---------- BANDI (solo link a fonti ufficiali) ---------- */
+const REGIONI=['Abruzzo','Basilicata','Calabria','Campania','Emilia-Romagna','Friuli-Venezia Giulia','Lazio','Liguria','Lombardia','Marche','Molise','Piemonte','Puglia','Sardegna','Sicilia','Toscana','Trentino-Alto Adige','Umbria',"Valle d'Aosta",'Veneto'];
+function setRegione(v){ S.profile.regione=v; save(); renderBandi(); }
+function renderBandi(){ const el=$('bandilist'); if(!el) return; const rg=S.profile.regione||''; const prof=isIVS()?'Impresa':'Professionista';
+  const card=(t,d,u,b,extra)=>`<div class="card bando"><b>${t}</b><p>${d}</p>${extra||''}<a class="btn ghost" href="${u}" target="_blank" rel="noopener">${b} ↗</a></div>`;
+  el.innerHTML=
+   card('Tutti gli incentivi, nazionali e regionali','Il catalogo ufficiale del Ministero delle Imprese: oltre 1.000 incentivi di Stato, Regioni e Camere di Commercio, in un posto solo.','https://www.incentivi.gov.it/it/catalogo','Apri incentivi.gov.it',
+     `<div class="bguide"><b>Come filtrare, per te:</b><ol><li>Tocca <b>Filtri</b></li><li>Tipo soggetto → <b>${prof}</b>${S.profile.apertura&&annoAtt()<=1?' (o "Impresa da costituire")':''}</li><li>Forma agevolazione → <b>Contributo/Fondo perduto</b></li><li>Regione → <b>${rg?esc(rg):'la tua regione'}</b></li><li>Stato → <b>aperti</b>, poi <b>Applica</b></li></ol><small>Puoi anche attivare le notifiche per i nuovi incentivi.</small></div>`)
+   + `<div class="card bando"><b>I bandi della tua Regione</b><p>Ogni Regione pubblica i suoi bandi per imprese e professionisti.</p><select onchange="setRegione(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;margin-bottom:10px;color:var(--txt)"><option value="">Scegli la tua regione…</option>${REGIONI.map(r=>`<option ${r===rg?'selected':''}>${esc(r)}</option>`).join('')}</select>${rg? (rg==="Valle d'Aosta"? `<a class="btn ghost" href="https://imprese.regione.vda.it/" target="_blank" rel="noopener">Sportello imprese della Regione ↗</a>` : `<a class="btn ghost" href="https://www.google.com/search?q=${encodeURIComponent('bandi contributi fondo perduto imprese professionisti Regione '+rg+' '+PARAMS.anno)}" target="_blank" rel="noopener">Cerca i bandi della Regione ${esc(rg)} ↗</a>`):''}</div>`
+   + card('Invitalia: avviare o far crescere un\'attività','L\'agenzia nazionale per gli incentivi: contributi e finanziamenti per chi apre un\'attività o una partita IVA (spesso per giovani, donne e disoccupati) e per chi investe.','https://www.invitalia.it/','Apri Invitalia')
+   + card('Camera di Commercio: voucher digitali','I Punti Impresa Digitale delle Camere di Commercio pubblicano voucher per computer, software, siti, formazione digitale e green.','https://www.puntoimpresadigitale.camcom.it/','Apri Punto Impresa Digitale')
+   + card('Microcredito','Piccoli prestiti agevolati, senza garanzie personali, per avviare o sviluppare un\'attività, con assistenza nella fase iniziale.','https://www.microcredito.gov.it/','Apri Ente Nazionale Microcredito')
+   + card('Fondo di garanzia per le PMI','Lo Stato fa da garante quando chiedi un prestito in banca: più facile ottenerlo. Non è a fondo perduto.','https://www.fondidigaranzia.it/','Apri Fondo di garanzia')
+   + `<div class="card hint" style="line-height:1.5">Da sapere: quasi tutti i bandi a fondo perduto chiedono di <b>pagare prima le spese</b> e poi rendicontarle, hanno <b>scadenze strette</b> e requisiti precisi (età, nuova attività, regione). Leggi sempre il bando completo e chiedi al commercialista prima di fare domanda.</div>`; }
 /* ---------- SBLOCCO (Google Play Billing via Digital Goods API) ---------- */
 const BILL='https://play.google.com/billing';
 (function(){ try{ if(document.referrer.indexOf('android-app://')===0 || /[?&]src=twa/.test(location.search)) localStorage.setItem('pv.store','play'); }catch(e){} })();
@@ -1409,8 +1433,8 @@ async function restoreUnlock(){ await checkOwned(); if(S.unlocked){ closeSheet()
 checkOwned(); loadPrice();
 
 /* ---------- NAV / SHEET / TOAST ---------- */
-['list','clients','year'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); const b=document.createElement('button'); b.className='faqlink'; b.textContent='? Domande frequenti'; b.onclick=()=>faq(); sec.appendChild(b); } });
-function go(v){ if(v!=='new' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
+['list','clients','year','bandi'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); const b=document.createElement('button'); b.className='faqlink'; b.textContent='? Domande frequenti'; b.onclick=()=>faq(); sec.appendChild(b); } });
+function go(v){ if(v==='bandi') renderBandi(); if(v!=='new' && v!=='bandi' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
 document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
 function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
 function closeSheet(){ $('sheet').classList.remove('on'); }
