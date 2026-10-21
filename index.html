@@ -218,8 +218,23 @@ summary::after{content:"+";color:var(--acc);font-weight:700;font-size:22px;line-
 details p{color:var(--mut);margin:12px 0 0;font-size:16px}
 footer{border-top:1px solid var(--line);padding:36px 0;color:var(--mut);font-size:13px}footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text-decoration:none}footer a:hover{color:var(--txt)}
+.lt{--bg:#F6F5F1;--sur:#fff;--txt:#111;--mut:#5f5f5f;--line:#e4e2dc;background:var(--bg);color:var(--txt);color-scheme:light}
+.lt .y{color:#111;background:linear-gradient(transparent 58%,#FFD54A 58%,#FFD54A 92%,transparent 92%);padding:0 .06em}
+.lt .lead,.lt .slide p,.lt.slide p,.lt .pricing .p,.lt.pricing .p,.lt .sub{color:#4a4a4a}
+.lt .num{color:#9a7400}
+.lt .btn.ghost{background:#111;color:#fff;border-color:#111}
+.lt .btn.ghost:hover{background:#2a2a2a}
+.lt .plan{background:#fff;border:2px solid #111;box-shadow:0 30px 60px rgba(0,0,0,.08)}
+.lt .plan ul{color:#4a4a4a}.lt .plan li{border-top-color:var(--line)}.lt .plan li b{color:#111}
+.lt .price s,.lt .price small,.lt .brand,.lt .disc{color:#6b6b6b}
+.lt details p{color:#555}
+.lt summary::after{color:#111}
+.lt .phone{box-shadow:0 40px 80px rgba(0,0,0,.22),0 0 0 1px #2a2a2a inset}
+.claim.lt{background:var(--bg)}
+.slide.lt+.slide.lt{border-top:1px solid var(--line)}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
+<script>(function(){try{var sa=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;if(sa||/[?&]app\b/.test(location.search)){location.replace('/app/');}}catch(e){}})();</script>
 </head>
 <body>
 <a class="skip" href="#main">Vai al contenuto</a>
@@ -230,10 +245,10 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 
 <main id="main">
 <header class="hero hv">
-  <div class="film"><video class="bgv" autoplay muted loop playsinline preload="auto" poster="video/hero.jpg" aria-label="Spot PreventIVO: mandi un preventivo da dove vuoi"><source src="video/hero.mp4" type="video/mp4"></video></div>
+  <div class="film"><video class="bgv" id="hv" autoplay muted loop playsinline preload="auto" poster="video/hero.jpg" aria-label="Spot PreventIVO: mandi un preventivo da dove vuoi"></video><script>(function(){var v=document.getElementById('hv'),m=window.matchMedia&&matchMedia('(max-width:720px) and (orientation:portrait)').matches;v.poster=m?'video/hero-v.jpg':'video/hero.jpg';v.src=m?'video/hero-v.mp4':'video/hero.mp4';})();</script></div>
 </header>
 
-<section class="claim" id="video"><div class="w">
+<section class="claim lt" id="video"><div class="w">
   <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
   <p class="lead">Preventivi per chi ha la partita IVA forfettaria.</p>
   <div class="ctas">
@@ -249,12 +264,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <div class="w"><div><h2>Scrivi le voci.<br><span class="y">Vedi quanto resta.</span></h2><p>Il preventivo in dieci secondi. Giallo è tuo, rosso va al fisco.</p></div></div>
 </section>
 
-<section class="slide" id="preventivo"><div class="w">
+<section class="slide lt" id="preventivo"><div class="w">
   <div><p class="num">Preventivo</p><h2>Voci, prezzo.<br><span class="y">Fatto.</span></h2><p>Dal telefono, in dieci secondi. Mentre scrivi vedi quanto ti resta.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/preventivo.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: creazione di un preventivo"><source src="video/preventivo.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="slide rev" id="invio"><div class="w">
+<section class="slide rev lt" id="invio"><div class="w">
   <div><p class="num">Invio</p><h2>Due tasti.<br><span class="y">Il PDF è già dentro.</span></h2><p>WhatsApp o mail. Con il tuo nome e la tua partita IVA.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: invio su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div></div>
 </div></section>
@@ -265,12 +280,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <div class="w"><div><h2>Il cliente chiede.<br><span class="y">Tu rispondi. Subito.</span></h2><p>Anche in mezzo a un lavoro. Il PDF parte da dove sei.</p></div></div>
 </section>
 
-<section class="slide" id="stati"><div class="w">
+<section class="slide lt" id="stati"><div class="w">
   <div><p class="num">Preventivi</p><h2>Chi ti deve<br><span class="y">cosa.</span></h2><p>Inviato, accettato, fatturato, incassato. A colpo d'occhio.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/stati.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: stati dei preventivi"><source src="video/stati.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="slide rev" id="clienti"><div class="w">
+<section class="slide rev lt" id="clienti"><div class="w">
   <div><p class="num">Clienti</p><h2>I tuoi clienti.<br><span class="y">Il tuo anno.</span></h2><p>Si creano da soli dal primo preventivo. Mail, WhatsApp, quanto vale ognuno.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: clienti"><source src="video/clienti.mp4" type="video/mp4"></video></div></div>
 </div></section>
@@ -281,12 +296,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <div class="w"><div><h2>Niente sorprese<br><span class="y">a giugno.</span></h2><p>Cosa paghi, quando, e quanto hai già messo via.</p></div></div>
 </section>
 
-<section class="slide" id="annoapp"><div class="w">
+<section class="slide lt" id="annoapp"><div class="w">
   <div><p class="num">Anno</p><h2>Quest'anno.<br><span class="y">E il prossimo.</span></h2><p>Tasse stimate, giugno e novembre, soglia 85.000 €. In base all'anno di partita IVA in cui sei.</p></div>
   <div class="ph"><div class="phone" style="--poster:url(video/anno.jpg)"><video autoplay muted loop playsinline preload="metadata" width="780" height="1688" aria-label="Demo: la scheda Anno"><source src="video/anno.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="pricing" id="prezzo"><div class="w">
+<section class="pricing lt" id="prezzo"><div class="w">
   <h2>Una volta. <span class="y">Non ogni mese.</span></h2>
   <p class="p">Un prezzo, poi è tua. Niente abbonamenti, niente pubblicità, niente account.</p>
   <div class="plan"><span class="tag">PREZZO DI LANCIO</span>
@@ -298,7 +313,7 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <p class="disc">Prezzi indicativi, IVA inclusa, come appariranno su App Store e Google Play. I calcoli sono stime: il conto vero lo fa il commercialista.</p>
 </div></section>
 
-<section class="faqs" id="faq"><div class="w">
+<section class="faqs lt" id="faq"><div class="w">
   <h2>Domande</h2>
   <div class="faq">
     <details><summary><h3 style="margin:0;font:inherit">È per me?</h3></summary><p>Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te.</p></details>
