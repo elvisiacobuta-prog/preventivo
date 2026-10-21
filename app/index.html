@@ -414,7 +414,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.0',
+  ver: '3.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1021,6 +1021,10 @@ function askAct(first,after){
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
     <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
+    <label class="l">Come versi l'INPS? <span class="why" onclick="why('inps')">?</span></label>
+    <select id="a-inps" onchange="$('a-ridw').style.display=this.value==='separata'?'none':''"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option></select>
+    <div class="hint" style="margin:6px 2px 0">Paghi 4 rate fisse l'anno (maggio, agosto, novembre, febbraio)? Allora sei artigiano o commerciante: lo vedi sull'F24, AF = artigiani, CF = commercianti.</div>
+    <div id="a-ridw" style="display:${pr.inps==='separata'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="a-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Ho la riduzione del 35% per i forfettari</label></div>
     <label class="l">In che anno hai aperto la partita IVA?</label>
     <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:8px 2px 0">Serve per sapere in che anno di attività sei: cambiano acconti e, dopo il 5°, l'aliquota.</div>
@@ -1028,10 +1032,10 @@ function askAct(first,after){
     <div class="seg"><button id="a-y" class="${pr.start===true?'on':''}" onclick="aStart(true)">Sì · 5%</button><button id="a-n" class="${pr.start===false?'on':''}" onclick="aStart(false)">No · 15%</button><button id="a-u" class="${pr.start==null?'on':''}" onclick="aStart(null)">Non lo so</button></div>
     <div class="hint" id="a-shint" style="margin:8px 2px 0">${pr.start==null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':''}</div>
     <button class="btn" onclick="saveAct()">${first?'Vai':'Salva'}</button>
-    <div class="stima">Se scegli "Altro" e non metti il codice ATECO usiamo il 78%. Il codice lo trovi nel certificato di attribuzione della partita IVA o lo chiedi al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
+    <div class="stima">Se scegli "Altro" e non metti il codice ATECO usiamo il 78%. Il codice lo trovi nella visura camerale o nel certificato di attribuzione della partita IVA, oppure lo chiedi al commercialista.</div>`);
 }
 let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
-function saveAct(){ S.profile.act=$('a-act').value; S.profile.ateco=fmtAteco($('a-ateco').value); S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
+function saveAct(){ S.profile.act=$('a-act').value; if($('a-inps')){ S.profile.inps=$('a-inps').value; S.profile.rid35=S.profile.inps!=='separata'&&!!($('a-rid')&&$('a-rid').checked); } S.profile.ateco=fmtAteco($('a-ateco').value); S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
 function needProfile(after){
   const pr=S.profile; if(pr.nome) { after(); return; }
   sheet(`
@@ -1072,8 +1076,8 @@ function settingsHTML(first){
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <div class="hint" style="margin:8px 2px 0">${isMan()?'Stai usando una tua percentuale fissa ('+String(pr.manPct).replace('.',',')+'%). ':'Preferisci togliere sempre la stessa percentuale? '}<span class="link" onclick="askPct()">${isMan()?'Cambia':'Usa una tua percentuale'}</span></div>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
-    <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
-    <label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label>
+    <select id="s-inps" onchange="$('s-ridw').style.display=this.value==='separata'?'none':''"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option></select>
+    <div id="s-ridw" style="display:${pr.inps==='separata'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label></div>
     <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
     <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
