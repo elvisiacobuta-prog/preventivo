@@ -439,7 +439,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.3',
+  ver: '4.3.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -966,11 +966,12 @@ function renderMargin(){ const el=$('cmargin'); if(!el) return; const inc=S.clie
 function costForm(id){ return `<label class="l">Costi dell'attività per questo cliente</label>
   <div class="row2"><input id="kd" placeholder="Es. commissione agenzia, collaboratore" style="flex:2;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="kv" inputmode="decimal" placeholder="€ o %" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none"></div>
   <div class="hint" style="margin:6px 2px 0">Scrivi un importo (es. 500) o una percentuale dell'incassato (es. 15%): utile per la commissione dell'agenzia. Non abbassano le tasse.</div>
-  <button class="btn ghost" style="margin-top:8px" onclick="addCost(${id})">+ Aggiungi costo</button>`; }
-function addCost(id){ const c=S.clients.find(x=>x.id===id), d=($('kd').value||'').trim()||'Costo', raw=String($('kv').value||'').trim(); if(!raw){ toast('Scrivi l\'importo o la percentuale'); return; }
-  const k={id:Date.now(),d,date:today()}; if(/%$/.test(raw)){ k.pct=numIt(raw.replace('%','')); if(!(k.pct>0&&k.pct<100)){ toast('Percentuale non valida'); return; } } else { k.v=numIt(raw); if(!(k.v>0)){ toast('Importo non valido'); return; } }
-  c.costi=c.costi||[]; c.costi.push(k); save(); renderAll(); openClient(id); toast('Costo aggiunto'); }
-function delCost(id,kid){ const c=S.clients.find(x=>x.id===id); c.costi=(c.costi||[]).filter(k=>k.id!==kid); save(); renderAll(); openClient(id); }
+  <button class="btn ghost" style="margin-top:8px" onclick="addCost(${id})">+ Aggiungi costo</button><div class="hint" id="kmsg" style="margin:6px 2px 0"></div>`; }
+function reopenKeep(id,msg){ const y=$('sheetin').scrollTop; openClient(id); $('sheetin').scrollTop=y; if(msg&&$('kmsg')) $('kmsg').innerHTML=msg; }
+function addCost(id){ const c=S.clients.find(x=>x.id===id), d=($('kd').value||'').trim()||'Costo', raw=String($('kv').value||'').trim(); const bad=m=>{ $('kmsg').innerHTML='<span style="color:var(--red)">'+m+'</span>'; }; if(!raw){ bad('Scrivi l\'importo (es. 500) o la percentuale (es. 15%)'); return; }
+  const k={id:Date.now(),d,date:today()}; if(/%$/.test(raw)){ k.pct=numIt(raw.replace('%','')); if(!(k.pct>0&&k.pct<100)){ bad('Percentuale non valida: scrivi per esempio 15%'); return; } } else { k.v=numIt(raw); if(!(k.v>0)){ bad('Importo non valido: scrivi per esempio 500'); return; } }
+  c.costi=c.costi||[]; c.costi.push(k); save(); renderAll(); reopenKeep(id,'<b style="color:var(--acc)">✓ Aggiunto: '+esc(d)+' − '+fmt(costVal(k,id))+'</b> · lo vedi qui sopra'); toast('Costo aggiunto'); }
+function delCost(id,kid){ const c=S.clients.find(x=>x.id===id); c.costi=(c.costi||[]).filter(k=>k.id!==kid); save(); renderAll(); reopenKeep(id,'Costo tolto'); }
 function costList(c){ const L=c.costi||[]; if(!L.length) return ''; return '<h2>Costi dell\'attività</h2>'+L.map(k=>`<div class="kv"><span>${esc(k.d)}${k.pct?` <small style="color:var(--mut)">${String(k.pct).replace('.',',')}% dell'incassato</small>`:''}</span><span>− ${fmt(costVal(k,c.id))} <button class="xbtn" onclick="delCost(${c.id},${k.id})" aria-label="Togli">✕</button></span></div>`).join('')+`<div style="margin-top:8px">${marginRows(clIncY(c.id),clCosti(c))}</div>`; }
 function openClient(id){
   const c=S.clients.find(x=>x.id===id); const P=S.prev.filter(p=>p.client===id);
