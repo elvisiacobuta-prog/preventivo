@@ -396,12 +396,14 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.2',
+  ver: '2.3',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
   aliquotaStart: 0.05, aliquotaStd: 0.15,
   inps: { separata: 0.2607, artigiani: 0.24, commercianti: 0.2448 },
+  // artigiani e commercianti: quota fissa sul minimale (circolare INPS n. 14/2026), 4 rate: 18/5, 20/8, 16/11, 16/2
+  ivs: { minimale: 18808, fisso: { artigiani: 4521.36, commercianti: 4611.64 }, rate: ['maggio','agosto','novembre','febbraio'] },
   // "cosa fai?" → coefficiente di redditività (ATECO di riferimento, indicativi — verificare)
   attivita: [
     {id:'prof78',  n:'Libero professionista, consulenza, creativi', c:0.78, ateco:'varie'},
@@ -430,16 +432,21 @@ function coef(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a
 function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
 function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || n<=5); }
 function ordinale(n){ return n+'°'; }
+function isIVS(){ return S.profile.inps==='artigiani'||S.profile.inps==='commercianti'; }
 function calc(lordo, opts={}){
   const imponibile = lordo * coef();
-  const inps = imponibile * PARAMS.inps[S.profile.inps];
+  const rid = (isIVS() && S.profile.rid35) ? 0.65 : 1;
+  const rate = PARAMS.inps[S.profile.inps] * rid;
+  let inps = imponibile * rate, fisso = 0, inpsEcc = inps;
+  // sull'anno intero: quota fissa sul minimale + percentuale solo sull'eccedenza
+  if (opts.annual && isIVS()) { fisso = PARAMS.ivs.fisso[S.profile.inps] * rid; inpsEcc = Math.max(0, imponibile - PARAMS.ivs.minimale) * rate; inps = fisso + inpsEcc; }
   const aliq = is5() ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
   // imposta su imponibile meno contributi (approssimati con l'INPS stesso se non noti)
   const ded = opts.contribPrec!=null ? opts.contribPrec : inps;
   const imposta = Math.max(0, imponibile - ded) * aliq;
   const tasse = inps + imposta;
   const via = Math.ceil(tasse * 1.05 / 5) * 5; // arrotonda per eccesso +5%
-  return { lordo, imponibile, inps, imposta, tasse, netto: lordo - tasse, via };
+  return { lordo, imponibile, inps, fisso, inpsEcc, imposta, tasse, netto: lordo - tasse, via };
 }
 const fmt = n => (Math.round(n)).toLocaleString('it-IT') + ' €';
 const fmt2 = n => n.toLocaleString('it-IT',{minimumFractionDigits:2,maximumFractionDigits:2}) + ' €';
@@ -805,30 +812,31 @@ function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei prevent
 /* ---------- ANNO ---------- */
 /* piano per anno: cosa paghi nel 2026, nel 2027… in base all'anno di attività */
 function renderPiano(c){
-  const n=annoAtt(), Y=PARAMS.anno, I=c.imposta, N=c.inps;
+  const n=annoAtt(), Y=PARAMS.anno, I=c.imposta, F=c.fisso||0, N=F?c.inpsEcc:c.inps;
+  const fr=F/4, fissoTxt=F?` Più la quota fissa INPS di ${fmt(F)} in 4 rate da ${fmt(fr)} (maggio, agosto, novembre, febbraio), anche se incassi poco.`:'';
   const aliqNext = (S.profile.start===true && (n==null || n+1<=5)) ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
   const Inext = Math.max(0,c.imponibile-N)*aliqNext;
   $('yatt').innerHTML = n ? `Sei nel <b style="color:var(--txt)">${ordinale(n)} anno</b> di partita IVA (aperta nel ${S.profile.apertura}) · <span class="link" onclick="askAct(false)">cambia</span>` : `<span class="link" onclick="askAct(false)">Dimmi in che anno hai aperto la P.IVA</span>: acconti e aliquota cambiano col tempo. Intanto conto come se non fosse il primo anno.`;
   const anni=[];
   if(n===1){
-    anni.push({y:Y, giu:0, nov:0, tot:0, note:`Primo anno: non paghi nulla. Metti via lo stesso ${fmt(c.via)}, perché il conto arriva tutto nel ${Y+1}.`});
-    anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`});
+    anni.push({y:Y, giu:0, nov:0, tot:F, note:(F?`Primo anno: imposta e INPS sull'eccedenza arrivano nel ${Y+1}, ma la quota fissa INPS si paga già: ${fmt(F)} in 4 rate da ${fmt(fr)}.`:`Primo anno: non paghi nulla. Metti via lo stesso ${fmt(c.via)}, perché il conto arriva tutto nel ${Y+1}.`)});
+    anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N+F, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`+fissoTxt});
   } else {
-    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`});
-    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===5?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
+    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`+fissoTxt});
+    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===5?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
   }
   $('piano').innerHTML = anni.map((a,i)=>`
     <div class="yr${i===0?' now':''}">
       <div class="yh"><span>Nel ${a.y}${i===0?' <small>quest\'anno</small>':''}</span><b>${fmt(a.tot)}</b></div>
       <div class="yd"><span>giugno</span><span>${fmt(a.giu)}</span></div>
-      <div class="yd"><span>novembre</span><span>${fmt(a.nov)}</span></div>
+      <div class="yd"><span>novembre</span><span>${fmt(a.nov)}</span></div>${F?`<div class="yd"><span>INPS fisso · 4 rate</span><span>${fmt(F)}</span></div>`:''}
       <div class="yn">${a.note}</div>
     </div>`).join('');
 }
 function renderYear(){
   const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
   const tot=inc.reduce((a,p)=>a+p.tot,0);
-  const c=calc(tot,{contribPrec:S.profile.contribPrec||null});
+  const c=calc(tot,{contribPrec:S.profile.contribPrec||null, annual:true});
   const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
   $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
   const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
@@ -958,6 +966,7 @@ function settingsHTML(first){
     <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
     <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
+    <label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label>
     <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
     <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
@@ -975,7 +984,7 @@ function settingsHTML(first){
 let tmpStart='unset';
 function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
 function saveSettings(){
-  S.profile.act=$('s-act').value; S.profile.inps=$('s-inps').value; if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
+  S.profile.act=$('s-act').value; S.profile.inps=$('s-inps').value; S.profile.rid35=!!($('s-rid')&&$('s-rid').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
   S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
@@ -986,7 +995,7 @@ function wipe(){ if(!confirm('Cancellare tutto? Non si torna indietro.')) return
 /* ---------- PERCHÉ ---------- */
 const WHY={
   via:['Da mettere via','INPS più imposta, arrotondati per eccesso del 5%. È la cifra da spostare sul conto tasse appena incassi. Meglio avanzare che mancare.'],
-  inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti hanno anche una quota fissa.'],
+  inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti pagano una quota fissa minima (nel 2026 circa 4.520 € artigiani, 4.610 € commercianti, in 4 rate) più il 24% solo sul reddito oltre 18.808 €: la trovi nella scheda Anno. Sul singolo preventivo vedi la quota in percentuale. Se hai chiesto la riduzione del 35% per i forfettari, attivala in Impostazioni.'],
   imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
   coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per video e consulenza il 78%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
   start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
