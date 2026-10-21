@@ -237,7 +237,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <!-- VIEW: NUOVO (guidata) -->
   <section class="view on" id="v-new">
     <div class="step on" id="st0">
-      <div class="seg dirseg" id="dirseg"><button id="dirF" onclick="setDir(false)">Ho la cifra lorda</button><button id="dirR" onclick="setDir(true)">Voglio un netto</button></div>
+      <div class="seg dirseg" id="dirseg"><button id="dirF" onclick="setDir(false)">Quanto mi resta?</button><button id="dirR" onclick="setDir(true)">Quanto devo chiedere?</button></div>
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
       <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button><button id="rateM" onclick="askPct()">La tua %</button></div>
@@ -531,8 +531,8 @@ function isRev(){ return !!S.profile.rev; }
 function gross(v){ if(!isRev()||!v) return v; const k=calc(1000).netto/1000; return k>0? Math.ceil(v/k) : v; }
 function setDir(r){ S.profile.rev=!!r; save(); renderHello(); ring0(parseFloat($('q0').value)||0); }
 function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $('dirR').classList.toggle('on',r);
-  $('hello').textContent=r?'Quanto vuoi che ti resti?':'Inserisci la cifra';
-  $('hellosub').textContent=r?'Scrivi il netto che vuoi in tasca: ti diciamo quanto chiedere al cliente.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
+  $('hello').textContent=r?'Quanto vuoi in tasca?':'Inserisci la cifra';
+  $('hellosub').textContent=r?'Scrivi la cifra che hai in testa: ti diciamo quanto chiedere per averla pulita.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); $('rateM').classList.toggle('on',m); $('rateM').textContent=m?('La tua · '+String(S.profile.manPct).replace('.',',')+'%'):'La tua %';
   const ca=coefAteco(S.profile.ateco); $('atchip').innerHTML = ca!=null ? `ATECO <b>${esc(S.profile.ateco)}</b> · coefficiente ${Math.round(ca*100)}% ✎` : 'Hai il codice ATECO? <b>Inseriscilo</b> per un calcolo esatto'; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
@@ -549,10 +549,10 @@ function ring0(v){
   const fy=L? Math.max(0,c.netto)/L : 0, fr=L? c.tasse/L : 0;
   $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
   $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
-  $('herosub').innerHTML = v? (isRev()? `chiedi <b style="color:var(--acc)">${fmt(L)}</b>` : `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}`) : (isRev()?'scrivi il netto che vuoi':'scrivi la cifra');
+  $('herosub').innerHTML = v? (isRev()? `chiedi <b style="color:var(--acc)">${fmt(L)}</b>` : `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}`) : (isRev()?'la cifra che vuoi in tasca':'scrivi la cifra');
   const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
   leg.innerHTML=(c.manual?[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','tasse e INPS ('+String(S.profile.manPct).replace('.',',')+'%)',c.tasse,null]]:[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']]).map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
-  $('how0').innerHTML=(v&&!padOpen)?(isRev()?`<div class="revbox">Per avere <b>${fmt(v)}</b> netti chiedi <b>${fmt(L)}</b> al cliente.</div>`:'')+`<button class="howbtn" onclick="howCalc(${L})">Come l'ho calcolato →</button>`:'';
+  $('how0').innerHTML=(v&&!padOpen)?(isRev()?`<div class="revbox">Per avere <b>${fmt(v)}</b> in tasca chiedi <b>${fmt(L)}</b> al cliente.</div>`:'')+`<button class="howbtn" onclick="howCalc(${L})">Come l'ho calcolato →</button>`:'';
 }
 function howCalc(v){ const e=calc(v,{noMan:1}), m=isMan()?calc(v):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=PARAMS.inps[S.profile.inps]*((isIVS()&&S.profile.rid35)?0.65:1);
   const row=(n,t,d,b)=>`<div class="hstep"><span class="hn">${n}</span><div><b>${t}</b><small>${d}</small></div><b class="hv${b?' y':''}">${b||''}</b></div>`;
