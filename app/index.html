@@ -161,6 +161,8 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .cassaw{background:var(--sur2);border-radius:12px;padding:4px 12px 12px;margin-top:8px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}.row3 label{font-size:11.5px;color:var(--mut);display:grid;gap:4px}.row3 input{width:100%;min-width:0;background:var(--sur);border:0;border-radius:10px;padding:10px;outline:none;font-size:15px;color:var(--txt)}
 .movebox{background:var(--sur2);border-radius:12px;padding:12px 14px;margin:14px 0 8px;display:grid;gap:6px}.movebox small{color:var(--mut);font-size:12.5px;line-height:1.45}.movebox .btn{margin:4px 0 0}
 .xbtn{margin-left:8px;width:26px;height:26px;border-radius:50%;background:var(--sur2);color:var(--mut);font-size:12px}
+.faqsec{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px}.faqi{border-bottom:1px solid var(--sur2);padding:10px 0}.faqi summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}.faqi summary::after{content:' +';color:var(--acc)}.faqi[open] summary::after{content:' −'}.faqi p{margin:8px 0 2px;font-size:14px;line-height:1.55;color:var(--mut)}
+.faqlink{display:block;margin:4px auto 12px;font-size:13px;font-weight:700;color:var(--acc)}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -292,6 +294,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
       </div>
       <p class="disc0">PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime.</p>
+      <button class="faqlink" onclick="faq()">? Domande frequenti</button>
     </div>
 
     <div class="step" id="st1">
@@ -436,7 +439,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.2',
+  ver: '4.3',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1257,6 +1260,7 @@ function settingsHTML(first){
     <input id="s-mk" value="${esc(pr.marchio||'')}" maxlength="34" placeholder="Es. Studio Rossi · Grafica" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
     <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
+    ${first?'':'<button class="btn ghost" onclick="faq()">? Domande frequenti</button>'}
     ${first?'':'<div class="movebox"><b>Vuoi i tuoi dati anche su un altro telefono o sul computer?</b><small>I dati stanno solo su questo dispositivo, non su internet. Per spostarli: 1) qui tocca <b>Salva un backup</b> e mandatelo (mail, WhatsApp, AirDrop); 2) sull\'altro dispositivo apri l\'app, Impostazioni, <b>Ripristina da backup</b>.</small><button class="btn ghost" onclick="backup()">Salva un backup</button></div><button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
     <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
 }
@@ -1341,6 +1345,38 @@ function importDo(){ const {ok}=importRowsParsed(); if(!ok.length) return; const
     S.seq++; const y=o.dt.slice(0,4); S.prev.push({ id:++id, num:`${y}-${String(S.seq).padStart(3,'0')}`, date:o.dt, client:cl.id, rows:[{d:o.des||'Incasso importato',q:1,p:o.v,t:o.v}], tot:o.v, status:o.paid?'incassato':'inviato', hist:o.paid?{incassato:o.dt}:{inviato:o.dt}, imp:batch }); });
   S.prev.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); save(); closeSheet(); renderAll(); go('year'); toast(`Importate ${ok.length} righe`); }
 function importUndo(){ const n=S.prev.filter(p=>p.imp).length; S.prev=S.prev.filter(p=>!p.imp); const used=new Set(S.prev.map(p=>p.client)); S.clients=S.clients.filter(c=>used.has(c.id)||c.atteso>0||c.mail||c.wa); save(); closeSheet(); renderAll(); toast(`Tolti ${n} incassi importati`); }
+
+/* ---------- DOMANDE FREQUENTI (risposte verificate, ottobre 2026) ---------- */
+const FAQ=[
+['Il regime forfettario','Cos\'è il regime forfettario?','È il regime semplificato per chi ha la partita IVA da solo e incassa fino a 85.000 € l\'anno. Non metti l\'IVA in fattura, non scarichi le spese e paghi un\'unica imposta (5% o 15%) su una parte di quello che incassi, più i contributi.'],
+['Il regime forfettario','5% o 15%: quale vale per me?','Il 5% vale per i primi 5 anni, se l\'attività è davvero nuova: nei 3 anni prima non hai avuto un\'altra attività, non è la continuazione di un lavoro che facevi (anche da dipendente) e non prendi l\'attività di un altro. L\'età non conta. In tutti gli altri casi, e dal 6° anno, è il 15%. Nel dubbio calcola il 15%.'],
+['Il regime forfettario','Cosa succede se supero 85.000 €?','Se incassi più di 85.000 € in un anno, esci dal forfettario dall\'anno dopo. Se superi 100.000 €, esci subito, nello stesso anno, e dalla fattura che supera la soglia devi applicare l\'IVA. Conta quando incassi, non quando fatturi: parlane con il commercialista prima delle fatture grosse di fine anno.'],
+['Il regime forfettario','Devo mettere l\'IVA in fattura?','No. In fattura scrivi che l\'operazione è senza IVA ai sensi dell\'art. 1, commi 54-89, della Legge 190/2014. Sopra i 77,47 € va applicata la marca da bollo da 2 €.'],
+['Il regime forfettario','Mi devono fare la ritenuta d\'acconto?','No. Chi è nel forfettario non subisce la ritenuta d\'acconto: in fattura si scrive che il compenso non è soggetto a ritenuta perché sei in regime forfettario.'],
+['Il regime forfettario','La fattura elettronica è obbligatoria?','Sì: dal 2024 la fattura elettronica è obbligatoria per tutti i forfettari. Il preventivo invece no: è un documento libero, come quello che fai con questa app.'],
+['Il calcolo','Cos\'è il coefficiente di redditività?','È la parte di quello che incassi che lo Stato considera guadagno, secondo la tua attività: 78% per professioni e consulenze, 67% per molte altre attività (video, informatica, eventi, artigiani), 40% per commercio e ristorazione, 86% per edilizia. Le tasse si pagano solo su quella parte.'],
+['Il calcolo','Posso scaricare le spese?','No. Nel forfettario le spese non si scaricano: lo Stato ne tiene già conto con il coefficiente. Su 100 € ne tassa 78 (o 67, o 40): il resto è come se fossero le tue spese. Spendi poco o tanto, le tasse non cambiano. Nell\'app puoi segnare i costi dell\'attività per sapere quanto ti resta davvero.'],
+['Il calcolo','Dove trovo il mio codice ATECO?','Nella visura camerale, nel certificato di attribuzione della partita IVA o nel tuo cassetto fiscale. Il commercialista lo sa a memoria. Dal 2025 i codici sono stati aggiornati, ma il coefficiente si legge ancora sul vecchio codice: l\'app gestisce i casi che sono cambiati.'],
+['Il calcolo','Ho più codici ATECO: come faccio?','Inseriscili tutti in Impostazioni. In prima schermata scegli per quale attività è ogni lavoro: ognuno ha il suo coefficiente. La soglia degli 85.000 € vale sul totale di tutte le attività.'],
+['I contributi','Gestione separata, artigiani, commercianti o cassa?','Dipende da come sei iscritto. Libero professionista senza albo: gestione separata INPS (26,07% sul reddito). Ditta iscritta in Camera di Commercio: artigiani o commercianti, con 4 rate fisse l\'anno. Professionista con albo (avvocati, ingegneri, giornalisti…): la cassa del tuo albo. Lo vedi sull\'F24: AF artigiani, CF commercianti.'],
+['I contributi','Cosa sono le 4 rate fisse INPS?','Artigiani e commercianti pagano un minimo annuo di contributi (nel 2026 circa 4.522 € artigiani e 4.612 € commercianti), in 4 rate: maggio, agosto, novembre e febbraio. Si pagano anche se incassi poco. Sopra i 18.808 € di reddito si paga in più il 24% circa, insieme alle tasse.'],
+['I contributi','Cos\'è la riduzione del 35%?','Artigiani e commercianti in forfettario possono chiedere all\'INPS di pagare il 35% in meno di contributi. Pro: paghi meno subito. Contro: la pensione si calcola su meno contributi. Si chiede all\'INPS (di solito entro il 28 febbraio): chiedi al commercialista se ti conviene.'],
+['I contributi','Cos\'è la rivalsa INPS del 4%?','Se sei in gestione separata puoi aggiungere in fattura il 4% come rivalsa: lo paga il cliente. Non è obbligatoria e per il fisco fa parte di quello che incassi, quindi è tassata come il resto.'],
+['I contributi','Cos\'è il contributo integrativo della cassa?','È una percentuale (di solito 2-5%) che i professionisti con cassa aggiungono in fattura e che paga il cliente. Non è un guadagno: va versata alla cassa. L\'app la aggiunge da sola al totale del preventivo.'],
+['I contributi','Lavori di spettacolo (ex ENPALS): come funziona?','Per i lavori di spettacolo il committente trattiene il 9,19% del compenso come tua quota di contributi e versa anche la sua parte all\'INPS. Su quei lavori non paghi la gestione separata. Nell\'app spunta "lavori di spettacolo" in Impostazioni e scegli il tipo per ogni lavoro.'],
+['Le scadenze','Quando si pagano le tasse?','Due volte l\'anno: entro il 30 giugno (saldo dell\'anno prima e 1° acconto) e entro il 30 novembre (2° acconto). Se cadono di sabato o domenica slittano al primo giorno utile. Quella di giugno si può pagare entro il 30 luglio con lo 0,40% in più.'],
+['Le scadenze','Cos\'è il saldo e cosa sono gli acconti?','Le tasse di un anno si pagano l\'anno dopo, a giugno: è il saldo. Intanto paghi in anticipo quelle dell\'anno in corso, a giugno e novembre: sono gli acconti, calcolati su quanto hai incassato l\'anno prima.'],
+['Le scadenze','Perché il primo anno non pago niente?','Il primo anno non ci sono acconti, perché non c\'è un anno prima su cui calcolarli. Il conto arriva tutto il secondo anno, a giugno: saldo del primo anno più acconti del secondo. È il "conto doppio": metti via i soldi fin dal primo incasso.'],
+['Le scadenze','Perché a giugno ho pagato zero?','Probabilmente avevi un credito: l\'anno prima avevi pagato acconti più alti di quanto dovevi, e la differenza è stata usata per pagare giugno. È normale quando un anno si incassa meno del precedente.'],
+['Le scadenze','Metodo storico o previsionale?','Storico: paghi gli acconti calcolati sull\'anno prima, senza rischi. Previsionale: se sai che quest\'anno incasserai meno, paghi acconti più bassi; ma se poi incassi di più paghi la differenza con sanzioni e interessi. Si decide con il commercialista prima di giugno o novembre.'],
+['L\'app','Dove sono i miei dati?','Solo sul tuo telefono (o sul computer da cui usi l\'app). Non c\'è un account e non vanno su internet. Per passarli su un altro dispositivo: Impostazioni, Salva un backup, poi Ripristina da backup sull\'altro.'],
+['L\'app','L\'app sostituisce il commercialista?','No. Ti dà una visione chiara del tuo anno, ti dice quanto ti resta e ti fa mandare preventivi in pochi secondi. I calcoli sono stime fatte con le regole pubbliche: dichiarazione, F24 e casi particolari restano al commercialista.'],
+['L\'app','Ogni quanto si aggiornano le percentuali?','Aliquote INPS, minimi delle casse e soglie cambiano ogni anno, di solito tra gennaio e marzo. L\'app si aggiorna da sola quando escono i valori nuovi.']
+];
+function faq(q){ const t=(q||'').trim().toLowerCase(); const L=FAQ.filter(f=>!t||(f[1]+' '+f[2]).toLowerCase().includes(t)); let last='';
+  const body=L.map(f=>{ const h=f[0]!==last?`<div class="faqsec">${esc(f[0])}</div>`:''; last=f[0]; return h+`<details class="faqi"><summary>${esc(f[1])}</summary><p>${esc(f[2])}</p></details>`; }).join('')||'<div class="hint">Nessuna risposta trovata. Chiedi al tuo commercialista: è la persona giusta per i casi particolari.</div>';
+  if(q!=null&&$('faql')){ $('faql').innerHTML=body; return; }
+  sheet(`<h3>Domande frequenti</h3><div class="sub">Risposte brevi, verificate sulle regole del ${PARAMS.anno}. Per il tuo caso specifico decide il commercialista.</div><input id="faqq" placeholder="Cerca: spese, acconti, soglia, ATECO…" oninput="faq(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin:6px 0 4px"><div id="faql">${body}</div>`); }
 /* ---------- SBLOCCO (Google Play Billing via Digital Goods API) ---------- */
 const BILL='https://play.google.com/billing';
 (function(){ try{ if(document.referrer.indexOf('android-app://')===0 || /[?&]src=twa/.test(location.search)) localStorage.setItem('pv.store','play'); }catch(e){} })();
@@ -1367,7 +1403,7 @@ async function restoreUnlock(){ await checkOwned(); if(S.unlocked){ closeSheet()
 checkOwned(); loadPrice();
 
 /* ---------- NAV / SHEET / TOAST ---------- */
-['list','clients','year'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); } });
+['list','clients','year'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); const b=document.createElement('button'); b.className='faqlink'; b.textContent='? Domande frequenti'; b.onclick=()=>faq(); sec.appendChild(b); } });
 function go(v){ if(v!=='new' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
 document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
 function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
