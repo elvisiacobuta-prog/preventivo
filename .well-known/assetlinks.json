@@ -1,0 +1,8 @@
+[{
+  "relation": ["delegate_permission/common.handle_all_urls"],
+  "target": {
+    "namespace": "android_app",
+    "package_name": "it.partitaivo.preventivo",
+    "sha256_cert_fingerprints": ["52:FD:DC:D7:93:80:D5:5B:E1:BC:1E:92:3A:20:F1:23:37:E3:BB:6E:F3:D3:C5:9B:1B:66:E2:2E:64:9A:1F:B2"]
+  }
+}]
