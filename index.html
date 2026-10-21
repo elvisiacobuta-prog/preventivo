@@ -166,12 +166,14 @@ h1{font-size:clamp(44px,5.6vw,88px);line-height:.96;letter-spacing:-.05em;margin
   h1{font-size:clamp(40px,11vw,56px)}
 }
 /* hero video a schermo intero */
-.hero.vh{display:block;min-height:100svh}
-.hero.vh .bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
-.hero.vh .shv{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,13,16,.85) 0%,rgba(11,13,16,.45) 45%,rgba(11,13,16,.15) 100%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 30%)}
-.hero.vh .w{position:relative;z-index:2;min-height:100svh;justify-content:center;max-width:1200px;margin:0 auto;padding:100px 24px 80px}
-.hero.vh picture{display:none}
-@media(max-width:720px){.hero.vh .shv{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.8) 50%,rgba(22,22,22,.25) 100%)}.hero.vh .w{justify-content:flex-end;padding-bottom:60px}}
+.hero.hv{display:block;min-height:100svh}
+.hero.hv .bgv{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center}
+.hero.hv .shv{position:absolute;inset:0;background:linear-gradient(0deg,rgba(14,14,14,.92) 0%,rgba(14,14,14,.6) 28%,rgba(14,14,14,0) 55%),linear-gradient(90deg,rgba(11,13,16,.35) 0%,rgba(11,13,16,0) 50%)}
+.hero.hv .w{position:relative;z-index:2;min-height:100svh;justify-content:flex-end;max-width:1200px;margin:0 auto;padding:100px 24px 72px}
+.hero.hv h1{font-size:clamp(40px,5.2vw,68px);margin-bottom:10px}
+.hero.hv .lead{margin-bottom:22px}
+.hero.hv picture{display:none}
+@media(max-width:720px){.hero.hv{min-height:0}.hero.hv .bgv,.hero.hv .shv{height:58svh;bottom:auto}.hero.hv .bgv{object-position:70% center}.hero.hv .shv{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.35) 22%,rgba(22,22,22,0) 45%)}.hero.hv .w{min-height:0;margin-top:50svh;padding:0 24px 48px;justify-content:flex-start}}
 /* video */
 .vid{padding:70px 0 90px;text-align:center;background:#161616}
 .vid h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;margin:0 0 26px;font-weight:800}
@@ -222,12 +224,12 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </div></nav>
 
 <main id="main">
-<header class="hero">
-  <picture><source media="(max-width:720px)" srcset="img/scene/tram-mobile.jpg"><img style="object-position:62% 35%" src="img/scene/tram-2560.jpg" srcset="img/scene/tram-1280.jpg 1280w, img/scene/tram-2560.jpg 2560w" sizes="100vw" alt="" width="2560" height="1428" fetchpriority="high"></picture>
-  <div class="sh" aria-hidden="true"></div>
+<header class="hero hv">
+  <video class="bgv" autoplay muted loop playsinline preload="auto" poster="video/hero.jpg" aria-label="Spot PreventIVO: mandi un preventivo da dove vuoi"><source src="video/hero.mp4" type="video/mp4"></video>
+  <div class="shv" aria-hidden="true"></div>
   <div class="w">
     <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
-    <p class="lead">L'app per chi ha la partita IVA forfettaria.</p>
+    <p class="lead">Preventivi per chi ha la partita IVA forfettaria.</p>
     <div class="ctas">
       <a class="btn" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.8-1.7 0-3.2 1-4.1 2.5-1.8 3-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3-.1 1.7-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.2-1.2 3.1-2.5.9-1.4 1.3-2.7 1.4-2.8-.1 0-2.8-1.1-2.8-4.1zM14 5.2c.7-.8 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z"/></svg>App Store</a>
       <a class="btn ghost" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.2 13.4 12l-9.8 9.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1zm11.6 11.6 2.6 2.6-9.5 5.4c-.6.3-1.2.3-1.7.1l8.6-8.1zM15.2 10.2l-8.6-8c.5-.2 1.1-.2 1.7.1l9.5 5.4-2.6 2.5zm1.3 1.3 3.2-1.8c1 .6 1 2 0 2.6l-3.2 1.8-2.4-2.3 2.4-2.3z"/></svg>Google Play</a>
@@ -237,8 +239,8 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </header>
 
 <section class="vid" id="video"><div class="w">
-  <h2>Dalla cifra al PDF. <span class="y">Guarda.</span></h2>
-  <div class="pv"><video controls autoplay muted loop playsinline preload="auto" poster="video/promo.jpg" width="1920" height="1080" aria-label="PreventIVO in 40 secondi: cifra, preventivo, invio, stati, clienti, anno"><source src="video/promo.mp4" type="video/mp4"></video><button class="fs" type="button" aria-label="Schermo intero" onclick="const v=this.previousElementSibling;(v.requestFullscreen||v.webkitEnterFullscreen||function(){}).call(v)">⤢</button></div>
+  <h2>Da dove vuoi. <span class="y">Guarda.</span></h2>
+  <div class="pv"><video controls autoplay muted loop playsinline preload="auto" poster="video/spot.jpg" width="1920" height="1080" aria-label="Spot PreventIVO: mandi il preventivo da dove vuoi, poi come funziona l'app"><source src="video/spot.mp4" type="video/mp4"></video><button class="fs" type="button" aria-label="Schermo intero" onclick="const v=this.previousElementSibling;(v.requestFullscreen||v.webkitEnterFullscreen||function(){}).call(v)">⤢</button></div>
 </div></section>
 
 <section class="scene" id="cifra">
