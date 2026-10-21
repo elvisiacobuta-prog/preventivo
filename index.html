@@ -267,6 +267,35 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 .sv video{width:100%;height:100%;display:block;object-fit:cover}
 .sv.vert{aspect-ratio:9/16;max-width:440px;margin:0 auto}
 @media(max-width:720px){.hero.hv h1{font-size:9.4vw}.hero.hv h1 .y{white-space:nowrap}.hero.hv .hc{padding:104px 20px 70px}.spot{padding:0 0 60px}.spot .sw{padding:0 16px}}
+/* hero prodotto: testo a sinistra, telefono con card a destra */
+.hero.hv{flex-direction:column}
+.hero.hv .hg{position:relative;z-index:2;width:100%;max-width:1240px;margin:0 auto;padding:120px 32px 40px;display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
+.hero.hv .ht{text-align:left}
+.hero.hv .kick{display:inline-flex;align-items:center;gap:10px;margin:0 0 26px;padding:8px 14px 8px 12px;border-radius:999px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.12);backdrop-filter:blur(10px);font-size:14px;color:#e2e2e2;font-weight:600;max-width:none}
+.hero.hv .kick i{width:8px;height:8px;border-radius:50%;background:#FFD54A;box-shadow:0 0 12px #FFD54A}
+.hero.hv h1 .y{white-space:nowrap}.hero.hv h1{font-size:clamp(44px,4.9vw,76px);line-height:.96;letter-spacing:-.05em;margin:0 0 24px;text-align:left}
+.hero.hv .hl{font-size:clamp(17px,1.4vw,20px);color:#cfcfcf;max-width:470px;margin:0 0 32px;line-height:1.5;text-align:left}
+.hero.hv .ht .ctas{justify-content:flex-start}
+.hero.hv .ht .sub{margin-top:16px;text-align:left}
+.hero.hv .hp{position:relative;height:640px;display:flex;align-items:center;justify-content:center}
+.hero.hv .pglow{position:absolute;width:520px;height:520px;border-radius:50%;background:radial-gradient(circle,rgba(255,213,74,.22),rgba(255,213,74,0) 65%);filter:blur(10px)}
+.hero.hv .hphone{position:relative;width:290px;aspect-ratio:390/844;border-radius:46px;background:#000;padding:9px;box-shadow:0 60px 120px rgba(0,0,0,.7),0 0 0 1px #3a3a3a inset,0 0 0 9px #111 inset;transform:perspective(1600px) rotateY(-14deg) rotateX(4deg);animation:ph 7s ease-in-out infinite}
+.hero.hv .hphone video{width:100%;height:100%;object-fit:cover;border-radius:38px;display:block}
+.hero.hv .fc{position:absolute;height:auto;filter:drop-shadow(0 24px 40px rgba(0,0,0,.55));animation:fl 6s ease-in-out infinite}
+.hero.hv .f1{width:270px;left:-40px;top:30px;animation-delay:-1s}
+.hero.hv .f2{width:280px;right:-70px;top:300px;animation-delay:-3s}
+.hero.hv .f3{width:210px;left:-30px;bottom:60px;animation-delay:-4.5s}
+@keyframes fl{50%{transform:translateY(-12px)}}
+@keyframes ph{50%{transform:perspective(1600px) rotateY(-10deg) rotateX(3deg) translateY(-8px)}}
+.hero.hv .down{position:relative;z-index:2;display:block;text-align:center;margin:0 auto 34px}
+@media(max-width:960px){
+  .hero.hv .hg{grid-template-columns:1fr;gap:10px;padding:104px 20px 10px}
+  .hero.hv .ht{text-align:center}.hero.hv h1,.hero.hv .hl,.hero.hv .ht .sub{text-align:center}.hero.hv .hl{margin-left:auto;margin-right:auto}
+  .hero.hv .ht .ctas{justify-content:center}
+  .hero.hv .hp{height:500px;transform:scale(.86)}
+  .hero.hv .f1{left:0}.hero.hv .f2{right:-6px}
+}
+@media(max-width:720px){.hero.hv h1{font-size:9.4vw}.hero.hv .ht .ctas{flex-wrap:nowrap;gap:10px}.hero.hv .ht .btn{padding:14px 18px;font-size:16px;flex:1 1 0}.hero.hv .hp{height:470px;transform:scale(.8);margin:30px -40px -30px}.hero.hv .f1{width:250px;left:-20px;top:-6px}.hero.hv .f2{width:250px;right:-40px;top:330px}.hero.hv .f3{display:none}}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 <script>(function(){try{var sa=(window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone;if(sa||/[?&]app\b/.test(location.search)){location.replace('/app/');}}catch(e){}})();</script>
@@ -281,17 +310,26 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 <main id="main">
 <header class="hero hv">
   <div class="bgw" aria-hidden="true"><video class="bgb" autoplay muted loop playsinline preload="auto" poster="video/bg.jpg" src="video/bg.mp4"></video></div>
-  <div class="hc">
-    <p class="kick">Da libero professionista, quante volte hai provato a capire quanto ti resta?</p>
-    <h1>Quanto ti resta?<br><span class="y">In 5 secondi lo sai.</span></h1>
-    <p class="hl">Scrivi la cifra e vedi subito il tuo <b>guadagno pulito da forfettario</b>, tolte tasse e INPS. Poi mandi il preventivo in PDF su WhatsApp o per mail, in un attimo.</p>
-    <div class="ctas">
+  <div class="hg">
+    <div class="ht">
+      <p class="kick"><i></i>Per chi ha la partita IVA forfettaria</p>
+      <h1>Quanto ti resta?<br><span class="y">In 5 secondi lo sai.</span></h1>
+      <p class="hl">Scrivi la cifra: vedi subito quanto è tuo, tolte tasse e INPS. Poi mandi il preventivo in PDF su WhatsApp.</p>
+      <div class="ctas">
     <a class="btn" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.8-1.7 0-3.2 1-4.1 2.5-1.8 3-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3-.1 1.7-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.2-1.2 3.1-2.5.9-1.4 1.3-2.7 1.4-2.8-.1 0-2.8-1.1-2.8-4.1zM14 5.2c.7-.8 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z"/></svg>App Store</a>
     <a class="btn ghost" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.2 13.4 12l-9.8 9.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1zm11.6 11.6 2.6 2.6-9.5 5.4c-.6.3-1.2.3-1.7.1l8.6-8.1zM15.2 10.2l-8.6-8c.5-.2 1.1-.2 1.7.1l9.5 5.4-2.6 2.5zm1.3 1.3 3.2-1.8c1 .6 1 2 0 2.6l-3.2 1.8-2.4-2.3 2.4-2.3z"/></svg>Google Play</a>
   </div>
-    <p class="sub">9,99 € una volta · niente account</p>
-    <a class="down" href="#spot" aria-label="Guarda il video">Guarda come funziona <span aria-hidden="true">↓</span></a>
+      <p class="sub">9,99 € una volta · niente abbonamento · niente account</p>
+    </div>
+    <div class="hp" aria-hidden="true">
+      <div class="pglow"></div>
+      <div class="hphone"><video autoplay muted loop playsinline preload="auto" poster="video/cifra.jpg" src="video/cifra.mp4"></video></div>
+      <img class="fc f1" src="img/ref/c3.png" alt="" width="784" height="170">
+      <img class="fc f2" src="img/ref/c1.png" alt="" width="828" height="276">
+      <img class="fc f3" src="img/ref/c4.png" alt="" width="530" height="172">
+    </div>
   </div>
+  <a class="down" href="#spot">Guarda lo spot <span aria-hidden="true">↓</span></a>
 </header>
 
 <section class="spot" id="spot"><div class="sw">
