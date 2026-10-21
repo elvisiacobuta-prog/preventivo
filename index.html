@@ -125,272 +125,168 @@
 :root{--bg:#161616;--sur:#1f1f1f;--sur2:#2a2a2a;--txt:#F4F4F4;--mut:#9A9A9A;--acc:#FFD54A;--red:#FF4D4D;--line:#2e2e2e;color-scheme:dark}
 *{box-sizing:border-box}html{scroll-behavior:smooth}
 body{margin:0;background:var(--bg);color:var(--txt);font-family:Inter,system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased;line-height:1.5;overflow-x:hidden}
-a{color:inherit}b,strong{font-weight:700}.y{color:var(--acc)}.r{color:var(--red)}
-.w{max-width:1120px;margin:0 auto;padding:0 20px}
+a{color:inherit}b,strong{font-weight:700}.y{color:var(--acc)}
+.w{max-width:1200px;margin:0 auto;padding:0 24px}
 .skip{position:absolute;left:-999px;top:0;background:var(--acc);color:#111;padding:10px 14px;border-radius:8px;z-index:50}.skip:focus{left:12px;top:12px}
 :focus-visible{outline:3px solid var(--acc);outline-offset:3px;border-radius:6px}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
-/* nav */
-nav{position:sticky;top:0;z-index:10;background:rgba(22,22,22,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-nav .w{display:flex;align-items:center;justify-content:space-between;height:64px}
+nav{position:fixed;top:0;left:0;right:0;z-index:10;background:linear-gradient(rgba(22,22,22,.85),rgba(22,22,22,0));transition:background .3s}
+nav.s{background:rgba(22,22,22,.85);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+nav .w{display:flex;align-items:center;justify-content:space-between;height:68px}
 .logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:22px;letter-spacing:-.03em;text-decoration:none}.logo svg{width:28px;height:28px}.logo i{font-style:normal;color:var(--acc)}
-.navlinks{display:flex;gap:22px;font-size:14px;color:var(--mut);list-style:none;margin:0;padding:0}.navlinks a{text-decoration:none}.navlinks a:hover{color:var(--txt)}
-@media(max-width:820px){.navlinks{display:none}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;border-radius:14px;padding:16px 24px;text-decoration:none;font-size:17px;border:0;cursor:pointer;transition:transform .15s,background .15s;text-align:center}
-.btn:hover{transform:translateY(-1px)}.btn.sm{padding:10px 16px;font-size:14px;border-radius:10px}.btn.ghost{background:var(--sur2);color:var(--txt)}.btn.ghost:hover{background:#333}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;border-radius:999px;padding:16px 26px;text-decoration:none;font-size:17px;border:0;cursor:pointer;transition:transform .15s,background .15s;text-align:center}
+.btn:hover{transform:translateY(-1px)}.btn.sm{padding:10px 18px;font-size:14px}.btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px)}.btn.ghost:hover{background:rgba(255,255,255,.16)}
 .btn svg{width:20px;height:20px;flex:none}
 /* hero */
-.hero{padding:80px 0 30px;position:relative;overflow:hidden}
-.hero .w{display:grid;grid-template-columns:1.05fr .95fr;gap:40px;align-items:center}
-@media(max-width:900px){.hero .w{grid-template-columns:1fr}.hero{padding-top:44px}}
-.kick{display:inline-flex;align-items:center;gap:8px;background:var(--sur);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;color:var(--mut);margin-bottom:22px}.kick b{color:var(--red)}
-h1{font-size:clamp(42px,7.2vw,80px);line-height:.98;letter-spacing:-.045em;margin:0 0 22px;font-weight:900}
-.lead{font-size:clamp(17px,2vw,21px);color:var(--mut);max-width:540px;margin:0 0 30px}.lead b{color:var(--txt)}
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:#0b0d10}
+.hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0% 40%}
+@media(min-width:900px){.hero picture img{width:122%;left:0;object-position:0 40%}}
+.hero .sh{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,13,16,.92) 0%,rgba(11,13,16,.7) 35%,rgba(11,13,16,.05) 65%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 25%)}
+.hero .w{position:relative;padding-top:80px;padding-bottom:60px}
+h1{font-size:clamp(46px,7vw,96px);line-height:.94;letter-spacing:-.05em;margin:0 0 22px;font-weight:900;max-width:700px}
+.lead{font-size:clamp(18px,2.1vw,24px);color:#d9d9d9;max-width:520px;margin:0 0 32px;font-weight:400}
 .ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
-.sub{font-size:13px;color:var(--mut);margin-top:14px}
-.glow{position:absolute;width:560px;height:560px;border-radius:50%;background:radial-gradient(circle,rgba(255,213,74,.16),transparent 62%);filter:blur(24px);pointer-events:none;right:-120px;top:-80px}
-/* phone + video */
-.phone{position:relative;width:min(320px,80vw);margin:0 auto;aspect-ratio:390/844;border-radius:46px;background:#000;padding:9px;box-shadow:0 40px 90px rgba(0,0,0,.65),0 0 0 1px #3a3a3a inset}
-.phone::before{content:'';position:absolute;inset:9px;border-radius:38px;background:#161616 var(--poster) center/cover no-repeat}
-.phone video,.phone img{position:relative;width:100%;height:100%;object-fit:cover;border-radius:38px;display:block;background:transparent}
-.phone.sm{width:min(290px,76vw)}
-/* promo */
-.promo{padding:10px 0 50px}
-.pv{border-radius:24px;overflow:hidden;background:#000;box-shadow:0 40px 90px rgba(0,0,0,.6),0 0 0 1px #333 inset;aspect-ratio:16/9}
+.sub{font-size:13px;color:#b5b5b5;margin-top:16px}
+@media(max-width:720px){.hero picture img{object-position:62% 30%}.hero .sh{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.85) 45%,rgba(22,22,22,.2) 100%)}.hero .w{padding-top:52vh}}
+/* video */
+.vid{padding:30px 0 90px;text-align:center}
+.vid h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;margin:0 0 26px;font-weight:800}
+.pv{position:relative;border-radius:28px;overflow:hidden;background:#000;box-shadow:0 50px 100px rgba(0,0,0,.6),0 0 0 1px #333 inset;aspect-ratio:16/9;max-width:1152px;margin:0 auto}
 .pv video{width:100%;height:100%;display:block;object-fit:cover}
-/* strip */
-.strip{border-top:1px solid var(--line);border-bottom:1px solid var(--line);background:var(--sur)}
-.strip ul{display:flex;gap:28px;justify-content:center;flex-wrap:wrap;padding:18px 20px;font-size:14px;color:var(--mut);list-style:none;margin:0}.strip b{color:var(--txt)}
+.fs{position:absolute;right:16px;bottom:16px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:20px;cursor:pointer;backdrop-filter:blur(8px)}
+/* scene */
+.scene{position:relative;min-height:88svh;display:flex;align-items:center;overflow:hidden;background:#0b0b0b}
+.scene picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0 40%}
+@media(min-width:900px){.scene#cifra picture img{width:120%;left:0}}
+.scene .sh{position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,22,22,.9) 0%,rgba(22,22,22,.5) 40%,rgba(22,22,22,0) 70%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 20%,rgba(22,22,22,0) 85%,#161616 100%)}
+.scene .w{position:relative;padding:120px 24px}
+.scene h2{font-size:clamp(40px,6vw,80px);line-height:.95;letter-spacing:-.05em;margin:0 0 18px;font-weight:900;max-width:620px}
+.scene p{font-size:clamp(18px,2vw,24px);color:#d9d9d9;max-width:520px;margin:0}
+.scene.r .sh{background:linear-gradient(270deg,rgba(22,22,22,.9) 0%,rgba(22,22,22,.5) 40%,rgba(22,22,22,0) 70%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 20%,rgba(22,22,22,0) 85%,#161616 100%)}
+.scene.r .w{display:flex;justify-content:flex-end;text-align:right}.scene.r p{margin-left:auto}
+@media(max-width:720px){.scene{min-height:80svh;align-items:flex-end}.scene .sh{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.85) 40%,rgba(22,22,22,.1) 100%)}.scene .w{padding:60px 24px 70px}.scene.r .w{justify-content:flex-start;text-align:left}}
 /* slides */
-.deck{counter-reset:slide}
-.slide{padding:96px 0;border-top:1px solid var(--line)}
-@media(max-width:720px){.slide{padding:60px 0}}
+.slide{padding:110px 0}
 .slide .w{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
 .slide.rev .ph{order:-1}
-@media(max-width:900px){.slide .w{grid-template-columns:1fr;gap:32px}.slide.rev .ph{order:0}}
-.num{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:14px;display:flex;align-items:center;gap:10px}
-.num::before{counter-increment:slide;content:"0" counter(slide);background:var(--acc);color:#111;border-radius:999px;padding:3px 9px;font-size:12px}
-.slide h2{font-size:clamp(32px,4.6vw,54px);letter-spacing:-.04em;line-height:1.02;margin:0 0 16px;font-weight:900}
-.slide .p{color:var(--mut);font-size:19px;margin:0 0 22px;max-width:520px}.slide .p b{color:var(--txt)}
-.pts{list-style:none;margin:0;padding:0}.pts li{position:relative;padding:11px 0 11px 22px;border-top:1px solid var(--line);color:var(--mut);font-size:16px}.pts li::before{content:"";position:absolute;left:0;top:19px;width:8px;height:8px;border-radius:50%;background:var(--acc)}.pts li b{color:var(--txt)}
-.cap{font-size:12px;color:var(--mut);text-align:center;margin-top:12px;letter-spacing:.04em}
-/* ad */
-.ad{background:linear-gradient(135deg,#FFD54A,#ffc61a);color:#111;border-radius:26px;padding:38px;display:grid;grid-template-columns:1fr auto;gap:24px;align-items:center}
-.ad.red{background:linear-gradient(135deg,#FF4D4D,#ff2f2f);color:#fff}
-.ad h3{margin:0 0 6px;font-size:clamp(24px,3.4vw,36px);letter-spacing:-.035em;line-height:1.05;font-weight:900}.ad p{margin:0;font-size:16px;opacity:.85}
-.ad .btn{background:#111;color:#fff;white-space:nowrap}.ad.red .btn{background:#fff;color:#111}
-@media(max-width:720px){.ad{grid-template-columns:1fr;padding:26px}}
-section.pad{padding:40px 0}
+@media(max-width:900px){.slide{padding:70px 0}.slide .w{grid-template-columns:1fr;gap:34px}.slide.rev .ph{order:0}}
+.num{font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:16px}
+.slide h2{font-size:clamp(36px,5.2vw,68px);letter-spacing:-.045em;line-height:.98;margin:0 0 18px;font-weight:900}
+.slide p{color:#bdbdbd;font-size:clamp(18px,1.8vw,22px);margin:0;max-width:480px}
+.phone{position:relative;width:min(300px,76vw);margin:0 auto;aspect-ratio:390/844;border-radius:46px;background:#000;padding:9px;box-shadow:0 50px 100px rgba(0,0,0,.65),0 0 0 1px #3a3a3a inset}
+.phone::before{content:'';position:absolute;inset:9px;border-radius:38px;background:#161616 var(--poster) center/cover no-repeat}
+.phone video{position:relative;width:100%;height:100%;object-fit:cover;border-radius:38px;display:block;background:transparent}
 /* pricing */
-.pricing{padding:96px 0;border-top:1px solid var(--line)}
-.eyebrow{font-size:12px;letter-spacing:.16em;text-transform:uppercase;color:var(--acc);font-weight:700;margin-bottom:12px}
-.pricing h2{font-size:clamp(32px,4.6vw,54px);letter-spacing:-.04em;line-height:1.02;margin:0 0 14px;font-weight:900}
-.p{color:var(--mut);font-size:18px;max-width:640px;margin:0}
-.plans{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:40px}@media(max-width:720px){.plans{grid-template-columns:1fr}}
-.plan{background:var(--sur);border:1px solid var(--line);border-radius:24px;padding:30px;position:relative}.plan.hi{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc)}
-.plan .tag{position:absolute;top:-13px;left:24px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;letter-spacing:.05em}
-.plan h3{margin:0;font-size:14px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);font-weight:600}
-.price{font-size:56px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:12px 0 4px}.price s{color:var(--mut);font-size:26px;font-weight:600;margin-left:8px;letter-spacing:-.02em}.price small{font-size:15px;color:var(--mut);font-weight:500;letter-spacing:0;margin-left:6px}
+.pricing{padding:110px 0;text-align:center}
+.pricing h2{font-size:clamp(36px,5.2vw,68px);letter-spacing:-.045em;line-height:.98;margin:0 0 12px;font-weight:900}
+.pricing .p{color:#bdbdbd;font-size:20px;margin:0 auto 40px;max-width:560px}
+.plan{max-width:520px;margin:0 auto;background:var(--sur);border:1px solid var(--acc);border-radius:28px;padding:34px;text-align:left;position:relative}
+.plan .tag{position:absolute;top:-13px;left:28px;background:var(--red);color:#fff;font-size:12px;font-weight:700;padding:5px 10px;border-radius:999px;letter-spacing:.05em}
+.price{font-size:64px;font-weight:900;letter-spacing:-.05em;line-height:1;margin:6px 0 4px}.price s{color:var(--mut);font-size:26px;font-weight:600;margin-left:8px}.price small{font-size:15px;color:var(--mut);font-weight:500;letter-spacing:0;margin-left:6px}
 @media(max-width:720px){.price small{display:block;margin:6px 0 0}}
-.plan ul{list-style:none;padding:0;margin:20px 0 24px;color:var(--mut)}.plan li{padding:9px 0;border-top:1px solid var(--line)}.plan li b{color:var(--txt)}
+.plan ul{list-style:none;padding:0;margin:18px 0 24px;color:#bdbdbd}.plan li{padding:9px 0;border-top:1px solid var(--line)}.plan li b{color:var(--txt)}
 .stores{display:flex;gap:10px;flex-wrap:wrap}
-.disc{font-size:12px;color:var(--mut);max-width:760px;margin:12px auto 0}
-/* ivo */
-.ivo{background:var(--sur);border:1px solid var(--line);border-radius:28px;padding:40px;display:grid;grid-template-columns:auto 1fr;gap:30px;align-items:center}
-@media(max-width:720px){.ivo{grid-template-columns:1fr;padding:26px}}
-.ivo .av{width:96px;height:96px;border-radius:50%;background:var(--acc);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:30px;color:#111;letter-spacing:-.04em}
-.ivo blockquote{margin:0;font-size:clamp(20px,2.6vw,28px);letter-spacing:-.02em;line-height:1.25;font-weight:600}.ivo cite{display:block;font-style:normal;color:var(--mut);font-size:14px;margin-top:12px}
+.disc{font-size:12px;color:var(--mut);max-width:760px;margin:18px auto 0}
+.brand{max-width:520px;margin:14px auto 0;color:var(--mut);font-size:15px}
 /* faq */
-.faqs{padding:96px 0;border-top:1px solid var(--line)}
-.faq{max-width:760px;margin:30px auto 0}
+.faqs{padding:60px 0 110px}
+.faqs h2{font-size:clamp(30px,4vw,48px);letter-spacing:-.04em;margin:0;font-weight:800;text-align:center}
+.faq{max-width:720px;margin:30px auto 0}
 details{border-top:1px solid var(--line);padding:18px 0}details:last-child{border-bottom:1px solid var(--line)}
 summary{cursor:pointer;font-size:18px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:16px}summary::-webkit-details-marker{display:none}
 summary::after{content:"+";color:var(--acc);font-weight:700;font-size:22px;line-height:1}details[open] summary::after{content:"–"}
 details p{color:var(--mut);margin:12px 0 0;font-size:16px}
-.final{text-align:center;padding:110px 0;border-top:1px solid var(--line)}.final h2{font-size:clamp(38px,6.4vw,70px);letter-spacing:-.045em;line-height:1;margin:0 0 14px;font-weight:900}
 footer{border-top:1px solid var(--line);padding:36px 0;color:var(--mut);font-size:13px}footer .w{display:flex;justify-content:space-between;gap:20px;flex-wrap:wrap}
 footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text-decoration:none}footer a:hover{color:var(--txt)}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Vai al contenuto</a>
-<nav aria-label="Principale"><div class="w">
+<nav id="nav" aria-label="Principale"><div class="w">
   <a class="logo" href="#" aria-label="PreventIVO, torna all'inizio"><svg viewBox="0 0 60 60" aria-hidden="true"><circle cx="30" cy="30" r="20" fill="none" stroke="#FFD54A" stroke-width="12"/><circle cx="30" cy="30" r="20" fill="none" stroke="#FF4D4D" stroke-width="12" stroke-dasharray="29 97" transform="rotate(-90 30 30)"/></svg><span>Prevent<i>IVO</i></span></a>
-  <ul class="navlinks"><li><a href="#cifra">Quanto ti resta</a></li><li><a href="#preventivo">Preventivo</a></li><li><a href="#clienti">Clienti</a></li><li><a href="#anno">Anno</a></li><li><a href="#prezzo">Prezzo</a></li><li><a href="#faq">Domande</a></li></ul>
   <a class="btn sm" href="#prezzo">Scarica l'app</a>
 </div></nav>
 
 <main id="main">
-<header class="hero"><div class="glow" aria-hidden="true"></div><div class="w">
-  <div>
-    <div class="kick"><b>Prezzo di lancio</b> 5,99 € invece di 9,99 € · prime 3 settimane</div>
+<header class="hero">
+  <picture><source media="(max-width:720px)" srcset="img/scene/tram-mobile.jpg"><img src="img/scene/tram-2560.jpg" srcset="img/scene/tram-1280.jpg 1280w, img/scene/tram-2560.jpg 2560w" sizes="100vw" alt="" width="2560" height="1428" fetchpriority="high"></picture>
+  <div class="sh" aria-hidden="true"></div>
+  <div class="w">
     <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
-    <p class="lead">Hai la partita IVA forfettaria. Ti pagano 1.500 €: <b>quanto è tuo?</b> Scrivi la cifra, il cerchio risponde. Poi fai il preventivo in PDF e lo mandi su WhatsApp. <b>Senza Excel, senza modelli Word.</b></p>
+    <p class="lead">L'app per chi ha la partita IVA forfettaria.</p>
     <div class="ctas">
       <a class="btn" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M16.4 12.6c0-2.5 2-3.7 2.1-3.8-1.2-1.7-3-1.9-3.6-2-1.5-.2-3 .9-3.8.9-.8 0-2-.9-3.3-.8-1.7 0-3.2 1-4.1 2.5-1.8 3-.5 7.6 1.3 10.1.8 1.2 1.8 2.6 3.1 2.5 1.3-.1 1.7-.8 3.3-.8s2 .8 3.3.8c1.4 0 2.2-1.2 3.1-2.5.9-1.4 1.3-2.7 1.4-2.8-.1 0-2.8-1.1-2.8-4.1zM14 5.2c.7-.8 1.2-2 1-3.2-1 0-2.2.7-2.9 1.5-.6.7-1.2 1.9-1 3.1 1.1.1 2.2-.6 2.9-1.4z"/></svg>App Store</a>
       <a class="btn ghost" href="#prezzo"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M3.6 2.2 13.4 12l-9.8 9.8c-.3-.2-.5-.6-.5-1V3.2c0-.4.2-.8.5-1zm11.6 11.6 2.6 2.6-9.5 5.4c-.6.3-1.2.3-1.7.1l8.6-8.1zM15.2 10.2l-8.6-8c.5-.2 1.1-.2 1.7.1l9.5 5.4-2.6 2.5zm1.3 1.3 3.2-1.8c1 .6 1 2 0 2.6l-3.2 1.8-2.4-2.3 2.4-2.3z"/></svg>Google Play</a>
     </div>
-    <p class="sub">In arrivo sugli store · 9,99 € una volta, nessun abbonamento · niente account, i dati restano sul tuo telefono</p>
+    <p class="sub">9,99 € una volta · niente account</p>
   </div>
-  <div class="phone" style="--poster:url(video/cifra.jpg)"><video autoplay muted loop playsinline preload="metadata" data-poster="video/cifra.jpg" width="780" height="1688" aria-label="Demo: digiti 1.500 e il cerchio mostra quanto è tuo"><source src="video/cifra.mp4" type="video/mp4"></video></div>
-</div></header>
+</header>
 
-<section class="promo" aria-label="Video di presentazione"><div class="w">
-  <div class="pv"><video controls autoplay muted loop playsinline preload="metadata" poster="video/promo.jpg" width="1920" height="1080" aria-label="PreventIVO in 40 secondi: cifra, preventivo, invio, stati, clienti, anno"><source src="video/promo.mp4" type="video/mp4"></video></div>
-  <p class="cap">PreventIVO dall'inizio alla fine, in 40 secondi.</p>
+<section class="vid" id="video"><div class="w">
+  <h2>Dalla cifra al PDF. <span class="y">Guarda.</span></h2>
+  <div class="pv"><video autoplay muted loop playsinline preload="auto" poster="video/promo.jpg" width="1920" height="1080" aria-label="PreventIVO in 40 secondi: cifra, preventivo, invio, stati, clienti, anno"><source src="video/promo.mp4" type="video/mp4"></video><button class="fs" type="button" aria-label="Schermo intero" onclick="const v=this.previousElementSibling;(v.requestFullscreen||v.webkitEnterFullscreen||function(){}).call(v)">⤢</button></div>
 </div></section>
 
-<div class="strip"><ul>
-  <li><b>Solo forfettari.</b> Fatta per chi ha appena aperto</li>
-  <li><b>Niente account.</b> I dati restano sul telefono</li>
-  <li><b>Un prezzo, una volta.</b> Nessun abbonamento</li>
-  <li><b>Sono stime.</b> Il conto vero lo fa il commercialista</li>
-</ul></div>
+<section class="scene" id="cifra">
+  <picture><source media="(max-width:720px)" srcset="img/scene/cucina-mobile.jpg"><img src="img/scene/cucina-2560.jpg" srcset="img/scene/cucina-1280.jpg 1280w, img/scene/cucina-2560.jpg 2560w" sizes="100vw" alt="Un freelance in cucina, di sera, guarda quanto gli resta sul telefono" width="2560" height="1428" loading="lazy"></picture>
+  <div class="sh" aria-hidden="true"></div>
+  <div class="w"><div><h2>Ti pagano.<br><span class="y">Sai quanto è tuo.</span></h2><p>Giallo è tuo. Rosso va al fisco. Prima di spenderli.</p></div></div>
+</section>
 
-<div class="deck">
-
-<section class="slide" id="cifra"><div class="w">
-  <div>
-    <p class="num">Quanto ti resta</p>
-    <h2>Scrivi la cifra.<br>Il cerchio risponde.</h2>
-    <p class="p">Un incasso o un preventivo: digiti il numero e vedi subito <b>quanto è tuo</b> (giallo) e quanto va al fisco (rosso). Imposta e INPS separati, con una riga che spiega cosa sono.</p>
-    <ul class="pts">
-      <li><b>5% o 15%</b>: due pulsanti, scegli il tuo caso</li>
-      <li>Conto fatto sul <b>coefficiente della tua attività</b> (video, consulenza, artigiano, commercio…)</li>
-      <li>Ti dice <b>quanto mettere via</b>, arrotondato per eccesso: così non sei mai scoperto</li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/cifra.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/cifra.jpg" width="780" height="1688" aria-label="Demo: inserimento della cifra"><source src="video/cifra.mp4" type="video/mp4"></video></div><p class="cap">1.500 € incassati → 1.152 € tuoi</p></div>
+<section class="slide" id="preventivo"><div class="w">
+  <div><p class="num">Preventivo</p><h2>Voci, prezzo.<br><span class="y">Fatto.</span></h2><p>Dal telefono, in dieci secondi. Mentre scrivi vedi quanto ti resta.</p></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/preventivo.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: creazione di un preventivo"><source src="video/preventivo.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="slide rev" id="preventivo"><div class="w">
-  <div>
-    <p class="num">Preventivo</p>
-    <h2>Voci, prezzo, fatto.<br>Dal telefono, in 10 secondi.</h2>
-    <p class="p">Metti le voci con quantità e prezzo. Mentre scrivi, l'app ti mostra <b>quanto ti resta su quel lavoro</b>, prima ancora di mandarlo.</p>
-    <ul class="pts">
-      <li><b>+ Aggiungi voce</b>, quante vuoi; i clienti già salvati sono a un tocco</li>
-      <li>Condizioni (pagamento, validità, incluso, extra) <b>scritte una volta: restano</b></li>
-      <li>PDF numerato, con il tuo nome e la tua partita IVA, firma e validità</li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/preventivo.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/preventivo.jpg" width="780" height="1688" aria-label="Demo: creazione di un preventivo con due voci"><source src="video/preventivo.mp4" type="video/mp4"></video></div><p class="cap">Studio Verde · video evento + 4 reel → 1.152 € netti</p></div>
+<section class="slide rev" id="invio"><div class="w">
+  <div><p class="num">Invio</p><h2>Due tasti.<br><span class="y">Il PDF è già dentro.</span></h2><p>WhatsApp o mail. Con il tuo nome e la tua partita IVA.</p></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: invio su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="slide" id="invio"><div class="w">
-  <div>
-    <p class="num">Invio</p>
-    <h2>Due tasti.<br>Il PDF è già dentro.</h2>
-    <p class="p"><b>Invia su WhatsApp</b> o <b>Invia per mail</b>: si apre l'app che usi già, con il PDF allegato e il testo del preventivo pronto. Mail e numero del cliente restano salvati per la volta dopo.</p>
-    <ul class="pts">
-      <li>Niente "esporta, salva, cerca il file, allega"</li>
-      <li>Il testo è in italiano chiaro: voci, totale, validità, come accettare</li>
-      <li>Ogni preventivo inviato porta il tuo nome e la tua partita IVA</li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/invio.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/invio.jpg" width="780" height="1688" aria-label="Demo: invio del preventivo su WhatsApp o per mail"><source src="video/invio.mp4" type="video/mp4"></video></div><p class="cap">Invia su WhatsApp · Invia per mail</p></div>
+<section class="slide" id="stati"><div class="w">
+  <div><p class="num">Preventivi</p><h2>Chi ti deve<br><span class="y">cosa.</span></h2><p>Inviato, accettato, fatturato, incassato. A colpo d'occhio.</p></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/stati.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: stati dei preventivi"><source src="video/stati.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="pad"><div class="w">
-  <div class="ad"><div><h3>Il preventivo in PDF ti fa pagare prima.</h3><p>Voci chiare, condizioni scritte, firma per accettazione. Il cliente capisce al volo e non ti chiede "ma quindi quanto viene?".</p></div><a class="btn" href="#prezzo">Scarica l'app</a></div>
+<section class="slide rev" id="clienti"><div class="w">
+  <div><p class="num">Clienti</p><h2>I tuoi clienti.<br><span class="y">Il tuo anno.</span></h2><p>Si creano da soli dal primo preventivo. Mail, WhatsApp, quanto vale ognuno.</p></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: clienti"><source src="video/clienti.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="slide rev" id="stati"><div class="w">
-  <div>
-    <p class="num">Preventivi</p>
-    <h2>Sai sempre<br>chi ti deve cosa.</h2>
-    <p class="p">Ogni preventivo ha uno stato: <b>inviato, accettato, fatturato, incassato</b>. In alto vedi quanto aspetti e da chi. I fermi da più di 30 giorni diventano rossi.</p>
-    <ul class="pts">
-      <li>Cambi stato con un tocco; la data si segna da sola</li>
-      <li>Quando incassi, ti dice <b>quanto mettere via</b> per le tasse</li>
-      <li>"Riusa come nuovo" per i lavori che si ripetono</li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/stati.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/stati.jpg" width="780" height="1688" aria-label="Demo: cambio di stato di un preventivo in incassato"><source src="video/stati.mp4" type="video/mp4"></video></div><p class="cap">Inviato → Accettato → Fatturato → Incassato</p></div>
-</div></section>
+<section class="scene" id="anno">
+  <picture><img src="img/scene/desk-1600.jpg" srcset="img/scene/desk-900.jpg 900w, img/scene/desk-1600.jpg 1600w" sizes="100vw" alt="Mani che tengono il telefono sopra una scrivania, di notte" width="1600" height="1986" loading="lazy" style="object-position:50% 40%"></picture>
+  <div class="sh" aria-hidden="true"></div>
+  <div class="w"><div><h2>Niente sorprese<br><span class="y">a giugno.</span></h2><p>Cosa paghi, quando, e quanto hai già messo via.</p></div></div>
+</section>
 
-<section class="slide" id="clienti"><div class="w">
-  <div>
-    <p class="num">Clienti</p>
-    <h2>I tuoi clienti,<br>e quanto vale l'anno.</h2>
-    <p class="p">I clienti si creano da soli dal primo preventivo, o li aggiungi tu. Per ognuno: mail, WhatsApp e <b>incasso atteso</b>. L'app somma tutto e ti dice dove arrivi a fine anno.</p>
-    <ul class="pts">
-      <li>Incassato e <b>previsto a fine anno</b>, aggiornati da soli con i preventivi</li>
-      <li>Tasse e netto stimati su quel previsto, prima di fatturare</li>
-      <li>Quanto manca alla <b>soglia degli 85.000 €</b></li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/clienti.jpg" width="780" height="1688" aria-label="Demo: aggiunta di un cliente con mail e incasso atteso"><source src="video/clienti.mp4" type="video/mp4"></video></div><p class="cap">Nuovo cliente → mail → incasso atteso</p></div>
+<section class="slide" id="annoapp"><div class="w">
+  <div><p class="num">Anno</p><h2>Quest'anno.<br><span class="y">E il prossimo.</span></h2><p>Tasse stimate, giugno e novembre, soglia 85.000 €. In base all'anno di partita IVA in cui sei.</p></div>
+  <div class="ph"><div class="phone" style="--poster:url(video/anno.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: la scheda Anno"><source src="video/anno.mp4" type="video/mp4"></video></div></div>
 </div></section>
-
-<section class="slide rev" id="anno"><div class="w">
-  <div>
-    <p class="num">Anno</p>
-    <h2>Cosa paghi,<br>e quando.</h2>
-    <p class="p">Il forfettario ha trappole che nessuno ti spiega: <b>il secondo anno paghi il doppio</b>, dopo cinque anni il 5% finisce, oltre 85.000 € esci dal regime. L'app te lo dice in base all'anno di partita IVA in cui sei.</p>
-    <ul class="pts">
-      <li>Tasse stimate dell'anno e <b>cosa paghi a giugno e a novembre</b>, quest'anno e il prossimo</li>
-      <li>Incassi mese per mese e "già messo via"</li>
-      <li><b>Export per il commercialista</b> e backup, in un tocco</li>
-    </ul>
-  </div>
-  <div class="ph"><div class="phone sm" style="--poster:url(video/anno.jpg)"><video autoplay muted loop playsinline preload="none" data-poster="video/anno.jpg" width="780" height="1688" aria-label="Demo: la scheda Anno con tasse, scadenze e soglia"><source src="video/anno.mp4" type="video/mp4"></video></div><p class="cap">Nel 2026 · Nel 2027 · soglia 85.000 €</p></div>
-</div></section>
-
-</div>
 
 <section class="pricing" id="prezzo"><div class="w">
-  <p class="eyebrow">Prezzo</p>
-  <h2>Una volta. Non ogni mese.</h2>
-  <p class="p">Un prezzo solo, poi è tua. Niente abbonamenti, niente versione gratuita che ti blocca a metà, niente pubblicità.</p>
-  <div class="plans">
-    <div class="plan hi"><span class="tag">PREZZO DI LANCIO</span>
-      <h3>PreventIVO</h3>
-      <div class="price">5,99 €<s><span class="vh">invece di </span>9,99 €</s><small>una volta</small></div>
-      <ul><li><b>Tutto:</b> quanto ti resta, preventivi, PDF, clienti, anno</li><li>PDF con il tuo nome e la tua partita IVA</li><li>Invio su WhatsApp e mail con il PDF allegato</li><li>Cosa paghi a giugno e novembre, soglia 85.000 €</li><li>Niente account, niente dati raccolti</li></ul>
-      <div class="stores"><a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20su%20App%20Store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Ho%20un%20iPhone.">App Store · avvisami</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20su%20Google%20Play&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Ho%20un%20Android.">Google Play · avvisami</a></div>
-    </div>
-    <div class="plan">
-      <h3>Il tuo brand</h3>
-      <div class="price">+6 €<small>una volta, dentro l'app</small></div>
-      <ul><li>Il PDF con <b>il tuo logo e i tuoi colori</b></li><li>Piede con i tuoi dati, senza il marchio PreventIVO</li><li>Per chi ha già uno studio, un'agenzia, un'immagine</li><li>Si attiva quando vuoi, dall'app</li></ul>
-      <a class="btn ghost" href="#faq" style="width:100%">In arrivo dopo il lancio</a>
-    </div>
+  <h2>Una volta. <span class="y">Non ogni mese.</span></h2>
+  <p class="p">Un prezzo, poi è tua. Niente abbonamenti, niente pubblicità, niente account.</p>
+  <div class="plan"><span class="tag">PREZZO DI LANCIO</span>
+    <div class="price">5,99 €<s><span class="vh">invece di </span>9,99 €</s><small>una volta</small></div>
+    <ul><li><b>Tutto:</b> quanto ti resta, preventivi, PDF, clienti, anno</li><li>Invio su WhatsApp e mail con il PDF allegato</li><li>Solo per partite IVA forfettarie</li></ul>
+    <div class="stores"><a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20su%20App%20Store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Ho%20un%20iPhone.">App Store · avvisami</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20su%20Google%20Play&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Ho%20un%20Android.">Google Play · avvisami</a></div>
   </div>
-  <p class="disc">Prezzi indicativi, IVA inclusa, come appariranno su App Store e Google Play. "Il tuo brand" arriva nei mesi successivi al lancio.</p>
-</div></section>
-
-<section class="pad"><div class="w">
-  <div class="ivo">
-    <div class="av" aria-hidden="true">IVO</div>
-    <div>
-      <blockquote>"Mi hanno pagato 2.000 euro. Sono andato a fare la spesa come se fossero 2.000 euro. Erano 1.540. Adesso prima guardo il cerchio."</blockquote>
-      <cite>Partita IVO, personaggio inventato dall'autore dell'app. Non è una recensione. Lo trovi su Instagram e TikTok.</cite>
-    </div>
-  </div>
+  <p class="brand">Vuoi il PDF con il tuo logo, senza il marchio PreventIVO? <b style="color:var(--txt)">Il tuo brand</b>, +6 € dentro l'app, dopo il lancio.</p>
+  <p class="disc">Prezzi indicativi, IVA inclusa, come appariranno su App Store e Google Play. I calcoli sono stime: il conto vero lo fa il commercialista.</p>
 </div></section>
 
 <section class="faqs" id="faq"><div class="w">
-  <p class="eyebrow">Domande</p>
-  <h2 style="font-size:clamp(32px,4.6vw,54px);letter-spacing:-.04em;line-height:1.02;margin:0;font-weight:900">Le cose che chiedono tutti.</h2>
+  <h2>Domande</h2>
   <div class="faq">
-    <details open><summary><h3 style="margin:0;font:inherit">È per me?</h3></summary><p>Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te.</p></details>
+    <details><summary><h3 style="margin:0;font:inherit">È per me?</h3></summary><p>Sì, se hai una partita IVA individuale in regime forfettario: freelance, creativi, consulenti, artigiani, commercianti, personal trainer, estetiste, tatuatori. Se hai una SRL o sei in regime ordinario, no: i conti sono diversi e l'app non fa per te.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">I calcoli sono esatti?</h3></summary><p>Sono stime, fatte con i coefficienti e le aliquote pubbliche del forfettario (coefficiente della tua attività, INPS gestione separata o artigiani/commercianti, imposta al 5% o al 15%). Servono a sapere subito dove sei. Il conto definitivo lo fa il tuo commercialista: l'app non dà consulenza fiscale.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Sostituisce il commercialista?</h3></summary><p>No, e non vuole. Ti fa arrivare dal commercialista sapendo già quanto hai incassato, quanto hai messo via e cosa aspettarti a giugno e novembre. C'è l'export apposta.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Dove vanno i miei dati?</h3></summary><p>Da nessuna parte. Restano sul tuo telefono. Non esistono account, non ci sono server nostri, non c'è pubblicità. Quando mandi un preventivo, lo passi tu a WhatsApp o alla tua mail. C'è un backup manuale, tuo.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Perché a pagamento e non gratis?</h3></summary><p>Perché un'app gratis vive di pubblicità o dei tuoi dati, e qui dentro ci sono i tuoi incassi. Un prezzo, una volta, e siamo pari.</p></details>
     <details><summary><h3 style="margin:0;font:inherit">Posso provarla prima?</h3></summary><p>Non c'è una versione gratuita: PreventIVO costa 9,99 € una volta (5,99 € al lancio) e non ha pubblicità né abbonamenti. Se non fa per te, App Store e Google Play prevedono il rimborso secondo le loro regole.</p></details>
   </div>
-</div></section>
-
-<section class="pad"><div class="w">
-  <div class="ad red"><div><h3>Le prime 3 settimane a 5,99 €. Poi 9,99 €.</h3><p>Lascia la mail e ti avviso il giorno che esce sugli store, al prezzo di lancio.</p></div><a class="btn" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store&body=Ciao%2C%20avvisami%20al%20prezzo%20di%20lancio.%20Telefono%3A%20iPhone%20%2F%20Android">Avvisami</a></div>
-</div></section>
-
-<section class="final"><div class="w">
-  <h2>Quanto ti resta?<br><span class="y">Scoprilo sul tuo telefono.</span></h2>
-  <p class="p" style="margin:0 auto 28px">In arrivo su App Store e Google Play. 9,99 € una volta.</p>
-  <div class="ctas" style="justify-content:center"><a class="btn" href="#prezzo">Scarica l'app</a><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=Avvisami%20quando%20PreventIVO%20%C3%A8%20sugli%20store">Avvisami quando esce</a></div>
 </div></section>
 </main>
 
@@ -400,11 +296,10 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </div>
 <p class="disc" style="text-align:center;padding:0 20px">PreventIVO calcola stime per il regime forfettario italiano e non fornisce consulenza fiscale, contabile o legale. Apple, App Store, Google Play e WhatsApp sono marchi dei rispettivi proprietari.</p>
 </footer>
-<style>.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}</style>
 <script>
-// i video partono solo quando sono visibili (risparmia dati sul telefono)
+const nav=document.getElementById('nav'); addEventListener('scroll',()=>nav.classList.toggle('s',scrollY>40),{passive:true});
 const vids=[...document.querySelectorAll('video')];
-if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); } }),{threshold:.35}); vids.forEach(v=>io.observe(v)); }
+if('IntersectionObserver' in window){ const io=new IntersectionObserver(es=>es.forEach(e=>{ const v=e.target; if(e.isIntersecting){ v.play().catch(()=>{}); } else { v.pause(); } }),{threshold:.3}); vids.forEach(v=>io.observe(v)); }
 </script>
 </body>
 </html>
