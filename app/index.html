@@ -137,6 +137,8 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .seg{display:flex;background:var(--sur2);border-radius:12px;padding:3px}
 .seg button{flex:1;padding:9px;border-radius:10px;font-size:13px;font-weight:600;color:var(--mut)}
 #rateseg button{padding:12px;font-size:14px}#rateseg button.on{background:var(--acc);color:#111}
+.dirseg{margin:0 0 14px}.dirseg button{font-size:13px}
+.revbox{margin:-4px 0 10px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:15px;text-align:center}.revbox b{color:var(--acc)}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
@@ -234,6 +236,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <!-- VIEW: NUOVO (guidata) -->
   <section class="view on" id="v-new">
     <div class="step on" id="st0">
+      <div class="seg dirseg" id="dirseg"><button id="dirF" onclick="setDir(false)">Ho la cifra lorda</button><button id="dirR" onclick="setDir(true)">Voglio un netto</button></div>
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
       <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button><button id="rateM" onclick="askPct()">La tua %</button></div>
@@ -401,7 +404,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.5.1',
+  ver: '2.6',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -520,7 +523,12 @@ function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.pr
 function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
 function renderActLine(){ if(isMan()){ $('actline').innerHTML=`Calcolo con <b style="color:var(--txt)">la tua percentuale: ${String(S.profile.manPct).replace('.',',')}%</b> di tasse e INPS · il calcolo esatto darebbe circa il ${Math.round(calc(1000,{noMan:1}).tasse/10)}% · <span class="link" onclick="S.profile.useMan=false;save();refreshRate()" style="font-size:12px">torna all'esatto</span>`; return; } $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (${coefAteco(S.profile.ateco)!=null?'ATECO '+esc(S.profile.ateco)+' · ':''}coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
 function setRate(five){ S.profile.useMan=false; if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
-function renderHello(){}
+function isRev(){ return !!S.profile.rev; }
+function gross(v){ if(!isRev()||!v) return v; const k=calc(1000).netto/1000; return k>0? Math.ceil(v/k) : v; }
+function setDir(r){ S.profile.rev=!!r; save(); renderHello(); ring0(parseFloat($('q0').value)||0); }
+function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $('dirR').classList.toggle('on',r);
+  $('hello').textContent=r?'Quanto vuoi che ti resti?':'Inserisci la cifra';
+  $('hellosub').textContent=r?'Scrivi il netto che vuoi in tasca: ti diciamo quanto chiedere al cliente.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); $('rateM').classList.toggle('on',m); $('rateM').textContent=m?('La tua · '+String(S.profile.manPct).replace('.',',')+'%'):'La tua %';
   const ca=coefAteco(S.profile.ateco); $('atchip').innerHTML = ca!=null ? `ATECO <b>${esc(S.profile.ateco)}</b> · coefficiente ${Math.round(ca*100)}% ✎` : 'Hai il codice ATECO? <b>Inseriscilo</b> per un calcolo esatto'; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
@@ -533,14 +541,14 @@ function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/
 function savePct(){ const v=parseFloat(String($('m-pct').value).replace(',','.')); if(!(v>0&&v<100)){ toast('Scrivi una percentuale tra 1 e 99'); return; } S.profile.manPct=Math.round(v*10)/10; S.profile.useMan=true; save(); closeSheet(); refreshRate(); }
 function refreshRate(){ renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function ring0(v){
-  const c=calc(v); const C=2*Math.PI*82;
-  const fy=v? Math.max(0,c.netto)/v : 0, fr=v? c.tasse/v : 0;
+  const L=gross(v), c=calc(L); const C=2*Math.PI*82;
+  const fy=L? Math.max(0,c.netto)/L : 0, fr=L? c.tasse/L : 0;
   $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
   $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
-  $('herosub').textContent = v? `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}` : 'scrivi la cifra';
+  $('herosub').innerHTML = v? (isRev()? `chiedi <b style="color:var(--acc)">${fmt(L)}</b>` : `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}`) : (isRev()?'scrivi il netto che vuoi':'scrivi la cifra');
   const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
   leg.innerHTML=(c.manual?[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','tasse e INPS ('+String(S.profile.manPct).replace('.',',')+'%)',c.tasse,null]]:[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']]).map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
-  $('how0').innerHTML=(v&&!padOpen)?`<button class="howbtn" onclick="howCalc(${v})">Come l'ho calcolato →</button>`:'';
+  $('how0').innerHTML=(v&&!padOpen)?(isRev()?`<div class="revbox">Per avere <b>${fmt(v)}</b> netti chiedi <b>${fmt(L)}</b> al cliente.</div>`:'')+`<button class="howbtn" onclick="howCalc(${L})">Come l'ho calcolato →</button>`:'';
 }
 function howCalc(v){ const e=calc(v,{noMan:1}), m=isMan()?calc(v):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=PARAMS.inps[S.profile.inps]*((isIVS()&&S.profile.rid35)?0.65:1);
   const row=(n,t,d,b)=>`<div class="hstep"><span class="hn">${n}</span><div><b>${t}</b><small>${d}</small></div><b class="hv${b?' y':''}">${b||''}</b></div>`;
@@ -565,7 +573,7 @@ $('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&
 setPad(true);
 function fromHome(k){
   if(!S.setup){ askAct(true,()=>fromHome(k)); return; }
-  const v=parseFloat($('q0').value)||0;
+  const v=gross(parseFloat($('q0').value)||0);
   if(k==='prev'){ cur.rows = v? [{d:'',q:1,p:v,t:v}] : []; step(1); }
   else { if(v) $('inc').value=String(v); step(10); $('inc').dispatchEvent(new Event('input')); }
 }
