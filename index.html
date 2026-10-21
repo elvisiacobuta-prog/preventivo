@@ -137,34 +137,40 @@ nav .w{display:flex;align-items:center;justify-content:space-between;height:68px
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--acc);color:#111;font-weight:700;border-radius:999px;padding:16px 26px;text-decoration:none;font-size:17px;border:0;cursor:pointer;transition:transform .15s,background .15s;text-align:center}
 .btn:hover{transform:translateY(-1px)}.btn.sm{padding:10px 18px;font-size:14px}.btn.ghost{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.18);backdrop-filter:blur(10px)}.btn.ghost:hover{background:rgba(255,255,255,.16)}
 .btn svg{width:20px;height:20px;flex:none}
-/* hero */
-.hero{position:relative;min-height:100svh;display:flex;align-items:center;overflow:hidden;background:#0b0d10}
-.hero picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0% 40%}
-@media(min-width:900px){.hero picture img{width:112%;left:0;object-position:0 40%}}
-.hero .sh{position:absolute;inset:0;background:linear-gradient(90deg,rgba(11,13,16,.92) 0%,rgba(11,13,16,.7) 35%,rgba(11,13,16,.05) 65%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 25%)}
-.hero .w{position:relative;padding-top:80px;padding-bottom:60px}
-h1{font-size:clamp(46px,7vw,96px);line-height:.94;letter-spacing:-.05em;margin:0 0 22px;font-weight:900;max-width:700px}
-.lead{font-size:clamp(18px,2.1vw,24px);color:#d9d9d9;max-width:520px;margin:0 0 32px;font-weight:400}
+/* hero + scene: due colonne, testo a sinistra su fondo pieno, foto a destra; mai sovrapposti */
+.hero,.scene{position:relative;display:grid;grid-template-columns:minmax(380px,44%) 1fr;min-height:92svh;background:#0f1012;overflow:hidden}
+.scene{min-height:82svh;border-top:1px solid #1b1b1b}
+.hero .w,.scene .w{position:relative;z-index:2;display:flex;flex-direction:column;justify-content:center;padding:120px 48px 80px 6vw;max-width:none;margin:0}
+.scene .w{padding:90px 48px 90px 6vw}
+.hero .sh,.scene .sh{display:none}
+.hero picture,.scene picture{position:relative;display:block;min-height:420px;order:2}
+.hero .w,.scene .w{order:1}
+.hero picture img,.scene picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:60% 40%}
+.hero picture::before,.scene picture::before{content:'';position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,#0f1012 0%,rgba(15,16,18,.55) 18%,rgba(15,16,18,0) 45%)}
+.scene.r{grid-template-columns:1fr minmax(380px,44%)}
+.scene.r picture{order:0}
+.scene.r picture::before{background:linear-gradient(270deg,#0f1012 0%,rgba(15,16,18,.55) 18%,rgba(15,16,18,0) 45%)}
+.scene.r .w{padding:90px 6vw 90px 48px}
+h1{font-size:clamp(44px,5.6vw,88px);line-height:.96;letter-spacing:-.05em;margin:0 0 20px;font-weight:900}
+.lead{font-size:clamp(18px,1.6vw,22px);color:#d9d9d9;max-width:460px;margin:0 0 30px}
 .ctas{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
 .sub{font-size:13px;color:#b5b5b5;margin-top:16px}
-@media(max-width:720px){.hero picture img{object-position:62% 30%}.hero .sh{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.85) 45%,rgba(22,22,22,.2) 100%)}.hero .w{padding-top:52vh}}
+.scene h2{font-size:clamp(36px,4.6vw,72px);line-height:.96;letter-spacing:-.05em;margin:0 0 16px;font-weight:900}
+.scene p{font-size:clamp(18px,1.6vw,22px);color:#d9d9d9;max-width:440px;margin:0}
+@media(max-width:900px){
+  .hero,.scene,.scene.r{grid-template-columns:1fr;grid-template-rows:56svh auto;min-height:0}
+  .hero picture,.scene picture,.scene.r picture{order:0;min-height:0}
+  .hero .w,.scene .w{order:1}
+  .hero picture::before,.scene picture::before,.scene.r picture::before{background:linear-gradient(0deg,#0f1012 0%,rgba(15,16,18,.2) 30%,rgba(15,16,18,0) 60%)}
+  .hero .w,.scene .w,.scene.r .w{padding:10px 24px 56px;justify-content:flex-start}
+  h1{font-size:clamp(40px,11vw,56px)}
+}
 /* video */
-.vid{padding:30px 0 90px;text-align:center}
+.vid{padding:70px 0 90px;text-align:center;background:#161616}
 .vid h2{font-size:clamp(28px,4vw,44px);letter-spacing:-.04em;margin:0 0 26px;font-weight:800}
 .pv{position:relative;border-radius:28px;overflow:hidden;background:#000;box-shadow:0 50px 100px rgba(0,0,0,.6),0 0 0 1px #333 inset;aspect-ratio:16/9;max-width:1152px;margin:0 auto}
 .pv video{width:100%;height:100%;display:block;object-fit:cover}
 .fs{position:absolute;right:16px;bottom:16px;width:44px;height:44px;border-radius:50%;background:rgba(0,0,0,.55);color:#fff;border:1px solid rgba(255,255,255,.2);font-size:20px;cursor:pointer;backdrop-filter:blur(8px)}
-/* scene */
-.scene{position:relative;min-height:88svh;display:flex;align-items:center;overflow:hidden;background:#0b0b0b}
-.scene picture img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:0 40%}
-@media(min-width:900px){.scene#cifra picture img,.scene#set picture img{width:115%;left:0}}
-.scene .sh{position:absolute;inset:0;background:linear-gradient(90deg,rgba(22,22,22,.9) 0%,rgba(22,22,22,.5) 40%,rgba(22,22,22,0) 70%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 20%,rgba(22,22,22,0) 85%,#161616 100%)}
-.scene .w{position:relative;padding:120px 24px}
-.scene h2{font-size:clamp(40px,6vw,80px);line-height:.95;letter-spacing:-.05em;margin:0 0 18px;font-weight:900;max-width:620px}
-.scene p{font-size:clamp(18px,2vw,24px);color:#d9d9d9;max-width:520px;margin:0}
-.scene.r .sh{background:linear-gradient(270deg,rgba(22,22,22,.9) 0%,rgba(22,22,22,.5) 40%,rgba(22,22,22,0) 70%),linear-gradient(0deg,#161616 0%,rgba(22,22,22,0) 20%,rgba(22,22,22,0) 85%,#161616 100%)}
-.scene.r .w{display:flex;justify-content:flex-end;text-align:right}.scene.r p{margin-left:auto}
-@media(max-width:720px){.scene{min-height:80svh;align-items:flex-end}.scene .sh{background:linear-gradient(0deg,#161616 0%,rgba(22,22,22,.85) 40%,rgba(22,22,22,.1) 100%)}.scene .w{padding:60px 24px 70px}.scene.r .w{justify-content:flex-start;text-align:left}}
 /* slides */
 .slide{padding:110px 0}
 .slide .w{display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:center}
@@ -210,7 +216,7 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 
 <main id="main">
 <header class="hero">
-  <picture><source media="(max-width:720px)" srcset="img/scene/tram-mobile.jpg"><img src="img/scene/tram-2560.jpg" srcset="img/scene/tram-1280.jpg 1280w, img/scene/tram-2560.jpg 2560w" sizes="100vw" alt="" width="2560" height="1428" fetchpriority="high"></picture>
+  <picture><source media="(max-width:720px)" srcset="img/scene/tram-mobile.jpg"><img style="object-position:62% 35%" src="img/scene/tram-2560.jpg" srcset="img/scene/tram-1280.jpg 1280w, img/scene/tram-2560.jpg 2560w" sizes="100vw" alt="" width="2560" height="1428" fetchpriority="high"></picture>
   <div class="sh" aria-hidden="true"></div>
   <div class="w">
     <h1>Quanto ti resta?<br><span class="y">In 10 secondi.</span></h1>
@@ -229,7 +235,7 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </div></section>
 
 <section class="scene" id="cifra">
-  <picture><source media="(max-width:720px)" srcset="img/scene/cucina-mobile.jpg"><img src="img/scene/cucina-2560.jpg" srcset="img/scene/cucina-1280.jpg 1280w, img/scene/cucina-2560.jpg 2560w" sizes="100vw" alt="Un freelance in cucina, di sera, scrive un preventivo sul telefono: voci, totale e quanto gli resta" width="2560" height="1428" loading="lazy"></picture>
+  <picture><source media="(max-width:720px)" srcset="img/scene/cucina-mobile.jpg"><img style="object-position:40% 45%" src="img/scene/cucina-2560.jpg" srcset="img/scene/cucina-1280.jpg 1280w, img/scene/cucina-2560.jpg 2560w" sizes="100vw" alt="Un freelance in cucina, di sera, scrive un preventivo sul telefono: voci, totale e quanto gli resta" width="2560" height="1428" loading="lazy"></picture>
   <div class="sh" aria-hidden="true"></div>
   <div class="w"><div><h2>Scrivi le voci.<br><span class="y">Vedi quanto resta.</span></h2><p>Il preventivo in dieci secondi. Giallo è tuo, rosso va al fisco.</p></div></div>
 </section>
@@ -245,7 +251,7 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
 </div></section>
 
 <section class="scene" id="set">
-  <picture><source media="(max-width:720px)" srcset="img/scene/set-mobile.jpg"><img src="img/scene/set-2560.jpg" srcset="img/scene/set-1280.jpg 1280w, img/scene/set-2560.jpg 2560w" sizes="100vw" alt="Un videomaker sul set risponde al cliente mandando il preventivo in PDF da WhatsApp" width="2560" height="1428" loading="lazy"></picture>
+  <picture><source media="(max-width:720px)" srcset="img/scene/set-mobile.jpg"><img style="object-position:58% 35%" src="img/scene/set-2560.jpg" srcset="img/scene/set-1280.jpg 1280w, img/scene/set-2560.jpg 2560w" sizes="100vw" alt="Un videomaker sul set risponde al cliente mandando il preventivo in PDF da WhatsApp" width="2560" height="1428" loading="lazy"></picture>
   <div class="sh" aria-hidden="true"></div>
   <div class="w"><div><h2>Il cliente chiede.<br><span class="y">Tu rispondi. Subito.</span></h2><p>Anche in mezzo a un lavoro. Il PDF parte da dove sei.</p></div></div>
 </section>
@@ -260,8 +266,8 @@ footer ul{display:flex;gap:18px;list-style:none;margin:0;padding:0}footer a{text
   <div class="ph"><div class="phone" style="--poster:url(video/clienti.jpg)"><video autoplay muted loop playsinline preload="none" width="780" height="1688" aria-label="Demo: clienti"><source src="video/clienti.mp4" type="video/mp4"></video></div></div>
 </div></section>
 
-<section class="scene" id="anno">
-  <picture><img src="img/scene/desk-1600.jpg" srcset="img/scene/desk-900.jpg 900w, img/scene/desk-1600.jpg 1600w" sizes="100vw" alt="Mani che tengono il telefono sopra una scrivania, di notte" width="1600" height="1986" loading="lazy" style="object-position:50% 40%"></picture>
+<section class="scene r" id="anno">
+  <picture><img src="img/scene/desk-1600.jpg" srcset="img/scene/desk-900.jpg 900w, img/scene/desk-1600.jpg 1600w" sizes="100vw" alt="Mani che tengono il telefono sopra una scrivania, di notte" width="1600" height="1986" loading="lazy" style="object-position:50% 45%"></picture>
   <div class="sh" aria-hidden="true"></div>
   <div class="w"><div><h2>Niente sorprese<br><span class="y">a giugno.</span></h2><p>Cosa paghi, quando, e quanto hai già messo via.</p></div></div>
 </section>
