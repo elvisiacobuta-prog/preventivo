@@ -418,7 +418,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.3',
+  ver: '3.3.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -869,17 +869,18 @@ function renderClients(){
   $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
 }
 function addClient(){ const n=$('newclient').value.trim(); if(!n) return; getClient(n,true); $('newclient').value=''; save(); renderAll(); }
-function addClientIncasso(id){ const v=parseFloat(String($('cinc-v').value).replace(',','.'))||0; if(!(v>0)){ toast('Scrivi l\'importo'); return; } const d=$('cinc-d').value||today();
+function addClientIncasso(id){ const raw=String($('cinc-v').value||'').trim(); let v=impNum(raw); if(!(v>0)&&/^\d{1,3}(\.\d{3})+$/.test(raw)) v=+raw.replace(/\./g,''); if(/^\d{1,3}(\.\d{3})+$/.test(raw)) v=+raw.replace(/\./g,'');
+  if(!(v>0)){ $('cinc-msg').innerHTML='<span style="color:var(--red)">Scrivi l\'importo in numeri, per esempio 13500 o 13.500</span>'; $('cinc-v').focus(); return; } const d=$('cinc-d').value||today();
   S.seq++; S.prev.unshift({ id:Date.now(), num:`${d.slice(0,4)}-${String(S.seq).padStart(3,'0')}`, date:d, client:id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:d} });
-  save(); renderAll(); openClient(id); toast('Incasso aggiunto: '+fmt(v)); }
+  save(); renderAll(); openClient(id); toast('Incasso aggiunto: '+fmt(v)); setTimeout(()=>{ if($('cinc-msg')) $('cinc-msg').innerHTML='<b style="color:var(--acc)">✓ Aggiunto '+fmt(v)+'</b> · lo vedi anche in Anno'; },50); }
 function openClient(id){
   const c=S.clients.find(x=>x.id===id); const P=S.prev.filter(p=>p.client===id);
   sheet(`
     <h3>${esc(c.name)}</h3>
     <div class="cinc"><div><small>Incassato nel ${PARAMS.anno}</small><b>${fmt(P.filter(p=>p.status==='incassato'&&(p.hist.incassato||'').startsWith(PARAMS.anno)).reduce((a,p)=>a+p.tot,0))}</b></div></div>
     <label class="l">Aggiungi un incasso da ${esc(c.name)}</label>
-    <div class="row2"><input id="cinc-v" type="number" inputmode="decimal" placeholder="Importo €" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px"><input id="cinc-d" type="date" value="${today()}" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none;color:var(--txt)"></div>
-    <div class="hint" style="margin:6px 2px 0">Anche più incassi messi insieme, per esempio tutto quello che ti ha pagato da gennaio a oggi.</div>
+    <div class="row2"><input id="cinc-v" type="text" inputmode="decimal" autocomplete="off" placeholder="Importo €, es. 60.000" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px"><input id="cinc-d" type="date" value="${today()}" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none;color:var(--txt)"></div>
+    <div class="hint" id="cinc-msg" style="margin:6px 2px 0">Anche più incassi messi insieme, per esempio tutto quello che ti ha pagato da gennaio a oggi.</div>
     <button class="btn ghost" style="margin-top:8px" onclick="addClientIncasso(${id})">+ Aggiungi incasso</button>
     <label class="l">Incasso atteso quest'anno (presunto)</label>
     <input id="att" type="number" inputmode="numeric" value="${c.atteso||''}" placeholder="es. 12000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
