@@ -433,7 +433,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.9.1',
+  ver: '4.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -471,12 +471,26 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} 
 
 /* ---------- CALCOLO ---------- */
 function altroHint(v){ if(!v) return ''; const i=atecoInfo(v); return i&&i.c!=null? `${esc(v)}: ${esc(i.g)} · ${Math.round(coefAteco(v)*100)}%.` : `<span style="color:var(--red)">${esc(v)}: codice non riconosciuto.</span>`; }
-const CASSE=[]; // riempita con i valori verificati
+// Valori 2026 verificati sui siti ufficiali delle casse (ottobre 2026). s=soggettivo %, m=minimo soggettivo €, i=integrativo %, b='lordo' se la % si applica al compenso intero.
+const CASSE=[
+ {n:'Cassa Forense (avvocati)',s:17,m:2790,i:4,anno:'2026',note:'Primi 6 anni se iscritto prima dei 35: minimo 1.395 €. A parte: integrativo minimo 355 € e maternità.'},
+ {n:'Inarcassa (ingegneri e architetti)',s:14.5,m:2785,i:4,anno:'2026',note:'Under 35 nei primi 5 anni: 7,25% e minimo 928,33 €. A parte: integrativo minimo 850 € e maternità.'},
+ {n:'ENPAM (medici, Quota B)',s:19.5,m:0,i:0,anno:'2026',note:'Stima: la Quota B (19,5%) si paga solo sul reddito oltre la soglia già coperta dalla Quota A; la Quota A (da 305 € a 2.050 € secondo l\'età) si paga a parte.'},
+ {n:'ENPAP (psicologi)',s:10,m:856,i:2,anno:'2026',note:'Minimi ridotti per i primi 3 anni (286 €). A parte: integrativo minimo 66 € e maternità.'},
+ {n:'CIPAG (geometri)',s:20,m:4240,i:5,anno:'2026',note:'Primi anni ridotti (fino a 1/4 del minimo). A parte: integrativo minimo 1.955 €.'},
+ {n:'INPGI (giornalisti)',s:12,m:305.26,i:4,anno:'2026',note:'12% fino a 24.336 € di reddito, 14% oltre. Primi 5 anni: minimo 152,63 €. A parte: integrativo minimo 101,75 € e maternità 23,70 €.'},
+ {n:'CNPADC (commercialisti)',s:12,m:3180,i:4,anno:'2026',note:'Under 35 nei primi 5 anni: niente minimi. A parte: integrativo minimo 954 € e maternità.'},
+ {n:'ENPACL (consulenti del lavoro)',s:12,m:2620,i:4,anno:'2026',note:'Under 35 neoiscritti: 6% e minimo ridotto 1.310 €. A parte: integrativo minimo 380 € e maternità.'},
+ {n:'EPPI (periti industriali)',s:18,m:2392,i:5,anno:'2026',note:'Under 35 nei primi 5 anni: minimi a metà. A parte: integrativo minimo 664 €.'},
+ {n:'EPAP (agronomi, geologi, chimici)',s:10,m:739,i:4,anno:'2026',note:'In più 0,2% di solidarietà. A parte: integrativo minimo 295 €.'},
+ {n:'ENPAV (veterinari)',s:18.5,m:3542.75,i:2,anno:'2026',note:'Primi anni ridotti per gli under 35. A parte: integrativo minimo 574,50 €.'},
+ {n:'Spettacolo (ex ENPALS)',s:9.19,m:0,i:0,b:'lordo',anno:'2026',note:'Quota a tuo carico 9,19% sul compenso intero, trattenuta dal committente (che versa anche la sua parte). Al posto della gestione separata, per i lavori di spettacolo.'}
+];
 function cassaOpts(sel){ return '<option value="">Scegli…</option>'+CASSE.map(c=>`<option value="${esc(c.n)}" ${c.n===sel?'selected':''}>${esc(c.n)}</option>`).join('')+`<option value="Altra" ${sel==='Altra'?'selected':''}>Altra cassa (scrivo io i numeri)</option>`; }
-function cassaNote(n){ const c=CASSE.find(x=>x.n===n); return c? `${esc(c.note||'')} Valori ${esc(c.anno||'')}: controlla sul sito della cassa.` : 'Trovi i numeri sul sito della tua cassa o te li dà il commercialista. Il minimo si paga anche se incassi poco.'; }
-function cassaPreset(pre,n){ const c=CASSE.find(x=>x.n===n); if(c){ $(pre+'-csog').value=String(c.s).replace('.',','); $(pre+'-cmin').value=c.m||''; $(pre+'-cint').value=String(c.i).replace('.',','); } $(pre+'-cnote').innerHTML=cassaNote(n); }
+function cassaNote(n){ const c=CASSE.find(x=>x.n===n); return c? `${esc(c.note||'')} Valori ${esc(c.anno||'')} presi dal sito della cassa: ricontrollali ogni anno.` : 'Trovi i numeri sul sito della tua cassa o te li dà il commercialista. Il minimo si paga anche se incassi poco.'; }
+function cassaPreset(pre,n){ const c=CASSE.find(x=>x.n===n); S.profile.cassaBase=c&&c.b||''; if(c){ $(pre+'-csog').value=String(c.s).replace('.',','); $(pre+'-cmin').value=c.m||''; $(pre+'-cint').value=String(c.i).replace('.',','); } $(pre+'-cnote').innerHTML=cassaNote(n); }
 function numIt(x){ const t=String(x==null?'':x).trim().replace(/[€\s]/g,''); if(!t) return 0; const v=/^\d{1,3}(\.\d{3})+$/.test(t)? +t.replace(/\./g,'') : parseFloat(t.replace(/\./g,(m,o,str)=>/,/.test(str)?'':'.').replace(',','.')); return isNaN(v)?0:v; }
-function readCassa(pre){ if(!$(pre+'-csog')) return; S.profile.cassaNome=$(pre+'-cpre').value; S.profile.cassaSogg=numIt($(pre+'-csog').value); S.profile.cassaMin=numIt($(pre+'-cmin').value); S.profile.cassaInt=numIt($(pre+'-cint').value); }
+function readCassa(pre){ if(!$(pre+'-csog')) return; S.profile.cassaNome=$(pre+'-cpre').value; S.profile.cassaBase=(CASSE.find(x=>x.n===S.profile.cassaNome)||{}).b||''; S.profile.cassaSogg=numIt($(pre+'-csog').value); S.profile.cassaMin=numIt($(pre+'-cmin').value); S.profile.cassaInt=numIt($(pre+'-cint').value); }
 function atecoLive(v){ const on=!!(v&&coefAteco(v)!=null); ['a-act','s-act'].forEach(id=>{ const e=$(id); if(e){ e.disabled=on; e.style.opacity=on?.45:1; } }); if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
 // Coefficienti: Allegato 4 L. 190/2014, letti sul codice ATECO 2007 corrispondente (D.Lgs. 81/2025). Gestiti anche i casi ATECO 2025 che hanno cambiato posto.
@@ -516,7 +530,7 @@ function calc(lordo, opts={}){
   const imponibile = opts.imp!=null ? opts.imp : lordo * (opts.code ? coefFor(opts.code) : coef());
   const rid = (isIVS() && S.profile.rid35) ? 0.65 : 1;
   const rate = isCassa() ? (+S.profile.cassaSogg||0)/100 : PARAMS.inps[S.profile.inps||'separata'] * rid;
-  let inps = imponibile * rate, fisso = 0, inpsEcc = inps;
+  let inps = (isCassa()&&S.profile.cassaBase==='lordo'? lordo : imponibile) * rate, fisso = 0, inpsEcc = inps;
   if (opts.annual && isCassa()) { inps = Math.max(+S.profile.cassaMin||0, inps); inpsEcc = inps; }
   // sull'anno intero: quota fissa sul minimale + percentuale solo sull'eccedenza
   if (opts.annual && isIVS()) { fisso = PARAMS.ivs.fisso[S.profile.inps] * rid; inpsEcc = Math.max(0, imponibile - PARAMS.ivs.minimale) * rate; inps = fisso + inpsEcc; }
