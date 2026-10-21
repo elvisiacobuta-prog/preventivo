@@ -414,7 +414,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.1',
+  ver: '3.2',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -896,9 +896,15 @@ function renderPiano(c){
   if(n===1){
     anni.push({y:Y, giu:0, nov:0, tot:F, note:(F?`Primo anno: imposta e INPS sull'eccedenza arrivano nel ${Y+1}, ma la quota fissa INPS si paga già: ${fmt(F)} in 4 rate da ${fmt(fr)}.`:`Primo anno: non paghi nulla. Metti via lo stesso ${fmt(c.via)}, perché il conto arriva tutto nel ${Y+1}.`)});
     anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N+F, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`+fissoTxt});
+  } else if(S.profile.incPrec>0){
+    const cp=calc(S.profile.incPrec,{annual:true,noMan:1}), Ip=cp.imposta, Np=cp.fisso?cp.inpsEcc:cp.inps;
+    const acc1=0.5*Ip+0.4*Np, acc2=0.5*Ip+0.4*Np;
+    anni.push({y:Y, giu:acc1, nov:acc2, tot:acc1+acc2+F, note:`Acconti calcolati su ${fmt(S.profile.incPrec)} incassati nel ${Y-1}. A giugno si aggiunge (o si toglie) il saldo del ${Y-1}, che dipende dagli acconti già versati: se avevi un credito, a giugno puoi aver pagato meno o niente.`+fissoTxt});
+    const saldo=Math.max(0,(I+N)-(Ip+0.8*Np));
+    anni.push({y:Y+1, giu:saldo+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:saldo+I+0.8*N+F, note:(saldo>1?`Giugno ${Y+1}: saldo del ${Y} (${fmt(saldo)}, perché quest'anno incassi più dell'anno scorso) più il 1° acconto ${Y+1}.`:`Giugno ${Y+1}: saldo del ${Y} più il 1° acconto ${Y+1}, sugli incassi che hai segnato.`)+fissoTxt});
   } else {
-    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`+fissoTxt});
-    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===4&&is5()?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
+    anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto. Per acconti esatti scrivi in Impostazioni quanto hai incassato l'anno scorso.`+fissoTxt});
+    if(!(S.profile.incPrec>0)) anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===4&&is5()?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
   }
   // scadenze con date vere: cosa è già passato e cosa arriva
   const oggi=new Date(); oggi.setHours(0,0,0,0);
@@ -1080,6 +1086,9 @@ function settingsHTML(first){
     <div id="s-ridw" style="display:${pr.inps==='separata'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label></div>
     <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
+    <label class="l">Quanto hai incassato l'anno scorso? (rende esatti gli acconti)</label>
+    <input id="s-incprec" type="number" inputmode="numeric" value="${pr.incPrec||''}" placeholder="es. 80000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <div class="hint" style="margin:6px 2px 0">Gli acconti di giugno e novembre si calcolano su quello che hai incassato l'anno prima.</div>
     <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
     <input id="s-contrib" type="number" inputmode="numeric" value="${pr.contribPrec||''}" placeholder="es. 4500" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <label class="l">Già messo via per le tasse quest'anno</label>
@@ -1102,7 +1111,7 @@ let tmpStart='unset';
 function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
 function saveSettings(){
   S.profile.act=$('s-act').value; S.profile.ateco=fmtAteco($('s-ateco').value); S.profile.inps=$('s-inps').value; S.profile.rid35=!!($('s-rid')&&$('s-rid').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
-  S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
+  S.profile.incPrec=+$('s-incprec').value||0; S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim(); S.profile.marchio=($('s-mk').value||'').trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
 }
