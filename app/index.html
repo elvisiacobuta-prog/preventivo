@@ -156,6 +156,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
+.ambq{margin-top:10px;display:grid;gap:6px}.ambq span{font-size:13px;color:var(--txt)}.ambq .seg button{font-size:12px;padding:8px 4px}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -428,7 +429,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.7.1',
+  ver: '3.8',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -467,17 +468,29 @@ function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} 
 /* ---------- CALCOLO ---------- */
 function atecoLive(v){ const on=!!(v&&coefAteco(v)!=null); ['a-act','s-act'].forEach(id=>{ const e=$(id); if(e){ e.disabled=on; e.style.opacity=on?.45:1; } }); if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
-function coefAteco(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
-  const inR=(a,b)=>d>=a&&d<=b;
-  if(d===46) return sub==null?null:(sub>=10&&sub<=19?0.62:0.40);
-  if(d===47){ if(sub==null) return 0.40; if(sub===81) return 0.40; if(sub>=82&&sub<=89) return 0.54; return 0.40; }
-  if(d===10||d===11||d===45||d===55||d===56) return 0.40;
-  if(inR(41,43)||d===68) return 0.86;
-  if(inR(64,66)||inR(69,75)||inR(85,88)) return 0.78;
-  if(inR(1,3)||inR(5,9)||inR(12,33)||inR(35,39)||inR(49,53)||inR(58,63)||inR(77,82)||d===84||inR(90,99)) return 0.67;
+// Coefficienti: Allegato 4 L. 190/2014, letti sul codice ATECO 2007 corrispondente (D.Lgs. 81/2025). Gestiti anche i casi ATECO 2025 che hanno cambiato posto.
+function atecoInfo(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
+  const inR=(a,b)=>d>=a&&d<=b, o=(c,g,x)=>Object.assign({c,g},x||{});
+  if(d===46){ if(sub==null) return o(null,'',{need:1}); return sub>=10&&sub<=19? o(.62,'agenti e intermediari del commercio',{warn:'Vale se sei agente, rappresentante o procacciatore. Se vendi all\'ingrosso merce tua, il gruppo è il commercio (40%).'}) : o(.40,'commercio all\'ingrosso'); }
+  if(d===47){ if(sub!=null&&sub>=80&&sub<=89) return o(.40,'commercio di auto, moto e ricambi',{amb:1,warn:'Nel 2025 i codici 47.8 sono diventati il commercio di veicoli. Se il tuo è un vecchio codice da ambulante (mercati e bancarelle), rispondi qui sotto.'}); return o(.40,'commercio al dettaglio',{amb:1}); }
+  if(d===95&&sub!=null&&sub>=30&&sub<=39) return o(.40,'riparazione di auto e moto',{warn:'Con il codice 2025 (95.3) la riparazione di veicoli resta nel gruppo del commercio: 40%.'});
+  if(d===10||d===11) return o(.40,'alimentari e bevande');
+  if(d===45) return o(.40,'commercio e riparazione di auto e moto');
+  if(d===55||d===56) return o(.40,'alloggio e ristorazione');
+  if(inR(41,43)) return o(.86,'costruzioni'); if(d===68) return o(.86,'attività immobiliari');
+  if(inR(64,66)) return o(.78,'finanza e assicurazioni'); if(inR(69,75)) return o(.78,'attività professionali, scientifiche e tecniche'); if(d===85) return o(.78,'istruzione e formazione'); if(inR(86,88)) return o(.78,'sanità e assistenza');
+  if(inR(1,3)) return o(.67,'agricoltura'); if(inR(5,9)) return o(.67,'estrazione'); if(inR(12,33)) return o(.67,'produzione e artigianato'); if(inR(35,39)) return o(.67,'energia, acqua e rifiuti'); if(inR(49,53)) return o(.67,'trasporti e magazzinaggio');
+  if(inR(58,63)) return o(.67,'editoria, video, informatica e telecomunicazioni'); if(inR(77,82)) return o(.67,'servizi alle imprese (noleggio, viaggi, eventi, pulizie…)'); if(d===84) return o(.67,'pubblica amministrazione'); if(inR(90,99)) return o(.67,'arte, sport e servizi alla persona');
   return null; }
+function coefAteco(code){ const i=atecoInfo(code); if(!i||i.c==null) return null; if(i.amb&&S.profile.ambul==='na') return .54; if(i.amb&&S.profile.ambul==='al') return .40; return i.c; }
+function setAmbul(v){ S.profile.ambul=v; save(); document.querySelectorAll('.ambq button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); refreshRate(); ['a','s'].forEach(p=>{ const h=$(p+'-ahint'); if(h) h.innerHTML=atecoHint(S.profile.ateco); }); }
 function coef(){ const ca=coefAteco(S.profile.ateco); if(ca!=null) return ca; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
-function atecoHint(v){ const c=coefAteco(v); return !String(v||'').trim()?'Facoltativo: se lo sai, il calcolo usa il coefficiente esatto del tuo codice.':(c==null?'Codice non riconosciuto: scrivi solo i numeri, i punti li mettiamo noi (per il 46 e il 47 servono almeno 4 cifre).':'Tasse calcolate sul '+Math.round(c*100)+'%. Vale il codice: "Cosa fai?" non serve più.'); }
+function atecoHint(v){ if(!String(v||'').trim()) return 'Facoltativo ma consigliato: lo trovi nella visura camerale o nel certificato della partita IVA. Scrivi solo i numeri.'; const i=atecoInfo(v);
+  if(!i) return '<span style="color:var(--red)">Codice non riconosciuto.</span> Controlla le prime due cifre: sono quelle che contano.'; if(i.need) return 'Per il 46 servono almeno 4 cifre (es. 46.18): agenti e grossisti hanno percentuali diverse.';
+  const c=coefAteco(v); let h=`Gruppo: <b style="color:var(--txt)">${esc(i.amb&&S.profile.ambul?'commercio ambulante'+(S.profile.ambul==='al'?' alimentare':' non alimentare'):i.g)}</b> · tasse calcolate sul <b style="color:var(--txt)">${Math.round(c*100)}%</b>. Se il gruppo non corrisponde a quello che fai, ricontrolla il codice.`;
+  if(i.warn) h+=`<br><span style="color:var(--acc)">${i.warn}</span>`;
+  if(i.amb) h+=`<div class="ambq"><span>Vendi su mercati e bancarelle (ambulante)?</span><div class="seg"><button type="button" data-v="" class="${!S.profile.ambul?'on':''}" onclick="setAmbul('')">No</button><button type="button" data-v="al" class="${S.profile.ambul==='al'?'on':''}" onclick="setAmbul('al')">Sì, alimentari</button><button type="button" data-v="na" class="${S.profile.ambul==='na'?'on':''}" onclick="setAmbul('na')">Sì, altro · 54%</button></div></div>`;
+  return h; }
 /* anno di attività: 1 = anno di apertura della P.IVA */
 function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
 function isMan(o){ return !(o&&o.noMan) && !!(S.profile.useMan && S.profile.manPct>0 && S.profile.manPct<100); }
@@ -557,7 +570,7 @@ function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $(
   $('hello').textContent=r?'Quanto vuoi in tasca?':'Inserisci la cifra';
   $('hellosub').textContent=r?'Scrivi la cifra che hai in testa: ti diciamo quanto chiedere per averla pulita.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="ate" style="margin-left:auto">→</span><span class="atsug">Consigliato: con il codice il calcolo è più preciso.${S.setup?' Ora calcolo per '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%.':''}</span>`; }
+  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span><span class="atsug" style="color:var(--mut)">${esc((atecoInfo(S.profile.ateco)||{}).g||'')}</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="ate" style="margin-left:auto">→</span><span class="atsug">Consigliato: con il codice il calcolo è più preciso.${S.setup?' Ora calcolo per '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%.':''}</span>`; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
   sheet(`<h3>La tua percentuale</h3><div class="sub">Se metti via sempre la stessa quota (per esempio il 27%), scrivila qui: l'app calcola con quella.</div>
     <label class="l">Quanto togli da ogni incasso, tasse e INPS insieme?</label>
@@ -1077,7 +1090,7 @@ function askAct(first,after){
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">Come versi l'INPS? <span class="why" onclick="why('inps')">?</span></label>
     <select id="a-inps" onchange="$('a-ridw').style.display=this.value==='separata'?'none':''"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option></select>
@@ -1130,7 +1143,7 @@ function settingsHTML(first){
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
     <select id="s-act" ${coefAteco(pr.ateco)!=null?'disabled style="opacity:.45"':''}>${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <div class="hint" style="margin:8px 2px 0">${isMan()?'Stai usando una tua percentuale fissa ('+String(pr.manPct).replace('.',',')+'%). ':'Preferisci togliere sempre la stessa percentuale? '}<span class="link" onclick="askPct()">${isMan()?'Cambia':'Usa una tua percentuale'}</span></div>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
@@ -1176,7 +1189,7 @@ const WHY={
   via:['Da mettere via','INPS più imposta, arrotondati per eccesso del 5%. È la cifra da spostare sul conto tasse appena incassi. Meglio avanzare che mancare.'],
   inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti pagano una quota fissa minima (nel 2026 circa 4.520 € artigiani, 4.610 € commercianti, in 4 rate) più il 24% solo sul reddito oltre 18.808 €: la trovi nella scheda Anno. Sul singolo preventivo vedi la quota in percentuale. Se hai chiesto la riduzione del 35% per i forfettari, attivala in Impostazioni.'],
   imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
-  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per consulenza e grafica il 78%, per video e software il 67%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
+  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per consulenza e grafica il 78%, per video e software il 67%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te. La tabella ufficiale è ancora quella dei vecchi codici (ATECO 2007): con i codici nuovi del 2025 il gruppo è quasi sempre lo stesso, e l\'app gestisce i casi che sono cambiati (commercio ambulante, auto e ricambi). Nel dubbio, chiedi al commercialista.'],
   start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Non c\'entra l\'età: non esiste un limite di anni. Dal 6° anno si passa comunque al 15%. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
   stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
   attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
