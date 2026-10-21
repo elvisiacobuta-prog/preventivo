@@ -155,8 +155,10 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
+.ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
+.atchip{flex-wrap:wrap}.atchip .atsug{flex-basis:100%;font-size:11.5px;color:var(--acc);margin-top:-2px}
 .atchip .atc{font-size:12.5px;color:var(--mut);margin-left:auto;text-align:right}.atchip .ate{color:var(--acc);font-weight:800}
 .seg button.on{background:var(--sur);color:var(--txt)}
 .link{color:var(--acc);font-weight:600;font-size:14px;padding:8px 0}
@@ -255,6 +257,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
       <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button></div>
+      <div class="ratehint"><span><b>5%</b> primi 5 anni, se l'attività è davvero nuova</span><span><b>15%</b> tutti gli altri casi</span><span class="why" onclick="why('start')">?</span></div>
       <button class="atchip" id="atchip" onclick="askAct(false)"></button>
       <div class="hero">
         <svg class="ring" viewBox="0 0 200 200" id="ring0">
@@ -280,7 +283,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <button class="choice" onclick="fromHome('inc')">Li ho già incassati<small>Segnali nell'anno e sai quanto mettere via</small></button>
         <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
       </div>
-      <p class="disc0">Stima indicativa con le regole pubbliche del forfettario. Non è consulenza fiscale e non sostituisce il commercialista.</p>
+      <p class="disc0">PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime.</p>
     </div>
 
     <div class="step" id="st1">
@@ -424,7 +427,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.6',
+  ver: '3.7',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -553,7 +556,7 @@ function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $(
   $('hello').textContent=r?'Quanto vuoi in tasca?':'Inserisci la cifra';
   $('hellosub').textContent=r?'Scrivi la cifra che hai in testa: ti diciamo quanto chiedere per averla pulita.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="atc">${S.setup?'ora: '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%':'per un calcolo esatto'}</span><span class="ate">→</span>`; }
+  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="ate" style="margin-left:auto">→</span><span class="atsug">Consigliato: con il codice il calcolo è più preciso.${S.setup?' Ora calcolo per '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%.':''}</span>`; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
   sheet(`<h3>La tua percentuale</h3><div class="sub">Se metti via sempre la stessa quota (per esempio il 27%), scrivila qui: l'app calcola con quella.</div>
     <label class="l">Quanto togli da ogni incasso, tasse e INPS insieme?</label>
@@ -1172,7 +1175,7 @@ const WHY={
   inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti pagano una quota fissa minima (nel 2026 circa 4.520 € artigiani, 4.610 € commercianti, in 4 rate) più il 24% solo sul reddito oltre 18.808 €: la trovi nella scheda Anno. Sul singolo preventivo vedi la quota in percentuale. Se hai chiesto la riduzione del 35% per i forfettari, attivala in Impostazioni.'],
   imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
   coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per consulenza e grafica il 78%, per video e software il 67%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
-  start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
+  start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Non c\'entra l\'età: non esiste un limite di anni. Dal 6° anno si passa comunque al 15%. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
   stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
   attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
 };
@@ -1262,6 +1265,7 @@ async function restoreUnlock(){ await checkOwned(); if(S.unlocked){ closeSheet()
 checkOwned(); loadPrice();
 
 /* ---------- NAV / SHEET / TOAST ---------- */
+['list','clients','year'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); } });
 function go(v){ if(v!=='new' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
 document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
 function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
