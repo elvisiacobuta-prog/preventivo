@@ -409,7 +409,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.7',
+  ver: '2.7.1',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -444,7 +444,7 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ r
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 /* ---------- CALCOLO ---------- */
-function atecoLive(v){ if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
+function atecoLive(v){ const on=!!(v&&coefAteco(v)!=null); ['a-act','s-act'].forEach(id=>{ const e=$(id); if(e){ e.disabled=on; e.style.opacity=on?.45:1; } }); if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
 function coefAteco(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
   const inR=(a,b)=>d>=a&&d<=b;
@@ -456,7 +456,7 @@ function coefAteco(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*
   if(inR(1,3)||inR(5,9)||inR(12,33)||inR(35,39)||inR(49,53)||inR(58,63)||inR(77,82)||d===84||inR(90,99)) return 0.67;
   return null; }
 function coef(){ const ca=coefAteco(S.profile.ateco); if(ca!=null) return ca; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
-function atecoHint(v){ const c=coefAteco(v); return !String(v||'').trim()?'Facoltativo: se lo sai, il calcolo usa il coefficiente esatto del tuo codice.':(c==null?'Codice non riconosciuto: scrivi solo i numeri, i punti li mettiamo noi (per il 46 e il 47 servono almeno 4 cifre).':'Coefficiente '+Math.round(c*100)+'%: vale questo, al posto di quello di "Cosa fai?".'); }
+function atecoHint(v){ const c=coefAteco(v); return !String(v||'').trim()?'Facoltativo: se lo sai, il calcolo usa il coefficiente esatto del tuo codice.':(c==null?'Codice non riconosciuto: scrivi solo i numeri, i punti li mettiamo noi (per il 46 e il 47 servono almeno 4 cifre).':'Tasse calcolate sul '+Math.round(c*100)+'%. Vale il codice: "Cosa fai?" non serve più.'); }
 /* anno di attività: 1 = anno di apertura della P.IVA */
 function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
 function isMan(o){ return !(o&&o.noMan) && !!(S.profile.useMan && S.profile.manPct>0 && S.profile.manPct<100); }
@@ -527,7 +527,7 @@ function donut(svgId, legId, c){
 function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
 function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
 function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
-function renderActLine(){ if(isMan()){ $('actline').innerHTML=`Calcolo con <b style="color:var(--txt)">la tua percentuale: ${String(S.profile.manPct).replace('.',',')}%</b> di tasse e INPS · il calcolo esatto darebbe circa il ${Math.round(calc(1000,{noMan:1}).tasse/10)}% · <span class="link" onclick="S.profile.useMan=false;save();refreshRate()" style="font-size:12px">torna all'esatto</span>`; return; } $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (${coefAteco(S.profile.ateco)!=null?'ATECO '+esc(S.profile.ateco)+' · ':''}coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
+function renderActLine(){ if(S.setup && !isMan() && !actWarn()){ $('actline').innerHTML=''; return; } if(isMan()){ $('actline').innerHTML=`Calcolo con <b style="color:var(--txt)">la tua percentuale: ${String(S.profile.manPct).replace('.',',')}%</b> di tasse e INPS · il calcolo esatto darebbe circa il ${Math.round(calc(1000,{noMan:1}).tasse/10)}% · <span class="link" onclick="S.profile.useMan=false;save();refreshRate()" style="font-size:12px">torna all'esatto</span>`; return; } $('actline').innerHTML = S.setup ? (coefAteco(S.profile.ateco)!=null?`Calcolo con il codice ATECO <b style="color:var(--txt)">${esc(S.profile.ateco)}</b> (tasse sul ${Math.round(coef()*100)}%)`:`Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (tasse sul ${Math.round(coef()*100)}%)`)+` · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
 function setRate(five){ S.profile.useMan=false; if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function isRev(){ return !!S.profile.rev; }
 function gross(v){ if(!isRev()||!v) return v; const k=calc(1000).netto/1000; return k>0? Math.ceil(v/k) : v; }
@@ -536,7 +536,7 @@ function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $(
   $('hello').textContent=r?'Quanto vuoi in tasca?':'Inserisci la cifra';
   $('hellosub').textContent=r?'Scrivi la cifra che hai in testa: ti diciamo quanto chiedere per averla pulita.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="atc">per un calcolo esatto</span><span class="ate">→</span>`; }
+  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="atc">${S.setup?'ora: '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%':'per un calcolo esatto'}</span><span class="ate">→</span>`; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
   sheet(`<h3>La tua percentuale</h3><div class="sub">Se metti via sempre la stessa quota (per esempio il 27%), scrivila qui: l'app calcola con quella.</div>
     <label class="l">Quanto togli da ogni incasso, tasse e INPS insieme?</label>
@@ -559,7 +559,7 @@ function ring0(v){
 function howCalc(v){ const e=calc(v,{noMan:1}), m=isMan()?calc(v):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=PARAMS.inps[S.profile.inps]*((isIVS()&&S.profile.rid35)?0.65:1);
   const row=(n,t,d,b)=>`<div class="hstep"><span class="hn">${n}</span><div><b>${t}</b><small>${d}</small></div><b class="hv${b?' y':''}">${b||''}</b></div>`;
   sheet(`<h3>Come l'ho calcolato</h3><div class="sub">Su ${fmt(v)} incassati, regime forfettario. Lo Stato non tassa tutto l'incasso: prima decide quanto è "reddito".</div>
-   ${row(1,'Quanto è reddito',`Per ${esc(actFull().split(',')[0].toLowerCase()||'la tua attività')} lo Stato considera reddito il ${Math.round(coef()*100)}% dell'incasso (coefficiente di redditività${coefAteco(S.profile.ateco)!=null?', ATECO '+esc(S.profile.ateco):''}). Il resto è come se fossero spese.`,fmt(e.imponibile))}
+   ${row(1,'Quanto è reddito',`Per ${coefAteco(S.profile.ateco)!=null?'il codice ATECO '+esc(S.profile.ateco):esc(actFull().split(',')[0].toLowerCase()||'la tua attività')} lo Stato considera reddito il ${Math.round(coef()*100)}% dell'incasso (coefficiente di redditività${coefAteco(S.profile.ateco)!=null?', ATECO '+esc(S.profile.ateco):''}). Il resto è come se fossero spese.`,fmt(e.imponibile))}
    ${row(2,'INPS',`${pc(rate)}% su ${fmt(e.imponibile)}${isIVS()?' (artigiani e commercianti: in più c\'è la quota fissa annuale, la vedi nel piano dell\'anno)':' (gestione separata)'}.`,'− '+fmt(e.inps))}
    ${row(3,'Imposta',`${al}% su ${fmt(e.imponibile)} meno l'INPS, cioè su ${fmt(Math.max(0,e.imponibile-e.inps))}.`,'− '+fmt(e.imposta))}
    ${row('=','Tuoi',`${fmt(v)} − ${fmt(e.inps)} − ${fmt(e.imposta)}.`,fmt(e.netto))}
@@ -992,7 +992,7 @@ function askAct(first,after){
     <h3>${first?'Una domanda sola':'Cosa fai?'}</h3>
     <div class="sub">${first?'Serve per calcolare bene le tasse. Si cambia quando vuoi.':''}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="a-act" onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
+    <select id="a-act" ${coefAteco(pr.ateco)!=null?'disabled style="opacity:.45"':''} onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
@@ -1027,7 +1027,7 @@ function settingsHTML(first){
     <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'} <small style="color:var(--mut);font-weight:400;font-size:12px">v${PARAMS.ver}</small></h3>
     <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
+    <select id="s-act" ${coefAteco(pr.ateco)!=null?'disabled style="opacity:.45"':''}>${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
     <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
