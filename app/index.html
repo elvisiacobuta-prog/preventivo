@@ -439,7 +439,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.3.1',
+  ver: '4.3.2',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -960,15 +960,16 @@ function marginRows(inc,costi,annual){ const r=yearRatio(annual), net=inc*r; ret
   <div class="kv"><span>Imposte e contributi stimati</span><span>− ${fmt(inc-net)}</span></div>
   <div class="kv tot"><span>Netto dopo imposte e contributi</span><span>${fmt(net)}</span></div>
   <div class="kv"><span>Costi dell'attività</span><span>− ${fmt(costi)}</span></div>
-  <div class="kv tot"><span>Margine netto</span><span style="color:var(--acc)">${fmt(net-costi)}</span></div>`; }
+  <div class="kv tot"><span>Margine netto</span><span style="color:${net-costi<0?'var(--red)':'var(--acc)'}">${fmt(net-costi)}</span></div>`; }
 function renderMargin(){ const el=$('cmargin'); if(!el) return; const inc=S.clients.reduce((a,c)=>a+clIncY(c.id),0), costi=S.clients.reduce((a,c)=>a+clCosti(c),0);
   el.innerHTML=`<div class="k2">Margine del ${PARAMS.anno}</div>${marginRows(inc,costi,true)}${isIVS()?`<div class="hint" style="margin-top:4px">Comprende la quota fissa INPS dell'anno (${fmt(calc(0,{annual:true}).fisso)}), che si paga anche se incassi poco.</div>`:''}<div class="hint" style="margin-top:6px">I costi dell'attività (agenzia, collaboratori, noleggi, attrezzatura) <b>non si deducono nel forfettario</b>: le tasse restano le stesse. Qui servono solo a sapere quanto ti resta davvero. Si aggiungono dentro ogni cliente.</div>`; }
 function costForm(id){ return `<label class="l">Costi dell'attività per questo cliente</label>
-  <div class="row2"><input id="kd" placeholder="Es. commissione agenzia, collaboratore" style="flex:2;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="kv" inputmode="decimal" placeholder="€ o %" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none"></div>
-  <div class="hint" style="margin:6px 2px 0">Scrivi un importo (es. 500) o una percentuale dell'incassato (es. 15%): utile per la commissione dell'agenzia. Non abbassano le tasse.</div>
+  <input id="kv" placeholder="Es. 550 comparse · 15% agenzia" autocomplete="off" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
+  <input id="kd" placeholder="Per cosa? (se non l'hai già scritto sopra)" autocomplete="off" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
+  <div class="hint" style="margin:6px 2px 0">Scrivi importo e cosa, anche insieme: "550 comparse", "15% agenzia" (la percentuale è sull'incassato del cliente). Non abbassano le tasse.</div>
   <button class="btn ghost" style="margin-top:8px" onclick="addCost(${id})">+ Aggiungi costo</button><div class="hint" id="kmsg" style="margin:6px 2px 0"></div>`; }
 function reopenKeep(id,msg){ const y=$('sheetin').scrollTop; openClient(id); $('sheetin').scrollTop=y; if(msg&&$('kmsg')) $('kmsg').innerHTML=msg; }
-function addCost(id){ const c=S.clients.find(x=>x.id===id), d=($('kd').value||'').trim()||'Costo', raw=String($('kv').value||'').trim(); const bad=m=>{ $('kmsg').innerHTML='<span style="color:var(--red)">'+m+'</span>'; }; if(!raw){ bad('Scrivi l\'importo (es. 500) o la percentuale (es. 15%)'); return; }
+function addCost(id){ const c=S.clients.find(x=>x.id===id); let all=String($('kv').value||'').trim(); const mm=all.match(/^(.*?)(€?\s*\d[\d.,]*\s*(?:€|%|euro)?)(.*)$/i); let raw=all, extra=''; if(mm){ raw=mm[2].replace(/euro/i,'').replace('€','').trim(); extra=(mm[1]+' '+mm[3]).replace(/\s+/g,' ').trim(); } const d=($('kd').value||'').trim()||extra||'Costo'; const bad=m=>{ $('kmsg').innerHTML='<span style="color:var(--red)">'+m+'</span>'; }; if(!raw){ bad('Scrivi l\'importo (es. 500) o la percentuale (es. 15%)'); return; }
   const k={id:Date.now(),d,date:today()}; if(/%$/.test(raw)){ k.pct=numIt(raw.replace('%','')); if(!(k.pct>0&&k.pct<100)){ bad('Percentuale non valida: scrivi per esempio 15%'); return; } } else { k.v=numIt(raw); if(!(k.v>0)){ bad('Importo non valido: scrivi per esempio 500'); return; } }
   c.costi=c.costi||[]; c.costi.push(k); save(); renderAll(); reopenKeep(id,'<b style="color:var(--acc)">✓ Aggiunto: '+esc(d)+' − '+fmt(costVal(k,id))+'</b> · lo vedi qui sopra'); toast('Costo aggiunto'); }
 function delCost(id,kid){ const c=S.clients.find(x=>x.id===id); c.costi=(c.costi||[]).filter(k=>k.id!==kid); save(); renderAll(); reopenKeep(id,'Costo tolto'); }
