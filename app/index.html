@@ -157,6 +157,8 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
 .ambq{margin-top:10px;display:grid;gap:6px}.ambq span{font-size:13px;color:var(--txt)}.ambq .seg button{font-size:12px;padding:8px 4px}
+.codesel{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px;font-size:12px;color:var(--mut)}.codesel:empty{display:none}.codesel span{flex-basis:100%}.codesel button{flex:1;min-width:0;padding:8px 6px;border-radius:12px;background:var(--sur2);border:1.5px solid transparent;font-weight:700;font-size:13px;color:var(--txt)}.codesel button.on{border-color:var(--acc)}.codesel small{display:block;font-weight:500;font-size:10.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cassaw{background:var(--sur2);border-radius:12px;padding:4px 12px 12px;margin-top:8px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}.row3 label{font-size:11.5px;color:var(--mut);display:grid;gap:4px}.row3 input{width:100%;min-width:0;background:var(--sur);border:0;border-radius:10px;padding:10px;outline:none;font-size:15px;color:var(--txt)}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -261,6 +263,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button></div>
       <div class="ratehint"><span><b>5%</b> primi 5 anni, se l'attività è davvero nuova</span><span><b>15%</b> tutti gli altri casi</span><span class="why" onclick="why('start')">?</span></div>
       <button class="atchip" id="atchip" onclick="askAct(false)"></button>
+      <div class="codesel" id="codesel"></div>
       <div class="hero">
         <svg class="ring" viewBox="0 0 200 200" id="ring0">
           <circle cx="100" cy="100" r="82" fill="none" stroke="var(--sur2)" stroke-width="16"/>
@@ -429,7 +432,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.8.1',
+  ver: '3.9',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -466,6 +469,13 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ r
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 /* ---------- CALCOLO ---------- */
+function altroHint(v){ if(!v) return ''; const i=atecoInfo(v); return i&&i.c!=null? `${esc(v)}: ${esc(i.g)} · ${Math.round(coefAteco(v)*100)}%.` : `<span style="color:var(--red)">${esc(v)}: codice non riconosciuto.</span>`; }
+const CASSE=[]; // riempita con i valori verificati
+function cassaOpts(sel){ return '<option value="">Scegli…</option>'+CASSE.map(c=>`<option value="${esc(c.n)}" ${c.n===sel?'selected':''}>${esc(c.n)}</option>`).join('')+`<option value="Altra" ${sel==='Altra'?'selected':''}>Altra cassa (scrivo io i numeri)</option>`; }
+function cassaNote(n){ const c=CASSE.find(x=>x.n===n); return c? `${esc(c.note||'')} Valori ${esc(c.anno||'')}: controlla sul sito della cassa.` : 'Trovi i numeri sul sito della tua cassa o te li dà il commercialista. Il minimo si paga anche se incassi poco.'; }
+function cassaPreset(pre,n){ const c=CASSE.find(x=>x.n===n); if(c){ $(pre+'-csog').value=String(c.s).replace('.',','); $(pre+'-cmin').value=c.m||''; $(pre+'-cint').value=String(c.i).replace('.',','); } $(pre+'-cnote').innerHTML=cassaNote(n); }
+function numIt(x){ const t=String(x==null?'':x).trim().replace(/[€\s]/g,''); if(!t) return 0; const v=/^\d{1,3}(\.\d{3})+$/.test(t)? +t.replace(/\./g,'') : parseFloat(t.replace(/\./g,(m,o,str)=>/,/.test(str)?'':'.').replace(',','.')); return isNaN(v)?0:v; }
+function readCassa(pre){ if(!$(pre+'-csog')) return; S.profile.cassaNome=$(pre+'-cpre').value; S.profile.cassaSogg=numIt($(pre+'-csog').value); S.profile.cassaMin=numIt($(pre+'-cmin').value); S.profile.cassaInt=numIt($(pre+'-cint').value); }
 function atecoLive(v){ const on=!!(v&&coefAteco(v)!=null); ['a-act','s-act'].forEach(id=>{ const e=$(id); if(e){ e.disabled=on; e.style.opacity=on?.45:1; } }); if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
 // Coefficienti: Allegato 4 L. 190/2014, letti sul codice ATECO 2007 corrispondente (D.Lgs. 81/2025). Gestiti anche i casi ATECO 2025 che hanno cambiato posto.
@@ -485,6 +495,10 @@ function atecoInfo(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*
 function coefAteco(code){ const i=atecoInfo(code); if(!i||i.c==null) return null; if(i.amb&&S.profile.ambul==='na') return .54; if(i.amb&&S.profile.ambul==='al') return .40; return i.c; }
 function setAmbul(v){ S.profile.ambul=v; save(); document.querySelectorAll('.ambq button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); refreshRate(); ['a','s'].forEach(p=>{ const h=$(p+'-ahint'); if(h) h.innerHTML=atecoHint(S.profile.ateco); }); }
 function coef(){ const ca=coefAteco(S.profile.ateco); if(ca!=null) return ca; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
+function codes(){ return [S.profile.ateco,...(S.profile.altri||[])].filter((c,i,a)=>c&&coefAteco(c)!=null&&a.indexOf(c)===i); }
+function coefFor(code){ const c=code?coefAteco(code):null; return c!=null?c:coef(); }
+function isCassa(){ return S.profile.inps==='cassa'; }
+function impOf(list){ return list.reduce((a,p)=>a+p.tot*coefFor(p.ateco),0); }
 function atecoHint(v){ if(!String(v||'').trim()) return 'Facoltativo ma consigliato: lo trovi nella visura camerale o nel certificato della partita IVA. Scrivi solo i numeri.'; const i=atecoInfo(v);
   if(!i) return '<span style="color:var(--red)">Codice non riconosciuto.</span> Controlla le prime due cifre: sono quelle che contano.'; if(i.need) return 'Per il 46 servono almeno 4 cifre (es. 46.18): agenti e grossisti hanno percentuali diverse.';
   const c=coefAteco(v); let h=`Gruppo: <b style="color:var(--txt)">${esc(i.amb&&S.profile.ambul?'commercio ambulante'+(S.profile.ambul==='al'?' alimentare':' non alimentare'):i.g)}</b> · tasse calcolate sul <b style="color:var(--txt)">${Math.round(c*100)}%</b>. Se il gruppo non corrisponde a quello che fai, ricontrolla il codice.`;
@@ -498,10 +512,11 @@ function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || 
 function ordinale(n){ return n+'°'; }
 function isIVS(){ return S.profile.inps==='artigiani'||S.profile.inps==='commercianti'; }
 function calc(lordo, opts={}){
-  const imponibile = lordo * coef();
+  const imponibile = opts.imp!=null ? opts.imp : lordo * (opts.code ? coefFor(opts.code) : coef());
   const rid = (isIVS() && S.profile.rid35) ? 0.65 : 1;
-  const rate = PARAMS.inps[S.profile.inps] * rid;
+  const rate = isCassa() ? (+S.profile.cassaSogg||0)/100 : PARAMS.inps[S.profile.inps||'separata'] * rid;
   let inps = imponibile * rate, fisso = 0, inpsEcc = inps;
+  if (opts.annual && isCassa()) { inps = Math.max(+S.profile.cassaMin||0, inps); inpsEcc = inps; }
   // sull'anno intero: quota fissa sul minimale + percentuale solo sull'eccedenza
   if (opts.annual && isIVS()) { fisso = PARAMS.ivs.fisso[S.profile.inps] * rid; inpsEcc = Math.max(0, imponibile - PARAMS.ivs.minimale) * rate; inps = fisso + inpsEcc; }
   const aliq = is5() ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
@@ -558,19 +573,21 @@ function donut(svgId, legId, c){
   svg.parentElement.classList.toggle('empty',!tot);
 }
 /* ---------- UI: NUOVO (guidata) ---------- */
-function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
+function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa&&!isCassa()? ' · <span style="color:var(--red)">Hai una cassa? Sceglila in "Come versi i contributi"</span>':''; }
 function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
 function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
 function renderActLine(){ if(S.setup && !isMan() && !actWarn()){ $('actline').innerHTML=''; return; } if(isMan()){ $('actline').innerHTML=`Calcolo con <b style="color:var(--txt)">la tua percentuale: ${String(S.profile.manPct).replace('.',',')}%</b> di tasse e INPS · il calcolo esatto darebbe circa il ${Math.round(calc(1000,{noMan:1}).tasse/10)}% · <span class="link" onclick="S.profile.useMan=false;save();refreshRate()" style="font-size:12px">torna all'esatto</span>`; return; } $('actline').innerHTML = S.setup ? (coefAteco(S.profile.ateco)!=null?`Calcolo con il codice ATECO <b style="color:var(--txt)">${esc(S.profile.ateco)}</b> (tasse sul ${Math.round(coef()*100)}%)`:`Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (tasse sul ${Math.round(coef()*100)}%)`)+` · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
 function setRate(five){ S.profile.useMan=false; if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function isRev(){ return !!S.profile.rev; }
-function gross(v){ if(!isRev()||!v) return v; const k=calc(1000).netto/1000; return k>0? Math.ceil(v/k) : v; }
+function gross(v){ if(!isRev()||!v) return v; const k=calc(1000,{code:curCode()}).netto/1000; return k>0? Math.ceil(v/k) : v; }
 function setDir(r){ S.profile.rev=!!r; save(); renderHello(); ring0(parseFloat($('q0').value)||0); }
 function renderHello(){ const r=isRev(); $('dirF').classList.toggle('on',!r); $('dirR').classList.toggle('on',r);
   $('hello').textContent=r?'Quanto vuoi in tasca?':'Inserisci la cifra';
   $('hellosub').textContent=r?'Scrivi la cifra che hai in testa: ti diciamo quanto chiedere per averla pulita.':'Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.'; }
+function curCode(){ const cs=codes(); return cs.includes(S.homeCode)?S.homeCode:(cs[0]||''); }
+function setHomeCode(c){ S.homeCode=c; save(); refreshRate(); renderCalc(); }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span><span class="atsug" style="color:var(--mut)">${esc((atecoInfo(S.profile.ateco)||{}).g||'')}</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="ate" style="margin-left:auto">→</span><span class="atsug">Consigliato: con il codice il calcolo è più preciso.${S.setup?' Ora calcolo per '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%.':''}</span>`; }
+  const ca=coefAteco(S.profile.ateco); const cs=codes(); if($('codesel')) $('codesel').innerHTML = cs.length>1 ? '<span>Questo lavoro è per:</span>'+cs.map(c=>`<button type="button" class="${c===curCode()?'on':''}" onclick="setHomeCode('${c}')">${esc(c)} · ${Math.round(coefAteco(c)*100)}%<small>${esc(((atecoInfo(c)||{}).g||'').split(' (')[0])}</small></button>`).join('') : ''; $('atchip').classList.toggle('set',ca!=null); $('atchip').innerHTML = ca!=null ? `<span class="atl">Codice ATECO</span><span class="atv">${esc(S.profile.ateco)}</span><span class="atc">tasse sul ${Math.round(ca*100)}%</span><span class="ate">✎</span><span class="atsug" style="color:var(--mut)">${esc((atecoInfo(S.profile.ateco)||{}).g||'')}</span>` : `<span class="atl">Codice ATECO</span><span class="atv atp">inseriscilo</span><span class="ate" style="margin-left:auto">→</span><span class="atsug">Consigliato: con il codice il calcolo è più preciso.${S.setup?' Ora calcolo per '+esc(actFull().split(',')[0].toLowerCase())+', tasse sul '+Math.round(coef()*100)+'%.':''}</span>`; }
 function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/10);
   sheet(`<h3>La tua percentuale</h3><div class="sub">Se metti via sempre la stessa quota (per esempio il 27%), scrivila qui: l'app calcola con quella.</div>
     <label class="l">Quanto togli da ogni incasso, tasse e INPS insieme?</label>
@@ -581,7 +598,7 @@ function askPct(){ const pr=S.profile, ex=Math.round(calc(1000,{noMan:1}).tasse/
 function savePct(){ const v=parseFloat(String($('m-pct').value).replace(',','.')); if(!(v>0&&v<100)){ toast('Scrivi una percentuale tra 1 e 99'); return; } S.profile.manPct=Math.round(v*10)/10; S.profile.useMan=true; save(); closeSheet(); refreshRate(); }
 function refreshRate(){ renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function ring0(v){
-  const L=gross(v), c=calc(L); const C=2*Math.PI*82;
+  const L=gross(v), c=calc(L,{code:curCode()}); const C=2*Math.PI*82;
   const fy=L? Math.max(0,c.netto)/L : 0, fr=L? c.tasse/L : 0;
   $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
   $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
@@ -590,11 +607,11 @@ function ring0(v){
   leg.innerHTML=(c.manual?[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','tasse e INPS ('+String(S.profile.manPct).replace('.',',')+'%)',c.tasse,null]]:[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']]).map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
   $('how0').innerHTML=(v&&!padOpen)?(isRev()?`<div class="revbox">Per avere <b>${fmt(v)}</b> in tasca chiedi <b>${fmt(L)}</b> al cliente.</div>`:'')+`<button class="howbtn" onclick="howCalc(${L})">Come l'ho calcolato →</button>`:'';
 }
-function howCalc(v){ const e=calc(v,{noMan:1}), m=isMan()?calc(v):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=PARAMS.inps[S.profile.inps]*((isIVS()&&S.profile.rid35)?0.65:1);
+function howCalc(v){ const cc=curCode(), e=calc(v,{noMan:1,code:cc}), m=isMan()?calc(v,{code:cc}):null, pc=x=>(Math.round(x*1000)/10).toString().replace('.',','), al=is5()?5:15, rate=isCassa()?(+S.profile.cassaSogg||0)/100:PARAMS.inps[S.profile.inps||'separata']*((isIVS()&&S.profile.rid35)?0.65:1);
   const row=(n,t,d,b)=>`<div class="hstep"><span class="hn">${n}</span><div><b>${t}</b><small>${d}</small></div><b class="hv${b?' y':''}">${b||''}</b></div>`;
   sheet(`<h3>Come l'ho calcolato</h3><div class="sub">Su ${fmt(v)} incassati, regime forfettario. Lo Stato non tassa tutto l'incasso: prima decide quanto è "reddito".</div>
-   ${row(1,'Quanto è reddito',`Per ${coefAteco(S.profile.ateco)!=null?'il codice ATECO '+esc(S.profile.ateco):esc(actFull().split(',')[0].toLowerCase()||'la tua attività')} lo Stato considera reddito il ${Math.round(coef()*100)}% dell'incasso (coefficiente di redditività${coefAteco(S.profile.ateco)!=null?', ATECO '+esc(S.profile.ateco):''}). Il resto è come se fossero spese.`,fmt(e.imponibile))}
-   ${row(2,'INPS',`${pc(rate)}% su ${fmt(e.imponibile)}${isIVS()?' (artigiani e commercianti: in più c\'è la quota fissa annuale, la vedi nel piano dell\'anno)':' (gestione separata)'}.`,'− '+fmt(e.inps))}
+   ${row(1,'Quanto è reddito',`Per ${cc?'il codice ATECO '+esc(cc):esc(actFull().split(',')[0].toLowerCase()||'la tua attività')} lo Stato considera reddito il ${Math.round(coefFor(cc)*100)}% dell'incasso (coefficiente di redditività${coefAteco(S.profile.ateco)!=null?', ATECO '+esc(S.profile.ateco):''}). Il resto è come se fossero spese.`,fmt(e.imponibile))}
+   ${row(2,isCassa()?'Cassa '+esc(S.profile.cassaNome||'professionale'):'INPS',`${pc(rate)}% su ${fmt(e.imponibile)}${isCassa()?' (contributo soggettivo della tua cassa; c\'è anche un minimo annuo)':isIVS()?' (artigiani e commercianti: in più c\'è la quota fissa annuale, la vedi nel piano dell\'anno)':' (gestione separata)'}.`,'− '+fmt(e.inps))}
    ${row(3,'Imposta',`${al}% su ${fmt(e.imponibile)} meno l'INPS, cioè su ${fmt(Math.max(0,e.imponibile-e.inps))}.`,'− '+fmt(e.imposta))}
    ${row('=','Tuoi',`${fmt(v)} − ${fmt(e.inps)} − ${fmt(e.imposta)}.`,fmt(e.netto))}
    <div class="hpct">In tutto vanno via <b>${fmt(e.tasse)}</b>, cioè il <b>${pc(v?e.tasse/v:0)}%</b> dell'incasso. È questa la percentuale "da mettere via" su ogni incasso.</div>
@@ -638,7 +655,7 @@ function saveIncasso(){
   const v=parseFloat($('inc').value)||0; if(!v) return;
   const cl=getClient($('incclient').value.trim()||'Senza cliente',true);
   S.seq++;
-  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:today()} });
+  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:today()}, ateco:curCode() });
   save(); $('inc').value=''; $('incclient').value=''; $('incres').style.display='none'; $('incsave').disabled=true; renderAll(); toast('Incassato. Metti via '+fmt(calc(v).via)); step(0); go('year');
 }
 
@@ -667,7 +684,7 @@ function resetCond(){ S.profile.cond=null; save(); loadCond(DEF_COND); toast('Te
 
 function renderCalc(){
   cur.rows.forEach(r=>{ r.t=(r.q||1)*(r.p||0); }); cur.tot=cur.rows.reduce((a,r)=>a+r.t,0);
-  const c=calc(cur.tot);
+  const c=calc(cur.tot,{code:curCode()});
   $('net').textContent=fmt(c.netto);
   const ok=cur.tot>0; ['save','save2','save3'].forEach(i=>{ if($(i)) $(i).disabled=!ok; }); $('bigres').style.opacity=ok?1:.3;
   $('via').textContent=fmt(c.via); $('inps').textContent=fmt(c.inps); $('imp').textContent=fmt(c.imposta); if($('via3')) $('via3').innerHTML=ok?`Metti via <b>${fmt(c.via)}</b> · INPS ${fmt(c.inps)} · imposta ${fmt(c.imposta)}`:'';
@@ -682,7 +699,7 @@ function savePrev(mode){
   const tot=rows.reduce((a,r)=>a+r.t,0);
   const cond=readCond(); S.profile.cond=cond;
   S.seq++;
-  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows, tot, cond, status:'inviato', hist:{inviato:today()} });
+  S.prev.unshift({ id:Date.now(), num:`${PARAMS.anno}-${String(S.seq).padStart(3,'0')}`, date:today(), client:cl.id, rows, tot, cond, status:'inviato', hist:{inviato:today()}, ateco:curCode() });
   save(); const nid=S.prev[0].id; cur.rows=[]; $('msg').value=''; $('client').value=''; renderRows(); renderCalc(); renderAll(); toast('Preventivo salvato'); step(0); if(mode==='pdf'){ downloadPDF(nid); go('list'); } else if(mode==='send'){ sendPrev(nid); } else go('list');
 }
 function getClient(name,create){
@@ -770,9 +787,12 @@ function buildPDF(p){
   p.rows.forEach(r=>{ doc.line(L,y,R,y); y+=6; const d=doc.splitTextToSize(r.d,100); doc.text(d,L,y); doc.text(String(r.q),140,y,{align:'right'}); doc.text(eur(r.p),165,y,{align:'right'}); doc.text(eur(r.t),R,y,{align:'right'}); y+=d.length*4.5+2; });
   // totali
   y+=6; const X0=118; doc.setTextColor(...MUT); doc.setFontSize(9.5);
-  doc.text('Imponibile',X0,y); doc.text(eur(p.tot),R,y,{align:'right'}); y+=6; doc.text('IVA',X0,y); doc.text('non applicata',R,y,{align:'right'}); y+=4;
+  const CI=(isCassa()&&+S.profile.cassaInt>0)? Math.round(p.tot*S.profile.cassaInt)/100 : 0, TT=p.tot+CI;
+  doc.text('Imponibile',X0,y); doc.text(eur(p.tot),R,y,{align:'right'}); y+=6;
+  if(CI){ doc.text(`Contributo integrativo ${String(S.profile.cassaInt).replace('.',',')}%`+(S.profile.cassaNome&&S.profile.cassaNome!=='Altra'?` (${S.profile.cassaNome.split(' (')[0]})`:''),X0,y); doc.text(eur(CI),R,y,{align:'right'}); y+=6; }
+  doc.text('IVA',X0,y); doc.text('non applicata',R,y,{align:'right'}); y+=4;
   doc.setDrawColor(...INK); doc.setLineWidth(0.6); doc.line(X0,y,R,y); doc.setLineWidth(0.2); y+=8;
-  doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.setFontSize(14); doc.text('Totale',X0,y); doc.setFontSize(18); doc.text(eur(p.tot),R,y,{align:'right'});
+  doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.setFontSize(14); doc.text('Totale',X0,y); doc.setFontSize(18); doc.text(eur(TT),R,y,{align:'right'});
   y+=7; doc.setFont('helvetica','normal'); doc.setFontSize(7); doc.setTextColor(...MUT);
   doc.text(doc.splitTextToSize("Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54\u201389, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 \u20AC per importi superiori a 77,47 \u20AC.",74),X0,y);
   // condizioni
@@ -932,7 +952,7 @@ function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei prevent
 /* piano per anno: cosa paghi nel 2026, nel 2027… in base all'anno di attività */
 function saveIncPrec(){ const raw=String($('ap-v').value||'').trim(); const v=/^\d{1,3}(\.\d{3})+$/.test(raw)?+raw.replace(/\./g,''):impNum(raw); if(!(v>0)){ toast('Scrivi la cifra, per esempio 80.000'); return; } S.profile.incPrec=v; save(); renderAll(); toast('Salvato: acconti calcolati su '+fmt(v)); }
 function renderPiano(c){
-  const n=annoAtt(), Y=PARAMS.anno, I=c.imposta, F=c.fisso||0, N=F?c.inpsEcc:c.inps;
+  const K=isCassa(), n=annoAtt(), Y=PARAMS.anno, I=c.imposta, F=c.fisso||0, N=K?0:(F?c.inpsEcc:c.inps);
   const fr=F/4, fissoTxt=F?` Più la quota fissa INPS di ${fmt(F)} in 4 rate da ${fmt(fr)} (maggio, agosto, novembre, febbraio), anche se incassi poco.`:'';
   const aliqNext = (S.profile.start===true && (n==null || n+1<=5)) ? PARAMS.aliquotaStart : PARAMS.aliquotaStd;
   const Inext = Math.max(0,c.imponibile-N)*aliqNext;
@@ -942,7 +962,7 @@ function renderPiano(c){
     anni.push({y:Y, base:`Primo anno: niente saldo e niente acconti.`, giu:0, nov:0, tot:F, lg:'—', ln:'—', note:(F?`Il primo anno imposta e INPS a percentuale non si pagano: arrivano tutte insieme nel ${Y+1}. La quota fissa INPS invece si paga già.`:`Il primo anno non paghi niente. Ma metti via lo stesso: il conto arriva tutto nel ${Y+1}.`)});
     anni.push({y:Y+1, base:`Calcolato sui ${fmt(inc)} che hai segnato nel ${Y}.`, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N+F, lg:`Saldo ${Y} + 1° acconto ${Y+1}`, ln:`2° acconto ${Y+1}`, note:`È il "conto doppio" del secondo anno: paghi le tasse del ${Y} (${fmt(I+N)}) e in più l'anticipo sul ${Y+1} (${fmt(I+0.8*N)}). Preparati per tempo.`});
   } else {
-    const cp=P?calc(S.profile.incPrec,{annual:true,noMan:1}):null, Ip=P?cp.imposta:I, Np=P?(cp.fisso?cp.inpsEcc:cp.inps):N;
+    const cp=P?calc(S.profile.incPrec,{annual:true,noMan:1}):null, Ip=P?cp.imposta:I, Np=K?0:(P?(cp.fisso?cp.inpsEcc:cp.inps):N);
     const a1=0.5*Ip+0.4*Np, a2=0.5*Ip+0.4*Np;
     anni.push({y:Y, base:P?`Acconti calcolati sui ${fmt(S.profile.incPrec)} che hai incassato nel ${Y-1}.`:`⚠ Stima: non so quanto hai incassato nel ${Y-1}, uso gli incassi di quest'anno.`, giu:a1, nov:a2, tot:a1+a2+F, lg:`Saldo ${Y-1} + 1° acconto ${Y}`, ln:`2° acconto ${Y}`,
       note:`A giugno hai pagato il saldo del ${Y-1} e il primo anticipo sul ${Y}. Se l'anno prima avevi pagato troppo, avevi un credito e a giugno puoi aver pagato meno o niente: è normale.`});
@@ -963,6 +983,7 @@ function renderPiano(c){
   const next=all.filter(r=>r.d>=oggi).sort((x,y)=>x.d-y.d)[0];
   const daPagare=all.filter(r=>r.d>=oggi && r.d.getFullYear()<=Y).reduce((t,r)=>t+r.v,0);
   const head = next ? `<div class="nextpay"><small>Prossima scadenza</small><b>${fmt(next.v)}</b><span>${next.t} · ${fd(next.d)}${next.d.getFullYear()!==oggi.getFullYear()?' '+next.d.getFullYear():''} · ${gg(next.d)===0?'oggi':'tra '+gg(next.d)+' giorni'}</span>${daPagare>next.v+0.5?`<em>Entro fine ${Y} ti restano da pagare ${fmt(daPagare)}.</em>`:''}</div>` : '';
+  if(K) anni.forEach(a=>{ a.note+=` Qui ci sono solo le tasse: i contributi alla ${esc(S.profile.cassaNome&&S.profile.cassaNome!=='Altra'?S.profile.cassaNome.split(' (')[0]:'tua cassa')} (circa ${fmt(c.inps)} l'anno, minimo compreso) si pagano con le scadenze della cassa.`; });
   const ask = (n!==1 && !P) ? `<div class="askprev"><b>Per avere le cifre giuste: quanto hai incassato nel ${Y-1}?</b><small>Gli anticipi di giugno e novembre si calcolano sull'anno prima. Lo trovi nella dichiarazione dei redditi o te lo dice il commercialista.</small><div class="row2"><input id="ap-v" type="text" inputmode="decimal" placeholder="es. 80.000" style="flex:1;min-width:0;background:var(--sur);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px"><button class="btn small" style="flex:none;margin:0" onclick="saveIncPrec()">Salva</button></div></div>` : '';
   const how = `<details class="howtax"><summary>Come funzionano le tasse del forfettario, in 4 frasi</summary><ol><li>Le tasse di un anno si pagano <b>l'anno dopo</b>, a giugno: è il <b>saldo</b>.</li><li>Intanto paghi in anticipo quelle dell'anno in corso, a <b>giugno e novembre</b>: sono gli <b>acconti</b>, calcolati su quanto hai incassato l'anno prima.</li><li>Se hai anticipato troppo, ti avanza un <b>credito</b> che si scala l'anno dopo. Se hai anticipato poco, paghi la differenza.</li><li>Artigiani e commercianti pagano in più <b>4 rate fisse INPS</b> l'anno, anche se incassano poco.</li></ol></details>`;
   $('piano').innerHTML = ask + how + head + anni.map((a,i)=>`
@@ -991,7 +1012,8 @@ function renderYear(){
     <div class="kv"><span><i class="md" style="background:#7d7d86"></i>Accettato, da fatturare</span><span>${fmt(acc)}</span></div>
     <div class="kv tot"><span>Totale previsto</span><span>${fmt(prevTot)}</span></div>
     <div class="hint" style="margin-top:6px">Contano solo i preventivi accettati, fatturati e incassati. Quelli solo inviati no: non sono ancora sicuri.${prevTot>PARAMS.soglia?` <b style="color:var(--red)">Con tutto il previsto superi la soglia di 85.000 €.</b>`:''}</div>`;
-  const c=calc(tot,{contribPrec:S.profile.contribPrec||null, annual:true});
+  const yrList=mode? S.prev.filter(p=>(p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno))||(['fatturato','accettato'].includes(p.status)&&yr(p))) : inc;
+  const c=calc(tot,{contribPrec:S.profile.contribPrec||null, annual:true, imp:impOf(yrList)});
   const pres=S.clients.reduce((a,c)=>a+(+c.atteso||0),0);
   $('ylabel').textContent=`${PARAMS.anno} · sugli incassi segnati`;
   const g=$('gfill'); const C=2*Math.PI*82; g.setAttribute('stroke-dasharray',`${Math.min(1,tot/PARAMS.sogliaOut)*C} ${C}`); g.setAttribute('stroke', tot>PARAMS.soglia?'#FF4D4D':(tot>PARAMS.soglia*0.8?'#FF9F43':'#FFD54A')); $('gpct').textContent=Math.round(tot/PARAMS.soglia*100)+'%';
@@ -1061,8 +1083,9 @@ function makePDF(id){
     </tbody></table>
     <div class="pt"><div>
       <div class="pr"><span>Imponibile</span><span>${fmt2(p.tot)}</span></div>
+      ${(isCassa()&&+S.profile.cassaInt>0)?`<div class="pr"><span>Contributo integrativo ${String(S.profile.cassaInt).replace('.',',')}%</span><span>${fmt2(Math.round(p.tot*S.profile.cassaInt)/100)}</span></div>`:''}
       <div class="pr"><span>IVA</span><span>non applicata</span></div>
-      <div class="pr t"><span>Totale</span><span>${fmt2(p.tot)}</span></div>
+      <div class="pr t"><span>Totale</span><span>${fmt2(p.tot+((isCassa()&&+S.profile.cassaInt>0)?Math.round(p.tot*S.profile.cassaInt)/100:0))}</span></div>
       <p class="pf">Operazione non soggetta a IVA ai sensi dell'art. 1, commi 54–89, L. 190/2014 (regime forfettario). In fattura si applica l'imposta di bollo di 2,00 € per importi superiori a 77,47 €.</p>
     </div></div>
     <div class="terms">
@@ -1092,10 +1115,14 @@ function askAct(first,after){
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
     <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
-    <label class="l">Come versi l'INPS? <span class="why" onclick="why('inps')">?</span></label>
-    <select id="a-inps" onchange="$('a-ridw').style.display=this.value==='separata'?'none':''"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option></select>
+    <label class="l">Come versi i contributi? <span class="why" onclick="why('inps')">?</span></label>
+    <select id="a-inps" onchange="$('a-ridw').style.display=(this.value==='separata'||this.value==='cassa')?'none':'';$('a-cassaw').style.display=this.value==='cassa'?'':'none'"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option><option value="cassa" ${pr.inps==='cassa'?'selected':''}>Cassa del mio albo · avvocati, ingegneri, giornalisti…</option></select>
     <div class="hint" style="margin:6px 2px 0">Paghi 4 rate fisse l'anno (maggio, agosto, novembre, febbraio)? Allora sei artigiano o commerciante: lo vedi sull'F24, AF = artigiani, CF = commercianti.</div>
-    <div id="a-ridw" style="display:${pr.inps==='separata'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="a-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Ho la riduzione del 35% per i forfettari</label></div>
+    <div id="a-cassaw" class="cassaw" style="display:${pr.inps==='cassa'?'':'none'}">
+      <label class="l">Quale cassa?</label><select id="a-cpre" onchange="cassaPreset('a',this.value)">${cassaOpts(pr.cassaNome)}</select>
+      <div class="row3"><label>Soggettivo %<input id="a-csog" inputmode="decimal" value="${pr.cassaSogg||''}" placeholder="es. 15"></label><label>Minimo annuo €<input id="a-cmin" inputmode="decimal" value="${pr.cassaMin||''}" placeholder="es. 3000"></label><label>Integrativo %<input id="a-cint" inputmode="decimal" value="${pr.cassaInt||''}" placeholder="es. 4"></label></div>
+      <div class="hint" id="a-cnote" style="margin:6px 2px 0">${cassaNote(pr.cassaNome)}</div></div>
+<div id="a-ridw" style="display:${pr.inps==='separata'||pr.inps==='cassa'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="a-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Ho la riduzione del 35% per i forfettari</label></div>
     <label class="l">In che anno hai aperto la partita IVA?</label>
     <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:8px 2px 0">Serve per sapere in che anno di attività sei: cambiano acconti e, dopo il 5°, l'aliquota.</div>
@@ -1106,7 +1133,7 @@ function askAct(first,after){
     <div class="stima">Se scegli "Altro" e non metti il codice ATECO usiamo il 78%. Il codice lo trovi nella visura camerale o nel certificato di attribuzione della partita IVA, oppure lo chiedi al commercialista.</div>`);
 }
 let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
-function saveAct(){ S.profile.act=$('a-act').value; if($('a-inps')){ S.profile.inps=$('a-inps').value; S.profile.rid35=S.profile.inps!=='separata'&&!!($('a-rid')&&$('a-rid').checked); } S.profile.ateco=fmtAteco($('a-ateco').value); S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
+function saveAct(){ S.profile.act=$('a-act').value; if($('a-inps')){ S.profile.inps=$('a-inps').value; S.profile.rid35=isIVS()&&!!($('a-rid')&&$('a-rid').checked); readCassa('a'); } S.profile.ateco=fmtAteco($('a-ateco').value); S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
 function needProfile(after){
   const pr=S.profile; if(pr.nome) { after(); return; }
   sheet(`
@@ -1145,10 +1172,18 @@ function settingsHTML(first){
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
     <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
+    <label class="l">Hai altri codici ATECO? (facoltativo)</label>
+    <div class="row2"><input id="s-at2" inputmode="numeric" maxlength="8" value="${esc((pr.altri||[])[0]||'')}" placeholder="2° codice" oninput="this.value=fmtAteco(this.value);$('s-at2h').innerHTML=altroHint(this.value)" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="s-at3" inputmode="numeric" maxlength="8" value="${esc((pr.altri||[])[1]||'')}" placeholder="3° codice" oninput="this.value=fmtAteco(this.value);$('s-at3h').innerHTML=altroHint(this.value)" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"></div>
+    <div class="hint" style="margin:6px 2px 0"><span id="s-at2h">${altroHint((pr.altri||[])[0])}</span> <span id="s-at3h">${altroHint((pr.altri||[])[1])}</span></div>
+    <div class="hint" style="margin:4px 2px 0">Con più codici, in prima schermata scegli per quale attività è ogni lavoro: ognuno ha il suo coefficiente. La soglia degli 85.000 € vale sul totale.</div>
     <div class="hint" style="margin:8px 2px 0">${isMan()?'Stai usando una tua percentuale fissa ('+String(pr.manPct).replace('.',',')+'%). ':'Preferisci togliere sempre la stessa percentuale? '}<span class="link" onclick="askPct()">${isMan()?'Cambia':'Usa una tua percentuale'}</span></div>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
-    <select id="s-inps" onchange="$('s-ridw').style.display=this.value==='separata'?'none':''"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option></select>
-    <div id="s-ridw" style="display:${pr.inps==='separata'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label></div>
+    <select id="s-inps" onchange="$('s-ridw').style.display=(this.value==='separata'||this.value==='cassa')?'none':'';$('s-cassaw').style.display=this.value==='cassa'?'':'none'"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option><option value="cassa" ${pr.inps==='cassa'?'selected':''}>Cassa del mio albo · avvocati, ingegneri, giornalisti…</option></select>
+    <div id="s-cassaw" class="cassaw" style="display:${pr.inps==='cassa'?'':'none'}">
+      <label class="l">Quale cassa?</label><select id="s-cpre" onchange="cassaPreset('s',this.value)">${cassaOpts(pr.cassaNome)}</select>
+      <div class="row3"><label>Soggettivo %<input id="s-csog" inputmode="decimal" value="${pr.cassaSogg||''}" placeholder="es. 15"></label><label>Minimo annuo €<input id="s-cmin" inputmode="decimal" value="${pr.cassaMin||''}" placeholder="es. 3000"></label><label>Integrativo %<input id="s-cint" inputmode="decimal" value="${pr.cassaInt||''}" placeholder="es. 4"></label></div>
+      <div class="hint" id="s-cnote" style="margin:6px 2px 0">${cassaNote(pr.cassaNome)}</div></div>
+<div id="s-ridw" style="display:${pr.inps==='separata'||pr.inps==='cassa'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label></div>
     <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
     <label class="l">Quanto hai incassato l'anno scorso? (rende esatti gli acconti)</label>
@@ -1176,7 +1211,7 @@ function settingsHTML(first){
 let tmpStart='unset';
 function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
 function saveSettings(){
-  S.profile.act=$('s-act').value; S.profile.ateco=fmtAteco($('s-ateco').value); S.profile.inps=$('s-inps').value; S.profile.rid35=!!($('s-rid')&&$('s-rid').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
+  S.profile.act=$('s-act').value; S.profile.ateco=fmtAteco($('s-ateco').value); S.profile.altri=[$('s-at2').value,$('s-at3').value].map(fmtAteco).filter(c=>c&&coefAteco(c)!=null); S.profile.inps=$('s-inps').value; S.profile.rid35=isIVS()&&!!($('s-rid')&&$('s-rid').checked); readCassa('s'); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
   S.profile.incPrec=+$('s-incprec').value||0; S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim(); S.profile.marchio=($('s-mk').value||'').trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
