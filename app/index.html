@@ -159,6 +159,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .ambq{margin-top:10px;display:grid;gap:6px}.ambq span{font-size:13px;color:var(--txt)}.ambq .seg button{font-size:12px;padding:8px 4px}
 .codesel{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px;font-size:12px;color:var(--mut)}.codesel:empty{display:none}.codesel span{flex-basis:100%}.codesel button{flex:1;min-width:0;padding:8px 6px;border-radius:12px;background:var(--sur2);border:1.5px solid transparent;font-weight:700;font-size:13px;color:var(--txt)}.codesel button.on{border-color:var(--acc)}.codesel small{display:block;font-weight:500;font-size:10.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cassaw{background:var(--sur2);border-radius:12px;padding:4px 12px 12px;margin-top:8px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}.row3 label{font-size:11.5px;color:var(--mut);display:grid;gap:4px}.row3 input{width:100%;min-width:0;background:var(--sur);border:0;border-radius:10px;padding:10px;outline:none;font-size:15px;color:var(--txt)}
+.movebox{background:var(--sur2);border-radius:12px;padding:12px 14px;margin:14px 0 8px;display:grid;gap:6px}.movebox small{color:var(--mut);font-size:12.5px;line-height:1.45}.movebox .btn{margin:4px 0 0}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -412,7 +413,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     </div>
 
     <button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
-    <button class="btn ghost" onclick="backup()">Backup</button>
+    <button class="btn ghost" onclick="backup()">Salva un backup dei dati</button>
     <div style="height:10px"></div>
   </section>
 </div>
@@ -432,7 +433,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.9',
+  ver: '3.9.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1038,7 +1039,9 @@ function exportCSV(){
   const rows=[['Numero','Data preventivo','Data incasso','Cliente','Importo','Voci'],...inc.map(p=>[p.num,p.date,p.hist.incassato,clientOf(p).name,p.tot.toFixed(2).replace('.',','),p.rows.map(r=>`${r.q}x ${r.d} ${r.p}`).join(' | ')])];
   dl(`incassi-${PARAMS.anno}.csv`, rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n'), 'text/csv');
 }
-function backup(){ dl(`preventivo-backup-${today()}.json`, JSON.stringify(S), 'application/json'); }
+async function backup(){ const name=`preventivo-backup-${today()}.json`, txt=JSON.stringify(S);
+  try{ const f=new File([txt],name,{type:'application/json'}); if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:'Backup PreventIVO'}); toast('Backup pronto'); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+  dl(name, txt, 'application/json'); toast('Backup salvato nei download'); }
 function dl(name,content,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); }
 
 /* ---------- PDF ---------- */
@@ -1205,7 +1208,7 @@ function settingsHTML(first){
     <input id="s-mk" value="${esc(pr.marchio||'')}" maxlength="34" placeholder="Es. Studio Rossi · Grafica" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
     <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
-    ${first?'':'<button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
+    ${first?'':'<div class="movebox"><b>Vuoi i tuoi dati anche su un altro telefono o sul computer?</b><small>I dati stanno solo su questo dispositivo, non su internet. Per spostarli: 1) qui tocca <b>Salva un backup</b> e mandatelo (mail, WhatsApp, AirDrop); 2) sull\'altro dispositivo apri l\'app, Impostazioni, <b>Ripristina da backup</b>.</small><button class="btn ghost" onclick="backup()">Salva un backup</button></div><button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
     <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
 }
 let tmpStart='unset';
@@ -1216,7 +1219,7 @@ function saveSettings(){
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim(); S.profile.marchio=($('s-mk').value||'').trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
 }
-function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json'; i.onchange=()=>{ const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); renderAll(); closeSheet(); toast('Ripristinato'); }catch(e){ alert('File non valido'); } }; r.readAsText(i.files[0]); }; i.click(); }
+function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json,text/plain'; i.onchange=()=>{ const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); renderAll(); closeSheet(); toast('Ripristinato'); }catch(e){ alert('File non valido'); } }; r.readAsText(i.files[0]); }; i.click(); }
 function wipe(){ if(!confirm('Cancellare tutto? Non si torna indietro.')) return; localStorage.removeItem(KEY); location.reload(); }
 
 /* ---------- PERCHÉ ---------- */
