@@ -44,6 +44,8 @@ textarea.msg::placeholder{color:var(--mut)}
 .yr{background:var(--sur2);border-radius:14px;padding:14px 16px;margin-bottom:10px;border:1px solid transparent}.yr.now{border-color:#FFD54A55}
 .yh{display:flex;justify-content:space-between;align-items:baseline;font-size:17px;font-weight:700}.yh b{font-size:24px;color:var(--red)}.yh small{font-weight:400;color:var(--mut);font-size:12px;margin-left:6px}
 .yd{display:flex;justify-content:space-between;font-size:14px;color:var(--mut);padding:5px 0;border-top:1px solid #2a2a2a}.yd:first-of-type{margin-top:8px}
+.yd>span:last-child{white-space:nowrap;padding-left:10px}.yd.past{opacity:.45}.yd.past i{font-style:normal;font-size:11px;margin-right:6px}.yd small{font-size:11.5px;opacity:.8;margin-left:4px}
+.nextpay{background:#FFD54A14;border:1px solid #FFD54A55;border-radius:14px;padding:12px 16px;margin-bottom:12px;display:grid;gap:2px}.nextpay small{font-size:12px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}.nextpay b{font-size:26px;color:var(--acc)}.nextpay span{font-size:13.5px}.nextpay em{font-style:normal;font-size:12.5px;color:var(--mut);margin-top:4px}
 .yn{font-size:13px;color:var(--mut);line-height:1.45;margin-top:8px}
 .vr{display:flex;gap:6px;align-items:center;padding:5px 0}
 .vr input{background:var(--sur2);border:0;border-radius:10px;padding:11px 10px;outline:none;color:var(--txt);font-size:16px;min-width:0;font-family:inherit}
@@ -412,7 +414,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.9',
+  ver: '3.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -896,15 +898,24 @@ function renderPiano(c){
     anni.push({y:Y+1, giu:I+N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:2*I+1.8*N+F, note:`Il conto doppio del secondo anno: saldo ${Y} (${fmt(I+N)}) più gli acconti ${Y+1} (${fmt(I+0.8*N)}).`+fissoTxt});
   } else {
     anni.push({y:Y, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note:`Giugno: saldo dell'anno scorso più il 1° acconto. Novembre: 2° acconto.`+fissoTxt});
-    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===5?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
+    anni.push({y:Y+1, giu:0.2*N+0.5*I+0.4*N, nov:0.5*I+0.4*N, tot:I+N+F, note: aliqNext!==(is5()?PARAMS.aliquotaStart:PARAMS.aliquotaStd) ? `Dal ${Y+1} l'imposta passa al 15% (finiscono i 5 anni al 5%): su questi incassi sarebbe ${fmt(Inext)} invece di ${fmt(I)}. La differenza la paghi a saldo nel ${Y+2}.` : (n===4&&is5()?`Nel ${Y+1} è l'ultimo anno al 5%.`:`Come quest'anno, se incassi lo stesso.`)});
   }
-  $('piano').innerHTML = anni.map((a,i)=>`
+  // scadenze con date vere: cosa è già passato e cosa arriva
+  const oggi=new Date(); oggi.setHours(0,0,0,0);
+  const D=(y,m,g)=>new Date(y,m-1,g), gg=d=>Math.round((d-oggi)/864e5), fd=d=>d.toLocaleDateString('it-IT',{day:'numeric',month:'long'});
+  const rows=a=>{ const r=[{t:'Saldo e 1° acconto',d:D(a.y,6,30),v:a.giu},{t:'2° acconto',d:D(a.y,11,30),v:a.nov}];
+    if(F){ [[a.y,5,18],[a.y,8,20],[a.y,11,16],[a.y+1,2,16]].forEach(([y,m,g],k)=>r.push({t:`INPS fisso · rata ${k+1}`,d:D(y,m,g),v:fr})); }
+    return r.sort((x,y)=>x.d-y.d); };
+  const all=[]; anni.forEach(a=>rows(a).forEach(r=>{ if(r.v>0.5) all.push(r); }));
+  const next=all.filter(r=>r.d>=oggi).sort((x,y)=>x.d-y.d)[0];
+  const daPagare=all.filter(r=>r.d>=oggi && r.d.getFullYear()<=Y).reduce((t,r)=>t+r.v,0);
+  const head = next ? `<div class="nextpay"><small>Prossima scadenza</small><b>${fmt(next.v)}</b><span>${next.t} · ${fd(next.d)}${next.d.getFullYear()!==oggi.getFullYear()?' '+next.d.getFullYear():''} · ${gg(next.d)===0?'oggi':'tra '+gg(next.d)+' giorni'}</span>${daPagare>next.v+0.5?`<em>Entro fine ${Y} ti restano da pagare ${fmt(daPagare)}.</em>`:''}</div>` : '';
+  $('piano').innerHTML = head + anni.map((a,i)=>`
     <div class="yr${i===0?' now':''}">
       <div class="yh"><span>Nel ${a.y}${i===0?' <small>quest\'anno</small>':''}</span><b>${fmt(a.tot)}</b></div>
-      <div class="yd"><span>giugno</span><span>${fmt(a.giu)}</span></div>
-      <div class="yd"><span>novembre</span><span>${fmt(a.nov)}</span></div>${F?`<div class="yd"><span>INPS fisso · 4 rate</span><span>${fmt(F)}</span></div>`:''}
-      <div class="yn">${a.note}</div>
-    </div>`).join('');
+      ${rows(a).filter(r=>r.v>0.5).map(r=>{ const past=r.d<oggi; return `<div class="yd${past?' past':''}"><span>${r.t} <small>${fd(r.d)}${r.d.getFullYear()!==a.y?' '+r.d.getFullYear():''}</small></span><span>${past?'<i>scaduta</i> ':''}${fmt(r.v)}</span></div>`; }).join('') || `<div class="yd"><span>Nessuna scadenza</span><span>${fmt(0)}</span></div>`}
+      <div class="yn">${a.note}${i===0&&rows(a).some(r=>r.d<oggi&&r.v>0.5)?' Le scadenze già passate sono in grigio: se le hai pagate, sono a posto.':''}</div>
+    </div>`).join('') + `<div class="yn" style="margin-top:4px">Saldo e acconti si calcolano sull'anno prima: qui li stimiamo con gli incassi che hai segnato. Le date sono quelle ordinarie (30 giugno, 30 novembre${F?'; INPS fisso 18 maggio, 20 agosto, 16 novembre, 16 febbraio':''}): conferma con il commercialista.</div>`;
 }
 function renderYear(){
   const inc=S.prev.filter(p=>p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno));
