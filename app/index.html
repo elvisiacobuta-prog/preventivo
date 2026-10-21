@@ -1141,7 +1141,8 @@ function settingsHTML(first){
     <label class="l">Quanto hai incassato l'anno scorso? (rende esatti gli acconti)</label>
     <input id="s-incprec" type="number" inputmode="numeric" value="${pr.incPrec||''}" placeholder="es. 80000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Gli acconti di giugno e novembre si calcolano su quello che hai incassato l'anno prima.</div>
-    <label class="l">Contributi INPS versati l'anno scorso (facoltativo, affina il calcolo)</label>
+    <label class="l">Contributi INPS che paghi quest'anno (facoltativo)</label>
+    <div class="hint" style="margin:-2px 2px 6px">Si tolgono dal reddito prima di calcolare l'imposta. Contano quelli pagati nell'anno: rate fisse, saldo e acconti INPS, anche se pagati con un credito. Se non lo sai lascia vuoto: lo stimiamo noi.</div>
     <input id="s-contrib" type="number" inputmode="numeric" value="${pr.contribPrec||''}" placeholder="es. 4500" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <label class="l">Già messo via per le tasse quest'anno</label>
     <input id="s-via" type="number" inputmode="numeric" value="${pr.messoVia||''}" placeholder="es. 2000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
