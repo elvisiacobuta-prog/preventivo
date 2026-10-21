@@ -1,10 +1,19 @@
 {
+  "id": "/app/",
   "name": "PreventIVO",
   "short_name": "PreventIVO",
+  "description": "Quanto ti resta, preventivi in PDF con il tuo logo e cosa paghi quando. Per partite IVA forfettarie.",
+  "lang": "it",
   "start_url": "/app/",
   "scope": "/app/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#161616",
   "theme_color": "#161616",
-  "icons": [{"src": "/img/icon.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable"}]
+  "categories": ["finance", "productivity", "business"],
+  "icons": [
+    {"src": "/app/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any"},
+    {"src": "/app/icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any"},
+    {"src": "/app/icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
 }

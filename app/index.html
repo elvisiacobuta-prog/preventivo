@@ -142,6 +142,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .disc0{font-size:11.5px;line-height:1.45;color:var(--mut);opacity:.8;text-align:center;margin:14px 8px 4px}
 .logobox{display:flex;gap:12px;align-items:center;background:var(--sur2);border-radius:12px;padding:10px}.logobox img{width:72px;height:56px;object-fit:contain;background:#fff;border-radius:8px;padding:4px}.logobox small{display:block;color:var(--mut);font-size:12.5px;margin:2px 0 4px}
 .logoadd{width:100%;text-align:left;padding:6px 4px}.logoadd b{color:var(--acc)}.logoadd small{display:block;color:var(--mut);font-size:12.5px;margin-top:3px}
+.paylist{list-style:none;padding:0;margin:14px 0 18px}.paylist li{padding:10px 0 10px 26px;border-bottom:1px solid var(--sur2);position:relative;font-size:14.5px;line-height:1.4;color:var(--mut)}.paylist li b{color:var(--txt)}.paylist li::before{content:'';position:absolute;left:4px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--acc)}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
@@ -411,7 +412,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.8.1',
+  ver: '2.9',
+  sku: 'sblocco', prezzo: '15,99 €',
+  webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -580,6 +583,7 @@ $('pad').insertAdjacentHTML('beforeend','<button class="ok">OK</button>');
 $('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b&&b.classList.contains('ok')){ if($('q0').value) setPad(false); } });
 setPad(true);
 function fromHome(k){
+  if(!paid()){ paywall(()=>fromHome(k)); return; }
   if(!S.setup){ askAct(true,()=>fromHome(k)); return; }
   const v=gross(parseFloat($('q0').value)||0);
   if(k==='prev'){ cur.rows = v? [{d:'',q:1,p:v,t:v}] : []; step(1); }
@@ -763,6 +767,7 @@ function prevText(p){
   return `Preventivo n. ${p.num} del ${fdate(p.date)}\nPer: ${c.name}\n\n${righe}\n\nTotale: ${fmt2(p.tot)}\nOperazione non soggetta a IVA (regime forfettario, art. 1 c. 54–89 L. 190/2014).\n\nPagamento: ${cd.pag}\nValidità: ${cd.val}\nIncluso: ${cd.inc}\nExtra: ${cd.ext}\n\nPer accettare basta rispondere a questo messaggio.\n\n${pr.nome||''}${pr.piva?' · P.IVA '+pr.piva:''}${pr.contatti?'\n'+pr.contatti:''}`;
 }
 async function sendPrev(id){
+  if(!paid()){ paywall(()=>sendPrev(id)); return; }
   if(!S.profile.nome){ needProfile(()=>sendPrev(id)); return; }
   const p=S.prev.find(x=>x.id===id); const c=clientOf(p); const text=prevText(p); const subject=`Preventivo ${p.num} — ${S.profile.nome||'PreventIVO'}`;
   const fname=`Preventivo-${p.num}.pdf`;
@@ -808,6 +813,7 @@ let _pdfURL=null;
 function pdfURLFor(p){ try{ if(_pdfURL) URL.revokeObjectURL(_pdfURL); _pdfURL=URL.createObjectURL(pdfBlob(p)); return _pdfURL; }catch(e){ return '#'; } }
 function pdfBlob(p){ if(!window.jspdf){ throw new Error('nojspdf'); } return buildPDF(p).output('blob'); }
 async function downloadPDF(id){
+  if(!paid()){ paywall(()=>downloadPDF(id)); return; }
   if(!S.profile.nome){ needProfile(()=>downloadPDF(id)); return; }
   const p=S.prev.find(x=>x.id===id); const fname=`Preventivo-${p.num}.pdf`;
   let blob; try{ blob=pdfBlob(p); }catch(e){ if(e.message==='nojspdf'){ sheet(`<h3>Serve internet una volta</h3><div class="sub">Il modulo che crea il PDF non si è caricato. Collegati a internet, chiudi e riapri l'app, poi riprova.</div><button class="btn" onclick="location.reload()">Ricarica</button>`); return; } makePDF(id); return; }
@@ -1101,8 +1107,33 @@ const WHY={
 WHY.presunto=['Incassato e previsto',"Incassato: i preventivi segnati come incassati quest'anno. Previsto a fine anno: per ogni cliente, il più alto tra l'incasso atteso che scrivi tu (tocca il cliente) e quello che risulta dai preventivi accettati, fatturati e incassati. Serve a vedere prima tasse, netto e soglia dell'anno."];
 function why(k){ const w=WHY[k]; sheet(`<h3>${w[0]}</h3><p style="line-height:1.6;color:var(--txt)">${w[1]}</p><button class="btn ghost" onclick="closeSheet()">Ok</button>`); }
 
+/* ---------- SBLOCCO (Google Play Billing via Digital Goods API) ---------- */
+const BILL='https://play.google.com/billing';
+(function(){ try{ if(document.referrer.indexOf('android-app://')===0 || /[?&]src=twa/.test(location.search)) localStorage.setItem('pv.store','play'); }catch(e){} })();
+function fromStore(){ try{ return localStorage.getItem('pv.store')==='play' || ('getDigitalGoodsService' in window); }catch(e){ return 'getDigitalGoodsService' in window; } }
+function paid(){ return !!S.unlocked || (!fromStore() && PARAMS.webFree); }
+async function dgs(){ if(!('getDigitalGoodsService' in window)) return null; try{ return await window.getDigitalGoodsService(BILL); }catch(e){ return null; } }
+async function checkOwned(){ const s=await dgs(); if(!s) return; try{ const l=await s.listPurchases(); if(l.some(x=>x.itemId===PARAMS.sku)){ if(!S.unlocked){ S.unlocked=true; save(); renderAll(); } } }catch(e){} }
+async function loadPrice(){ const s=await dgs(); if(!s) return; try{ const d=await s.getDetails([PARAMS.sku]); if(d&&d[0]&&d[0].price){ PARAMS.prezzo=Number(d[0].price.value).toLocaleString('it-IT',{style:'currency',currency:d[0].price.currency}); } }catch(e){} }
+function need(fn){ if(paid()){ fn(); return; } paywall(fn); }
+let _payAfter=null;
+function paywall(after){ _payAfter=after||null;
+  sheet(`<h3>Sblocca PreventIVO</h3><div class="sub">Il calcolo di quanto ti resta è gratis. Con lo sblocco hai tutto il resto, per sempre.</div>
+   <ul class="paylist"><li><b>Preventivi in PDF</b> da mandare su WhatsApp o per mail</li><li><b>Il tuo logo</b> o il nome della tua attività su ogni preventivo</li><li><b>Clienti</b>: chi ti deve pagare e quanto</li><li><b>Il tuo anno</b>: tasse, scadenze di giugno e novembre, soglia 85.000 €</li></ul>
+   <button class="btn" id="paybtn" onclick="buyUnlock()">Sblocca tutto · ${PARAMS.prezzo}</button>
+   <div class="hint" style="text-align:center;margin-top:8px">Una volta sola. Niente abbonamento, niente account.</div>
+   <button class="btn ghost" style="margin-top:10px" onclick="restoreUnlock()">Ho già pagato: ripristina</button>`); }
+async function buyUnlock(){ const s=await dgs(); if(!s){ toast('Lo sblocco si fa dall\'app scaricata dal Play Store'); return; }
+  try{ const req=new PaymentRequest([{supportedMethods:BILL,data:{sku:PARAMS.sku}}],{total:{label:'Totale',amount:{currency:'EUR',value:'0'}}});
+    const res=await req.show(); const tok=res.details&&res.details.purchaseToken;
+    if(tok && s.acknowledge){ try{ await s.acknowledge(tok,'onetime'); }catch(e){} }
+    await res.complete('success'); S.unlocked=true; save(); closeSheet(); renderAll(); toast('Sbloccato. Grazie!'); const f=_payAfter; _payAfter=null; if(f) setTimeout(f,60);
+  }catch(e){ if(e&&e.name!=='AbortError') toast('Pagamento non riuscito. Riprova.'); } }
+async function restoreUnlock(){ await checkOwned(); if(S.unlocked){ closeSheet(); toast('Acquisto ripristinato'); const f=_payAfter; _payAfter=null; if(f) setTimeout(f,60); } else toast('Nessun acquisto trovato su questo account Google'); }
+checkOwned(); loadPrice();
+
 /* ---------- NAV / SHEET / TOAST ---------- */
-function go(v){ document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
+function go(v){ if(v!=='new' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
 document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
 function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
 function closeSheet(){ $('sheet').classList.remove('on'); }
