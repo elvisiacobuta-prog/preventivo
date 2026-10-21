@@ -549,7 +549,7 @@ function ring0(v){
   const fy=L? Math.max(0,c.netto)/L : 0, fr=L? c.tasse/L : 0;
   $('r0y').setAttribute('stroke-dasharray',`${fy*C} ${C}`);
   $('r0r').setAttribute('stroke-dasharray',`${fr*C} ${C}`); $('r0r').setAttribute('transform',`rotate(${-90+fy*360} 100 100)`);
-  $('herosub').innerHTML = v? (isRev()? `chiedi <b style="color:var(--acc)">${fmt(L)}</b>` : `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}`) : (isRev()?'la cifra che vuoi in tasca':'scrivi la cifra');
+  $('herosub').innerHTML = v? (isRev()? `chiedi <b style="color:var(--acc)">${fmt(L)}</b>` : `${Math.round(fy*100)}% è tuo · ${fmt(c.netto)}`) : 'scrivi la cifra';
   const leg=$('l0'); leg.style.display=(v&&!padOpen)?'':'none';
   leg.innerHTML=(c.manual?[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','tasse e INPS ('+String(S.profile.manPct).replace('.',',')+'%)',c.tasse,null]]:[['#FFD54A','tuoi',c.netto,null],['#FF4D4D','imposta',c.imposta,'imp'],['#B33A3A','INPS',c.inps,'inps']]).map(([col,n,val,w])=>`<div ${w?`onclick="why('${w}')"`:''}><span style="display:flex;align-items:center;gap:6px"><i style="background:${col}"></i>${n}</span><b>${fmt(val)}</b></div>`).join('');
   $('how0').innerHTML=(v&&!padOpen)?(isRev()?`<div class="revbox">Per avere <b>${fmt(v)}</b> in tasca chiedi <b>${fmt(L)}</b> al cliente.</div>`:'')+`<button class="howbtn" onclick="howCalc(${L})">Come l'ho calcolato →</button>`:'';
