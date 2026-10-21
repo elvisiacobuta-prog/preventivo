@@ -429,7 +429,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.8',
+  ver: '3.8.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1117,22 +1117,22 @@ function needProfile(after){
     <input id="n-cont" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <label class="l">Il tuo logo sul preventivo</label>
     <div class="logobox" id="logobox">${logoBoxHTML()}</div>
-    <input id="logo-file" type="file" accept="image/*" style="display:none" onchange="pickLogo(this)">
+    <input id="logo-file" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" onchange="pickLogo(this)">
     <label class="l">Non hai un logo? Scrivi il nome dell'attività</label>
     <input id="n-mk" value="${esc(pr.marchio||'')}" maxlength="34" placeholder="Es. Studio Rossi · Grafica" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
     <button class="btn" onclick="saveProfileQuick()">Continua</button>`);
   window._afterProfile=after;
 }
-function logoBoxHTML(){ const l=S.profile.logo; return l? `<img src="${l.d}" alt="Logo"><div><b>Logo caricato</b><small>Esce in alto a destra su ogni preventivo.</small><span class="link" onclick="$('logo-file').click()">Cambia</span> · <span class="link" onclick="delLogo()">Togli</span></div>` : `<button type="button" class="logoadd" onclick="$('logo-file').click()"><b>+ Carica il logo</b><small>JPG o PNG dalla galleria o dai file. Esce su ogni preventivo.</small></button>`; }
-function pickLogo(inp){ const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return; if(!/^image\//.test(f.type)){ toast('Scegli un\'immagine (JPG o PNG)'); return; }
+function logoBoxHTML(){ const l=S.profile.logo; return l? `<img src="${l.d}" alt="Logo"><div><b>Logo caricato</b><small>Esce in alto a destra su ogni preventivo.</small><label class="link" for="logo-file" style="cursor:pointer">Cambia</label> · <span class="link" onclick="delLogo()">Togli</span></div>` : `<label class="logoadd" for="logo-file" style="display:block;cursor:pointer"><b>+ Carica il logo</b><small>JPG o PNG dalla galleria o dai file. Esce su ogni preventivo.</small></label>`; }
+function pickLogo(inp){ const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return; if(f.type&&!/^image\//.test(f.type)){ toast('Scegli un\'immagine (JPG o PNG)'); return; }
   const rd=new FileReader(); rd.onload=()=>{ const im=new Image(); im.onload=()=>{ const M=600, k=Math.min(1,M/Math.max(im.width,im.height)); const w=Math.max(1,Math.round(im.width*k)), h=Math.max(1,Math.round(im.height*k));
     const cv=document.createElement('canvas'); cv.width=w; cv.height=h; const cx=cv.getContext('2d'); const png=/png|gif|webp|svg/.test(f.type);
     if(!png){ cx.fillStyle='#fff'; cx.fillRect(0,0,w,h); } cx.drawImage(im,0,0,w,h);
     const d=png? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg',0.88);
     S.profile.logo={d, f:png?'PNG':'JPEG', w, h}; try{ save(); }catch(e){} if(!localStorage.getItem(KEY)||localStorage.getItem(KEY).indexOf(d.slice(30,80))<0){ S.profile.logo={d:cv.toDataURL('image/jpeg',0.7),f:'JPEG',w,h}; save(); }
     if($('logobox')) $('logobox').innerHTML=logoBoxHTML(); toast('Logo salvato: uscirà su ogni preventivo'); };
-    im.onerror=()=>toast('Non riesco ad aprire questa immagine. Prova con un JPG.'); im.src=rd.result; }; rd.readAsDataURL(f); }
+    im.onerror=()=>{ toast('Non riesco ad aprire questa immagine. Prova con un JPG o PNG.'); if($('logobox')) $('logobox').insertAdjacentHTML('beforeend','<small style="color:var(--red);display:block">Formato non supportato: salva il logo come JPG o PNG e riprova.</small>'); }; im.src=rd.result; }; rd.readAsDataURL(f); }
 function delLogo(){ delete S.profile.logo; save(); if($('logobox')) $('logobox').innerHTML=logoBoxHTML(); }
 function saveProfileQuick(){ S.profile.nome=$('n-nome').value.trim(); S.profile.piva=$('n-piva').value.trim(); S.profile.contatti=$('n-cont').value.trim(); S.profile.marchio=($('n-mk').value||'').trim(); save(); closeSheet(); renderHello(); const f=window._afterProfile; window._afterProfile=null; if(f) setTimeout(f,50); }
 function settingsHTML(first){
@@ -1165,7 +1165,7 @@ function settingsHTML(first){
     <input id="s-cont" value="${esc(pr.contatti)}" placeholder="Mail · telefono · città" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <label class="l">Il tuo logo sul preventivo</label>
     <div class="logobox" id="logobox">${logoBoxHTML()}</div>
-    <input id="logo-file" type="file" accept="image/*" style="display:none" onchange="pickLogo(this)">
+    <input id="logo-file" type="file" accept="image/*" style="position:absolute;width:1px;height:1px;opacity:0;pointer-events:none" onchange="pickLogo(this)">
     <label class="l">Non hai un logo? Scrivi il nome dell'attività</label>
     <input id="s-mk" value="${esc(pr.marchio||'')}" maxlength="34" placeholder="Es. Studio Rossi · Grafica" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
