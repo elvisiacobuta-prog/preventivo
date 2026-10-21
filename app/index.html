@@ -160,6 +160,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .codesel{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:-4px 0 10px;font-size:12px;color:var(--mut)}.codesel:empty{display:none}.codesel span{flex-basis:100%}.codesel button{flex:1;min-width:0;padding:8px 6px;border-radius:12px;background:var(--sur2);border:1.5px solid transparent;font-weight:700;font-size:13px;color:var(--txt)}.codesel button.on{border-color:var(--acc)}.codesel small{display:block;font-weight:500;font-size:10.5px;color:var(--mut);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cassaw{background:var(--sur2);border-radius:12px;padding:4px 12px 12px;margin-top:8px}.row3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-top:8px}.row3 label{font-size:11.5px;color:var(--mut);display:grid;gap:4px}.row3 input{width:100%;min-width:0;background:var(--sur);border:0;border-radius:10px;padding:10px;outline:none;font-size:15px;color:var(--txt)}
 .movebox{background:var(--sur2);border-radius:12px;padding:12px 14px;margin:14px 0 8px;display:grid;gap:6px}.movebox small{color:var(--mut);font-size:12.5px;line-height:1.45}.movebox .btn{margin:4px 0 0}
+.xbtn{margin-left:8px;width:26px;height:26px;border-radius:50%;background:var(--sur2);color:var(--mut);font-size:12px}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .atchip{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -360,6 +361,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="chart" id="chart"></div>
       <div class="leg" id="leg"></div>
     </div>
+    <div class="card" id="cmargin"></div>
     <div class="card list" id="clist"></div>
     <div class="card">
       <div class="inl"><input id="newclient" placeholder="Nuovo cliente" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><button class="btn small" onclick="addClient()" style="flex:none">Aggiungi</button></div>
@@ -433,7 +435,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.0',
+  ver: '4.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -938,6 +940,28 @@ function addClientIncasso(id,quick){ const raw=String($('cinc-v').value||'').tri
   if(!(v>0)){ $('cinc-msg').innerHTML='<span style="color:var(--red)">Scrivi l\'importo in numeri, per esempio 13500 o 13.500</span>'; $('cinc-v').focus(); return; } const d=$('cinc-d').value||today();
   S.seq++; S.prev.unshift({ id:Date.now(), num:`${d.slice(0,4)}-${String(S.seq).padStart(3,'0')}`, date:d, client:id, rows:[{d:'Incasso',q:1,p:v,t:v}], tot:v, status:'incassato', hist:{incassato:d} });
   save(); renderAll(); if(quick){ closeSheet(); toast('Incassato: '+fmt(v)); return; } openClient(id); toast('Incasso aggiunto: '+fmt(v)); setTimeout(()=>{ if($('cinc-msg')) $('cinc-msg').innerHTML='<b style="color:var(--acc)">✓ Aggiunto '+fmt(v)+'</b> · lo vedi anche in Anno'; },50); }
+
+/* ---------- COSTI DELL'ATTIVITÀ (per cliente, non deducibili nel forfettario) ---------- */
+function clIncY(id){ return S.prev.filter(p=>p.client===id&&p.status==='incassato'&&(p.hist.incassato||'').startsWith(PARAMS.anno)).reduce((a,p)=>a+p.tot,0); }
+function costVal(k,id){ return k.pct? clIncY(id)*k.pct/100 : (+k.v||0); }
+function clCosti(c){ return (c.costi||[]).reduce((a,k)=>a+costVal(k,c.id),0); }
+function yearRatio(annual){ const inc=S.prev.filter(p=>p.status==='incassato'&&(p.hist.incassato||'').startsWith(PARAMS.anno)); const tot=inc.reduce((a,p)=>a+p.tot,0); if(!tot) return 1-calc(1000,{noMan:1}).tasse/1000; const c=calc(tot,{annual:!!annual,imp:impOf(inc),contribPrec:annual?(S.profile.contribPrec||null):null}); return c.netto/tot; }
+function marginRows(inc,costi,annual){ const r=yearRatio(annual), net=inc*r; return `<div class="kv"><span>Incassato</span><span>${fmt(inc)}</span></div>
+  <div class="kv"><span>Imposte e contributi stimati</span><span>− ${fmt(inc-net)}</span></div>
+  <div class="kv tot"><span>Netto dopo imposte e contributi</span><span>${fmt(net)}</span></div>
+  <div class="kv"><span>Costi dell'attività</span><span>− ${fmt(costi)}</span></div>
+  <div class="kv tot"><span>Margine netto</span><span style="color:var(--acc)">${fmt(net-costi)}</span></div>`; }
+function renderMargin(){ const el=$('cmargin'); if(!el) return; const inc=S.clients.reduce((a,c)=>a+clIncY(c.id),0), costi=S.clients.reduce((a,c)=>a+clCosti(c),0);
+  el.innerHTML=`<div class="k2">Margine del ${PARAMS.anno}</div>${marginRows(inc,costi,true)}${isIVS()?`<div class="hint" style="margin-top:4px">Comprende la quota fissa INPS dell'anno (${fmt(calc(0,{annual:true}).fisso)}), che si paga anche se incassi poco.</div>`:''}<div class="hint" style="margin-top:6px">I costi dell'attività (agenzia, collaboratori, noleggi, attrezzatura) <b>non si deducono nel forfettario</b>: le tasse restano le stesse. Qui servono solo a sapere quanto ti resta davvero. Si aggiungono dentro ogni cliente.</div>`; }
+function costForm(id){ return `<label class="l">Costi dell'attività per questo cliente</label>
+  <div class="row2"><input id="kd" placeholder="Es. commissione agenzia, collaboratore" style="flex:2;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="kv" inputmode="decimal" placeholder="€ o %" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none"></div>
+  <div class="hint" style="margin:6px 2px 0">Scrivi un importo (es. 500) o una percentuale dell'incassato (es. 15%): utile per la commissione dell'agenzia. Non abbassano le tasse.</div>
+  <button class="btn ghost" style="margin-top:8px" onclick="addCost(${id})">+ Aggiungi costo</button>`; }
+function addCost(id){ const c=S.clients.find(x=>x.id===id), d=($('kd').value||'').trim()||'Costo', raw=String($('kv').value||'').trim(); if(!raw){ toast('Scrivi l\'importo o la percentuale'); return; }
+  const k={id:Date.now(),d,date:today()}; if(/%$/.test(raw)){ k.pct=numIt(raw.replace('%','')); if(!(k.pct>0&&k.pct<100)){ toast('Percentuale non valida'); return; } } else { k.v=numIt(raw); if(!(k.v>0)){ toast('Importo non valido'); return; } }
+  c.costi=c.costi||[]; c.costi.push(k); save(); renderAll(); openClient(id); toast('Costo aggiunto'); }
+function delCost(id,kid){ const c=S.clients.find(x=>x.id===id); c.costi=(c.costi||[]).filter(k=>k.id!==kid); save(); renderAll(); openClient(id); }
+function costList(c){ const L=c.costi||[]; if(!L.length) return ''; return '<h2>Costi dell\'attività</h2>'+L.map(k=>`<div class="kv"><span>${esc(k.d)}${k.pct?` <small style="color:var(--mut)">${String(k.pct).replace('.',',')}% dell'incassato</small>`:''}</span><span>− ${fmt(costVal(k,c.id))} <button class="xbtn" onclick="delCost(${c.id},${k.id})" aria-label="Togli">✕</button></span></div>`).join('')+`<div style="margin-top:8px">${marginRows(clIncY(c.id),clCosti(c))}</div>`; }
 function openClient(id){
   const c=S.clients.find(x=>x.id===id); const P=S.prev.filter(p=>p.client===id);
   sheet(`
@@ -955,6 +979,8 @@ function openClient(id){
     <label class="l">Nome</label>
     <input id="cname" value="${esc(c.name)}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
     <button class="btn" onclick="saveClient(${id})">Salva</button>
+    ${costList(c)}
+    ${costForm(id)}
     <h2>Preventivi (${P.length})</h2>
     ${P.map(p=>`<div class="kv" onclick="openPrev(${p.id})"><span>${p.num} · ${fdate(p.date)} <span class="st ${p.status}">${p.status}</span></span><span>${fmt(p.tot)}</span></div>`).join('')||'<div class="hint">Nessuno.</div>'}
     <button class="btn ghost danger" onclick="delClient(${id})" style="margin-top:16px">Elimina cliente</button>
@@ -1340,7 +1366,7 @@ function closeSheet(){ $('sheet').classList.remove('on'); }
 $('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
 function openSheet(k){ if(k==='settings') sheet(settingsHTML(false)); }
 let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'),1400); }
-function renderAll(){ renderList(); renderClients(); renderYear(); }
+function renderAll(){ renderList(); renderClients(); renderMargin(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
