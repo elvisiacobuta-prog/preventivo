@@ -404,7 +404,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.6',
+  ver: '2.6.1',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -439,6 +439,7 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ r
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 /* ---------- CALCOLO ---------- */
+function atecoLive(v){ if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
 function coefAteco(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
   const inR=(a,b)=>d>=a&&d<=b;
@@ -990,7 +991,7 @@ function askAct(first,after){
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').textContent=atecoHint(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">In che anno hai aperto la partita IVA?</label>
     <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
@@ -1023,7 +1024,7 @@ function settingsHTML(first){
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
     <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').textContent=atecoHint(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').textContent=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
     <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
