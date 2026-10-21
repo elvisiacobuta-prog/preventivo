@@ -396,7 +396,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '2.3',
+  ver: '2.4',
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
   anno: 2026,
   soglia: 85000, sogliaOut: 100000,
@@ -407,12 +407,16 @@ const PARAMS = {
   // "cosa fai?" → coefficiente di redditività (ATECO di riferimento, indicativi — verificare)
   attivita: [
     {id:'prof78',  n:'Libero professionista, consulenza, creativi', c:0.78, ateco:'varie'},
-    {id:'video',   n:'Video, foto, contenuti, grafica', c:0.78, ateco:'74.20 / 74.10 / 59.11'},
+    {id:'foto',    n:'Foto, grafica, design', c:0.78, ateco:'74.20 / 74.10'},
+    {id:'video',   n:'Video, cinema, produzione audio', c:0.67, ateco:'59.11 / 59.20'},
     {id:'consul',  n:'Consulenza, marketing, comunicazione', c:0.78, ateco:'70.22 / 73.11'},
     {id:'it',      n:'Sviluppo software, siti, IT', c:0.67, ateco:'62.01'},
         {id:'artig',   n:'Artigiano, servizi alla persona', c:0.67, ateco:'varie'},
     {id:'comm',    n:'Commercio', c:0.40, ateco:'47'},
     {id:'ecomm',   n:'Commercio online', c:0.40, ateco:'47.91'},
+    {id:'ambul',   n:'Commercio ambulante (non alimentare)', c:0.54, ateco:'47.82–47.89'},
+    {id:'agente',  n:'Agente o rappresentante di commercio', c:0.62, ateco:'46.1'},
+    {id:'alim',    n:'Produzione di alimenti e bevande', c:0.40, ateco:'10–11'},
     {id:'ediliz',  n:'Edilizia, immobiliare', c:0.86, ateco:'41–43'},
     {id:'ristor',  n:'Ristorazione, alloggio', c:0.40, ateco:'55–56'},
     {id:'cassa',   n:'Avvocato, architetto, ingegnere, medico… (con cassa)', c:0.78, ateco:'varie', cassa:true},
@@ -427,7 +431,17 @@ function load(){ try{ return JSON.parse(localStorage.getItem(KEY)); }catch(e){ r
 function save(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
 
 /* ---------- CALCOLO ---------- */
-function coef(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
+function coefAteco(code){ const m=String(code||'').replace(',','.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
+  const inR=(a,b)=>d>=a&&d<=b;
+  if(d===46) return sub==null?null:(sub>=10&&sub<=19?0.62:0.40);
+  if(d===47){ if(sub==null) return 0.40; if(sub===81) return 0.40; if(sub>=82&&sub<=89) return 0.54; return 0.40; }
+  if(d===10||d===11||d===45||d===55||d===56) return 0.40;
+  if(inR(41,43)||d===68) return 0.86;
+  if(inR(64,66)||inR(69,75)||inR(85,88)) return 0.78;
+  if(inR(1,3)||inR(5,9)||inR(12,33)||inR(35,39)||inR(49,53)||inR(58,63)||inR(77,82)||d===84||inR(90,99)) return 0.67;
+  return null; }
+function coef(){ const ca=coefAteco(S.profile.ateco); if(ca!=null) return ca; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.c:0.67; }
+function atecoHint(v){ const c=coefAteco(v); return !String(v||'').trim()?'Facoltativo: se lo sai, il calcolo usa il coefficiente esatto del tuo codice.':(c==null?'Codice non riconosciuto: scrivilo come 59.11 (per il 46 e il 47 servono anche le cifre dopo il punto).':'Coefficiente '+Math.round(c*100)+'%: vale questo, al posto di quello di "Cosa fai?".'); }
 /* anno di attività: 1 = anno di apertura della P.IVA */
 function annoAtt(){ const a=+S.profile.apertura; if(!a||a<1990||a>PARAMS.anno) return null; return PARAMS.anno-a+1; }
 function is5(){ const n=annoAtt(); return S.profile.start===true && (n==null || n<=5); }
@@ -492,7 +506,7 @@ function donut(svgId, legId, c){
 function actWarn(){ const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a&&a.cassa? ' · <span style="color:var(--red)">INPS indicativo: hai una cassa</span>':''; }
 function actName(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName.toLowerCase(); const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n.split(',')[0].toLowerCase():''; }
 function actFull(){ if(S.profile.act==='altro' && S.profile.actName) return S.profile.actName; const a=PARAMS.attivita.find(x=>x.id===S.profile.act); return a?a.n:''; }
-function renderActLine(){ $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
+function renderActLine(){ $('actline').innerHTML = S.setup ? `Calcolo per <b style="color:var(--txt)">${esc(actFull())}</b> (${coefAteco(S.profile.ateco)!=null?'ATECO '+esc(S.profile.ateco)+' · ':''}coefficiente ${Math.round(coef()*100)}%) · imposta ${is5()?'5%':(S.profile.start===false||annoAtt()>5?'15%':'15% <span style="color:var(--mut)">(5% da verificare)</span>')}${actWarn()} · <span class="link" onclick="askAct(false)" style="font-size:12px">cambia</span> · <span class="why" onclick="why('coef')">?</span>` : `stima generica · <span class="link" onclick="askAct(true)" style="font-size:12px">dimmi cosa fai</span> per un conto più preciso`; }
 function setRate(five){ if(five && annoAtt()>5){ toast(`La tua P.IVA è al ${ordinale(annoAtt())} anno: il 5% vale solo per i primi 5. Resti al 15%.`); five=false; } S.profile.start=five; save(); renderRate(); ring0(parseFloat($('q0').value)||0); renderCalc(); renderAll(); renderActLine(); }
 function renderHello(){}
 function renderRate(){ $('rate5').classList.toggle('on',is5()); $('rate15').classList.toggle('on',!is5()); }
@@ -934,6 +948,9 @@ function askAct(first,after){
     <select id="a-act" onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
+    <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
+    <input id="a-ateco" inputmode="decimal" value="${esc(pr.ateco||'')}" placeholder="es. 59.11" oninput="$('a-ahint').textContent=atecoHint(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">In che anno hai aperto la partita IVA?</label>
     <input id="a-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-1}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:8px 2px 0">Serve per sapere in che anno di attività sei: cambiano acconti e, dopo il 5°, l'aliquota.</div>
@@ -941,10 +958,10 @@ function askAct(first,after){
     <div class="seg"><button id="a-y" class="${pr.start===true?'on':''}" onclick="aStart(true)">Sì · 5%</button><button id="a-n" class="${pr.start===false?'on':''}" onclick="aStart(false)">No · 15%</button><button id="a-u" class="${pr.start==null?'on':''}" onclick="aStart(null)">Non lo so</button></div>
     <div class="hint" id="a-shint" style="margin:8px 2px 0">${pr.start==null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':''}</div>
     <button class="btn" onclick="saveAct()">${first?'Vai':'Salva'}</button>
-    <div class="stima">Se scegli "Altro" usiamo il coefficiente più comune (78%): il tuo lo trovi sul codice ATECO, chiedilo al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
+    <div class="stima">Se scegli "Altro" e non metti il codice ATECO usiamo il 78%. Il codice lo trovi nel certificato di attribuzione della partita IVA o lo chiedi al commercialista. INPS: gestione separata; artigiani e commercianti lo cambiano in Impostazioni.</div>`);
 }
 let aTmp='unset'; function aStart(v){ aTmp=v; $('a-y').classList.toggle('on',v===true); $('a-n').classList.toggle('on',v===false); $('a-u').classList.toggle('on',v===null); $('a-shint').textContent = v===null?'Nel dubbio calcoliamo il 15%: se poi è il 5%, ti avanzano soldi. Chiedilo al commercialista.':(v===true?'Il 5% vale solo se non continui un lavoro che facevi già (anche da dipendente) negli ultimi 3 anni.':''); }
-function saveAct(){ S.profile.act=$('a-act').value; S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
+function saveAct(){ S.profile.act=$('a-act').value; S.profile.ateco=($('a-ateco').value||'').trim(); S.profile.actName=($('a-altro').value||'').trim(); S.profile.apertura=+$('a-aper').value||null; if(aTmp!=='unset') S.profile.start=aTmp; aTmp='unset'; S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); ring0(parseFloat($('q0').value)||0); const f=_after; _after=null; if(f) setTimeout(f,50); }
 function needProfile(after){
   const pr=S.profile; if(pr.nome) { after(); return; }
   sheet(`
@@ -964,6 +981,9 @@ function settingsHTML(first){
     <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
     <select id="s-act">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
+    <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
+    <input id="s-ateco" inputmode="decimal" value="${esc(pr.ateco||'')}" placeholder="es. 59.11" oninput="$('s-ahint').textContent=atecoHint(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">INPS <span class="why" onclick="why('inps')">?</span></label>
     <select id="s-inps"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata (la maggior parte dei freelance)</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti</option></select>
     <label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label>
@@ -984,7 +1004,7 @@ function settingsHTML(first){
 let tmpStart='unset';
 function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
 function saveSettings(){
-  S.profile.act=$('s-act').value; S.profile.inps=$('s-inps').value; S.profile.rid35=!!($('s-rid')&&$('s-rid').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
+  S.profile.act=$('s-act').value; S.profile.ateco=($('s-ateco').value||'').trim(); S.profile.inps=$('s-inps').value; S.profile.rid35=!!($('s-rid')&&$('s-rid').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
   S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0);
@@ -997,7 +1017,7 @@ const WHY={
   via:['Da mettere via','INPS più imposta, arrotondati per eccesso del 5%. È la cifra da spostare sul conto tasse appena incassi. Meglio avanzare che mancare.'],
   inps:['INPS','I contributi per la pensione. In gestione separata sono circa il 26% del reddito imponibile e si pagano con le stesse scadenze delle tasse (giugno e novembre). Artigiani e commercianti pagano una quota fissa minima (nel 2026 circa 4.520 € artigiani, 4.610 € commercianti, in 4 rate) più il 24% solo sul reddito oltre 18.808 €: la trovi nella scheda Anno. Sul singolo preventivo vedi la quota in percentuale. Se hai chiesto la riduzione del 35% per i forfettari, attivala in Impostazioni.'],
   imp:['Imposta sostitutiva','La "tassa" del forfettario: 5% nei primi cinque anni, poi 15%. Si calcola sul reddito imponibile meno i contributi INPS versati l\'anno prima. Sostituisce IRPEF e addizionali.'],
-  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per video e consulenza il 78%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
+  coef:['Coefficiente di redditività','Nel forfettario lo Stato decide quanto del tuo incasso è "reddito" in base all\'attività: per consulenza e grafica il 78%, per video e software il 67%, per il commercio il 40%. Su quella parte paghi INPS e imposta. Il codice ATECO sulla tua partita IVA dice quale vale per te.'],
   start:['5% o 15%?','Per i primi cinque anni l\'imposta è al 5% invece del 15%, ma solo se: 1) negli ultimi tre anni non hai avuto un\'altra partita IVA o impresa; 2) non è la continuazione di un lavoro che facevi da dipendente (stesso cliente, stesse mansioni); 3) non prosegui l\'attività di qualcun altro. Se non sei sicuro, calcola il 15%: ti avanzano soldi invece di mancare. La risposta definitiva la dà il commercialista.'],
   stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
   attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
