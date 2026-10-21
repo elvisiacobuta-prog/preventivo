@@ -145,6 +145,8 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .logobox{display:flex;gap:12px;align-items:center;background:var(--sur2);border-radius:12px;padding:10px}.logobox img{width:72px;height:56px;object-fit:contain;background:#fff;border-radius:8px;padding:4px}.logobox small{display:block;color:var(--mut);font-size:12.5px;margin:2px 0 4px}
 .logoadd{width:100%;text-align:left;padding:6px 4px}.logoadd b{color:var(--acc)}.logoadd small{display:block;color:var(--mut);font-size:12.5px;margin-top:3px}
 .paylist{list-style:none;padding:0;margin:14px 0 18px}.paylist li{padding:10px 0 10px 26px;border-bottom:1px solid var(--sur2);position:relative;font-size:14.5px;line-height:1.4;color:var(--mut)}.paylist li b{color:var(--txt)}.paylist li::before{content:'';position:absolute;left:4px;top:15px;width:10px;height:10px;border-radius:50%;background:var(--acc)}
+.impbtn{display:grid;grid-template-columns:1fr auto;gap:2px 10px;width:100%;text-align:left;background:var(--sur2);border:1.5px dashed #FFD54A88;border-radius:14px;padding:12px 14px;margin:0 0 14px;color:var(--txt)}.impbtn b{font-size:15px}.impbtn small{grid-column:1;color:var(--mut);font-size:12.5px}.impbtn span{grid-row:1/3;grid-column:2;align-self:center;font-size:22px;color:var(--acc)}
+.impprev{margin:14px 0}.impsum{font-size:14px;margin-bottom:8px}.impprev .kv small{color:var(--mut);font-size:11px}
 .howbtn{display:block;width:100%;margin:-6px 0 10px;padding:8px;font-size:13px;font-weight:700;color:var(--acc);text-align:center}
 .hstep{display:grid;grid-template-columns:28px 1fr auto;gap:10px;align-items:start;padding:12px 0;border-bottom:1px solid var(--sur2)}.hstep .hn{width:26px;height:26px;border-radius:50%;background:var(--sur2);display:grid;place-items:center;font-weight:800;font-size:13px}.hstep small{display:block;color:var(--mut);font-size:13px;line-height:1.4;margin-top:2px}.hstep .hv{white-space:nowrap;font-size:15px}.hstep .hv.y{color:var(--acc)}
 .hpct{margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--sur2);font-size:14px;line-height:1.45}
@@ -355,6 +357,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="q" style="margin-bottom:6px">Quest'anno</div>
     <div class="qsub" id="ylabel"></div>
     <p class="disc0" style="text-align:left;margin:0 0 12px">Stime: importi e scadenze vanno confermati dal commercialista.</p>
+    <button class="impbtn" onclick="need(importStart)"><b>Hai già i tuoi incassi in Excel?</b><small>Caricali qui (Excel o CSV): l'anno si aggiorna da solo.</small><span>↥</span></button>
 
     <div class="card">
       <div class="kpi"><div class="k">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
@@ -414,7 +417,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '3.1',
+  ver: '3.2',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1122,6 +1125,63 @@ const WHY={
 WHY.presunto=['Incassato e previsto',"Incassato: i preventivi segnati come incassati quest'anno. Previsto a fine anno: per ogni cliente, il più alto tra l'incasso atteso che scrivi tu (tocca il cliente) e quello che risulta dai preventivi accettati, fatturati e incassati. Serve a vedere prima tasse, netto e soglia dell'anno."];
 function why(k){ const w=WHY[k]; sheet(`<h3>${w[0]}</h3><p style="line-height:1.6;color:var(--txt)">${w[1]}</p><button class="btn ghost" onclick="closeSheet()">Ok</button>`); }
 
+
+/* ---------- IMPORTA INCASSI DA EXCEL / CSV (tutto sul telefono) ---------- */
+let IMP=null;
+function importStart(){
+  sheet(`<h3>Importa i tuoi incassi</h3><div class="sub">Carica un file Excel (.xlsx) o CSV con una riga per incasso: data, cliente, importo. Le colonne le scegli tu al passo dopo.</div>
+   <button class="btn" onclick="$('imp-file').click()">Scegli il file</button>
+   <input id="imp-file" type="file" accept=".csv,.xlsx,.xls,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,text/plain" style="display:none" onchange="importRead(this)">
+   <button class="btn ghost" style="margin-top:8px" onclick="importTemplate()">Scarica un modello già pronto</button>
+   <div class="hint" style="margin-top:12px">🔒 Il file viene letto solo sul tuo telefono: non viene inviato a noi né a nessun altro.</div>
+   ${S.prev.some(p=>p.imp)?`<button class="linkbtn" style="margin-top:10px" onclick="importUndo()">Togli gli incassi importati (${S.prev.filter(p=>p.imp).length})</button>`:''}`); }
+function importTemplate(){ dl('PreventIVO-modello-incassi.csv','﻿Data;Cliente;Descrizione;Importo;Incassato\n15/01/2026;Rossi Srl;Logo;1200;si\n03/02/2026;Bar Centrale;Post social;450;si\n20/11/2026;Studio Verdi;Video;800;no\n','text/csv'); }
+function loadXLSX(){ return window.XLSX? Promise.resolve() : new Promise((ok,ko)=>{ const sc=document.createElement('script'); sc.src='https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js'; sc.onload=ok; sc.onerror=ko; document.head.appendChild(sc); }); }
+function parseCSV(t){ t=t.replace(/^﻿/,''); const first=t.split(/\r?\n/)[0]||''; const d=[';','\t',','].map(c=>[c,first.split(c).length]).sort((a,b)=>b[1]-a[1])[0][0];
+  const rows=[]; let row=[], f='', q=false; for(let i=0;i<t.length;i++){ const c=t[i]; if(q){ if(c==='"'){ if(t[i+1]==='"'){ f+='"'; i++; } else q=false; } else f+=c; } else if(c==='"') q=true; else if(c===d){ row.push(f); f=''; } else if(c==='\n'||c==='\r'){ if(c==='\r'&&t[i+1]==='\n') i++; row.push(f); rows.push(row); row=[]; f=''; } else f+=c; }
+  if(f!==''||row.length){ row.push(f); rows.push(row); } return rows.filter(r=>r.some(x=>String(x).trim()!=='')); }
+async function importRead(inp){ const f=inp.files&&inp.files[0]; inp.value=''; if(!f) return;
+  try{ let rows;
+    if(/\.(xlsx|xls)$/i.test(f.name)){ try{ await loadXLSX(); }catch(e){ toast('Serve internet per leggere i file Excel. Oppure salvalo come CSV.'); return; }
+      const wb=XLSX.read(await f.arrayBuffer(),{type:'array',cellDates:true}); const ws=wb.Sheets[wb.SheetNames[0]]; rows=XLSX.utils.sheet_to_json(ws,{header:1,raw:true,defval:''}).filter(r=>r.some(x=>String(x).trim()!==''));
+    } else rows=parseCSV(await f.text());
+    if(!rows||rows.length<1){ toast('Il file è vuoto'); return; }
+    const head=rows[0].map(x=>String(x).trim()), hasHead=head.filter(h=>h&&isNaN(impNum(h))&&!impDate(h)).length>=2;
+    const body=hasHead?rows.slice(1):rows, n=Math.max(...rows.slice(0,30).map(r=>r.length));
+    const names=Array.from({length:n},(_,i)=>hasHead&&head[i]?head[i]:'Colonna '+(i+1));
+    const score=(i,fn)=>body.slice(0,40).filter(r=>fn(r[i])).length;
+    const used=[]; const guess=(re,fn)=>{ let i=names.findIndex((h,k)=>re.test(h)&&!used.includes(k)); if(i<0&&fn){ let best=-1,bs=0; for(let k=0;k<n;k++){ const sc=score(k,fn); if(sc>bs){bs=sc;best=k;} } i=best; } if(i>=0) used.push(i); return i; };
+    const cData=guess(/data|date|giorno|incass.*il|pagat.*il/i,x=>!!impDate(x)), cImp=guess(/import|totale|euro|€|ammont|cifra|compens|netto|lordo/i,x=>!isNaN(impNum(x))&&impNum(x)>0&&!impDate(x));
+    const cCli=guess(/client|nome|ragione|committ|azienda/i), cDes=guess(/descr|oggetto|causale|lavoro|servizio|voce|note/i), cPag=guess(/incass|pagat|saldat|stato/i);
+    IMP={rows:body,names,cData,cImp,cCli,cDes,cPag,file:f.name};
+    importMap();
+  }catch(e){ toast('Non riesco a leggere questo file. Prova a salvarlo come CSV.'); } }
+function impNum(x){ if(typeof x==='number') return x; let s=String(x==null?'':x).replace(/[€\s]/g,'').replace(/EUR/i,''); if(!s) return NaN; if(/,\d{1,2}$/.test(s)) s=s.replace(/\./g,'').replace(',','.'); else s=s.replace(/,/g,''); const v=parseFloat(s); return isNaN(v)?NaN:v; }
+function impDate(x){ if(x instanceof Date&&!isNaN(x)){ const z=new Date(x.getTime()+12*36e5); return `${z.getFullYear()}-${String(z.getMonth()+1).padStart(2,'0')}-${String(z.getDate()).padStart(2,'0')}`; } if(typeof x==='number'&&x>30000&&x<80000){ const d=new Date(Math.round((x-25569)*864e5)); return d.toISOString().slice(0,10); }
+  const s=String(x==null?'':x).trim(); let m=s.match(/^(\d{4})[-\/.](\d{1,2})[-\/.](\d{1,2})/); if(m) return `${m[1]}-${m[2].padStart(2,'0')}-${m[3].padStart(2,'0')}`;
+  m=s.match(/^(\d{1,2})[-\/.](\d{1,2})[-\/.](\d{2,4})$/); if(m){ const y=m[3].length===2?'20'+m[3]:m[3]; if(+m[2]>12) return null; return `${y}-${m[2].padStart(2,'0')}-${m[1].padStart(2,'0')}`; } return null; }
+function impSel(id,val,opt){ return `<select id="${id}" onchange="importPreview()">${opt?'<option value="-1">— nessuna —</option>':''}${IMP.names.map((h,i)=>`<option value="${i}" ${i===val?'selected':''}>${esc(h)}</option>`).join('')}</select>`; }
+function importMap(){ sheet(`<h3>Quali colonne?</h3><div class="sub">${esc(IMP.file)} · ${IMP.rows.length} righe. Controlla che ogni voce sia la colonna giusta.</div>
+   <label class="l">Data dell'incasso</label>${impSel('im-d',IMP.cData)}
+   <label class="l">Importo</label>${impSel('im-i',IMP.cImp)}
+   <label class="l">Cliente</label>${impSel('im-c',IMP.cCli,true)}
+   <label class="l">Descrizione (facoltativa)</label>${impSel('im-x',IMP.cDes,true)}
+   <label class="l">Incassato sì/no (facoltativa)</label>${impSel('im-p',IMP.cPag,true)}
+   <div class="hint" style="margin:6px 2px 0">Senza questa colonna: le date passate contano come incassate, quelle future come da incassare.</div>
+   <div id="im-prev" class="impprev"></div>
+   <button class="btn" id="im-go" onclick="importDo()">Importa</button>`); importPreview(); }
+function importRowsParsed(){ const g=id=>+$(id).value, d=g('im-d'), i=g('im-i'), c=g('im-c'), x=g('im-x'), pg=g('im-p'), td=today(); const ok=[], bad=[];
+  IMP.rows.forEach((r,k)=>{ const dt=impDate(r[d]), v=impNum(r[i]); if(!dt||!(v>0)){ bad.push(k); return; }
+    let paid; if(pg>=0){ const t=String(r[pg]).trim().toLowerCase(); paid=/^(s[iì]|x|ok|1|vero|true|pagat|incassat|saldat|yes)/.test(t); } else paid=dt<=td;
+    ok.push({dt,v,cli:c>=0?String(r[c]).trim():'',des:x>=0?String(r[x]).trim():'',paid}); }); return {ok,bad}; }
+function importPreview(){ const {ok,bad}=importRowsParsed(); const tot=ok.filter(o=>o.paid).reduce((a,o)=>a+o.v,0);
+  $('im-prev').innerHTML=`<div class="impsum"><b>${ok.length}</b> righe valide · incassato <b>${fmt(tot)}</b>${bad.length?` · <span style="color:var(--red)">${bad.length} saltate</span> (senza data o importo)`:''}</div>`+ok.slice(0,4).map(o=>`<div class="kv"><span>${o.dt.split('-').reverse().join('/')} · ${esc(o.cli||'—')}</span><span>${fmt(o.v)}${o.paid?'':' <small>da incassare</small>'}</span></div>`).join('');
+  $('im-go').disabled=!ok.length; $('im-go').textContent=ok.length?`Importa ${ok.length} righe`:'Nessuna riga valida'; }
+function importDo(){ const {ok}=importRowsParsed(); if(!ok.length) return; const batch=Date.now(); let id=batch;
+  ok.forEach(o=>{ let cl=null; const nm=o.cli||'Senza nome'; cl=S.clients.find(x=>x.name.toLowerCase()===nm.toLowerCase()); if(!cl){ cl={id:++id,name:nm,color:pickColor(),atteso:0}; S.clients.push(cl); }
+    S.seq++; const y=o.dt.slice(0,4); S.prev.push({ id:++id, num:`${y}-${String(S.seq).padStart(3,'0')}`, date:o.dt, client:cl.id, rows:[{d:o.des||'Incasso importato',q:1,p:o.v,t:o.v}], tot:o.v, status:o.paid?'incassato':'inviato', hist:o.paid?{incassato:o.dt}:{inviato:o.dt}, imp:batch }); });
+  S.prev.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); save(); closeSheet(); renderAll(); go('year'); toast(`Importate ${ok.length} righe`); }
+function importUndo(){ const n=S.prev.filter(p=>p.imp).length; S.prev=S.prev.filter(p=>!p.imp); const used=new Set(S.prev.map(p=>p.client)); S.clients=S.clients.filter(c=>used.has(c.id)||c.atteso>0||c.mail||c.wa); save(); closeSheet(); renderAll(); toast(`Tolti ${n} incassi importati`); }
 /* ---------- SBLOCCO (Google Play Billing via Digital Goods API) ---------- */
 const BILL='https://play.google.com/billing';
 (function(){ try{ if(document.referrer.indexOf('android-app://')===0 || /[?&]src=twa/.test(location.search)) localStorage.setItem('pv.store','play'); }catch(e){} })();
