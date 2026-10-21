@@ -441,7 +441,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.4',
+  ver: '4.4.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1065,7 +1065,10 @@ function renderYear(){
     <div class="kv"><span><i class="md" style="background:#FF9F43"></i>Fatturato, da incassare</span><span>${fmt(fatt)}</span></div>
     <div class="kv"><span><i class="md" style="background:#7d7d86"></i>Accettato, da fatturare</span><span>${fmt(acc)}</span></div>
     <div class="kv tot"><span>Totale previsto</span><span>${fmt(prevTot)}</span></div>
-    <div class="hint" style="margin-top:6px">Contano solo i preventivi accettati, fatturati e incassati. Quelli solo inviati no: non sono ancora sicuri.${prevTot>PARAMS.soglia?` <b style="color:var(--red)">Con tutto il previsto superi la soglia di 85.000 €.</b>`:''}</div>`;
+    <div class="hint" style="margin-top:6px">Contano solo i preventivi accettati, fatturati e incassati. Quelli solo inviati no: non sono ancora sicuri.${prevTot>PARAMS.soglia?` <b style="color:var(--red)">Con tutto il previsto superi la soglia di 85.000 €.</b>`:''}</div>
+    <div class="k2" style="margin-top:18px">Quanto ti resta davvero</div>
+    ${marginRows(real, S.clients.reduce((a,c)=>a+clCosti(c),0), true)}
+    <div class="hint" style="margin-top:6px">Calcolato sull'incassato. I costi dell'attività li aggiungi dentro ogni cliente (Clienti → tocca il cliente): <b>non abbassano le tasse</b>, servono a vedere il margine vero.</div>`;
   const yrList=mode? S.prev.filter(p=>(p.status==='incassato'&&p.hist.incassato&&p.hist.incassato.startsWith(PARAMS.anno))||(['fatturato','accettato'].includes(p.status)&&yr(p))) : inc;
   const reg=yrList.filter(p=>!p.enp), sp=yrList.filter(p=>p.enp), spL=sp.reduce((a,p)=>a+p.tot,0);
   const c=calc(tot-spL,{contribPrec:S.profile.contribPrec||null, annual:true, imp:impOf(reg), extra:{lordo:spL, imp:impOf(sp), contrib:spL*PARAMS.enpals}});
