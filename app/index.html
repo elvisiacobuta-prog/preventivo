@@ -749,7 +749,7 @@ function buildPDF(p){
   const yf=262; doc.setDrawColor(...INK); doc.line(L,yf,98,yf); doc.line(112,yf,R,yf); doc.setFontSize(8); doc.setTextColor(...MUT); doc.text('Per accettazione \u2014 firma e data',L,yf+5); doc.text(pr.nome||'',112,yf+5);
   // piede
   const yp=282; doc.setFontSize(7.5); doc.text(`Preventivo ${p.num} \u00B7 pagina 1 di 1`,L,yp);
-  if(!(pr.logo&&pr.logo.d)&&!pr.marchio){
+  {
   doc.setDrawColor(...Y); doc.setLineWidth(1.2); doc.circle(R-34,yp-1,1.8,'S'); doc.setLineWidth(0.2);
   doc.setTextColor(...MUT); doc.text('fatto con',R-30,yp); doc.setFont('helvetica','bold'); doc.setTextColor(...INK); doc.text('Prevent',R-17,yp); doc.setTextColor(...Y); doc.text('IVO',R-4,yp);
   }
@@ -984,7 +984,7 @@ function makePDF(id){
       <div><h4>Extra</h4><p>${esc(condOf(p).ext)}</p></div>
     </div>
     <div class="ps"><div>Per accettazione — firma e data</div><div>${esc(pr.nome||'')}</div></div>
-    <div class="pfoot"><span>Preventivo ${p.num} · pagina 1 di 1${(pr.logo&&pr.logo.d)||pr.marchio?'':` · <a href="https://${PARAMS.link}" style="color:#7a7a82">scarica l'app: ${PARAMS.link}</a>`}</span>${(pr.logo&&pr.logo.d)||pr.marchio?'':`<span>${SYM}fatto con <b>Prevent<i>IVO</i></b></span>`}</div>
+    <div class="pfoot"><span>Preventivo ${p.num} · pagina 1 di 1${(pr.logo&&pr.logo.d)||pr.marchio?'':` · <a href="https://${PARAMS.link}" style="color:#7a7a82">scarica l'app: ${PARAMS.link}</a>`}</span><span>${SYM}fatto con <b>Prevent<i>IVO</i></b></span></div>
   </div>`;
   closeSheet();
   setTimeout(()=>window.print(),150);
