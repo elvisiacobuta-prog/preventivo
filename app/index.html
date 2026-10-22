@@ -250,6 +250,56 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .legend .ico{width:22px;height:22px;flex:none;color:var(--mut)}
 .donutwrap.empty .donut{opacity:.9}
 
+
+.desk{display:none}
+@media (min-width:960px){
+  .desk{display:block}.mobonly{display:none!important}
+  #v-clients.on{max-width:1120px}
+  .kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:14px}
+  .kpi{background:var(--sur);border-radius:20px;padding:18px 20px}
+  .kpi .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+  .kpi .v{font-size:30px;font-weight:800;margin-top:6px;letter-spacing:-.02em}
+  .kpi .s{font-size:12.5px;color:var(--mut);margin-top:4px}
+  .dgrid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:14px;margin-bottom:14px}
+  .dcard{background:var(--sur);border-radius:20px;padding:20px 22px}
+  .dcard h4{margin:0 0 14px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
+  .pie{display:flex;gap:22px;align-items:center}
+  .pie svg{flex:0 0 190px}
+  .pleg{display:flex;flex-direction:column;gap:7px;font-size:13.5px;min-width:0;flex:1}
+  .pleg div{display:flex;align-items:center;gap:8px}.pleg b{width:10px;height:10px;border-radius:3px;flex:0 0 10px}
+  .pleg span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1}.pleg em{font-style:normal;color:var(--mut)}
+  .best{display:flex;flex-direction:column;gap:10px}
+  .brow{display:flex;gap:12px;align-items:center;background:var(--sur2);border-radius:14px;padding:12px 14px}
+  .brow .ic{font-size:22px;width:30px;text-align:center}
+  .brow .t{font-size:12px;color:var(--mut)}.brow .n{font-weight:700;font-size:15px}
+  .warn{background:rgba(255,80,80,.1);border:1px solid rgba(255,80,80,.35)}
+  .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;margin-bottom:14px}
+  .tile{background:var(--sur);border-radius:20px;padding:18px;cursor:pointer;position:relative;border:1px solid transparent;transition:border-color .15s,transform .15s}
+  .tile:hover{border-color:var(--line);transform:translateY(-2px)}
+  .tile .rk{position:absolute;top:14px;right:14px;font-size:11px;font-weight:700;color:var(--mut)}
+  .tile .rk.gold{color:#111;background:var(--acc);border-radius:6px;padding:2px 7px}
+  .tile .hd{display:flex;gap:12px;align-items:center;margin-bottom:12px;padding-right:34px}
+  .tile .nm{font-weight:700;font-size:15px;line-height:1.25}
+  .tile .big{font-size:24px;font-weight:800;letter-spacing:-.02em}
+  .tile .ln{font-size:12.5px;color:var(--mut);margin-top:3px}
+  .tile .bar{height:6px;border-radius:3px;background:var(--sur2);margin-top:12px;overflow:hidden;display:flex}
+  .tile .mkinc{margin-top:12px;width:100%}
+  .tl{position:relative;padding-left:190px}
+  .tlax{display:grid;grid-template-columns:repeat(12,1fr);font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--line);padding-bottom:6px;margin-bottom:6px}
+  .tlrow{position:relative;height:34px;border-bottom:1px dashed rgba(255,255,255,.05)}
+  .tlrow .lb{position:absolute;left:-190px;width:180px;top:8px;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+  .tlrow i{position:absolute;top:50%;transform:translate(-50%,-50%);border-radius:50%;display:block;cursor:pointer}
+  .tlrow i.f{background:transparent!important;border:2px solid}
+  .tlrow i.a{background:transparent!important;border:2px dashed}
+  .tlnow{position:absolute;top:0;bottom:0;width:2px;background:var(--red);opacity:.7}
+  .tlleg{display:flex;gap:18px;font-size:12px;color:var(--mut);margin-top:12px}
+  .tlleg i{display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--acc);margin-right:6px;vertical-align:-1px}
+  .steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:6px 0 16px}
+  .steps div{background:var(--sur2);border-radius:14px;padding:14px 16px;font-size:13.5px;line-height:1.5}
+  .steps b.n{display:inline-flex;width:24px;height:24px;border-radius:50%;background:var(--acc);color:#111;align-items:center;justify-content:center;font-size:13px;margin-bottom:8px}
+  .drop{border:2px dashed var(--line);border-radius:16px;padding:22px;text-align:center;color:var(--mut);font-size:14px;cursor:pointer}
+  .drop:hover,.drop.on{border-color:var(--acc);color:var(--txt)}
+}
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
   body{padding-bottom:0;padding-left:232px}
@@ -384,7 +434,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <section class="view" id="v-clients">
     <div class="q" style="margin-bottom:4px">I tuoi clienti</div>
     <div class="qsub" id="csub" style="margin:0 0 14px"></div>
-    <div class="card" onclick="why('presunto')">
+    <div class="desk" id="cdesk"></div>
+    <div class="card mobonly" onclick="why('presunto')">
       <div class="tiles2">
         <div><div class="k">incassato</div><div class="huge acc" id="cinc" style="font-size:32px">0 €</div></div>
         <div><div class="k">previsto a fine anno</div><div class="huge" id="presunto" style="font-size:32px">0 €</div></div>
@@ -394,10 +445,11 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="leg" id="leg"></div>
     </div>
     <div class="card" id="cmargin"></div>
-    <div class="card list" id="clist"></div>
+    <div class="card list mobonly" id="clist"></div>
     <div class="card">
       <div class="inl"><input id="newclient" placeholder="Nuovo cliente" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><button class="btn small" onclick="addClient()" style="flex:none">Aggiungi</button></div>
     </div>
+    <div class="desk" id="cphone"></div>
   </section>
 
   <!-- VIEW: ANNO -->
@@ -477,7 +529,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.9.0',
+  ver: '4.10.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1010,7 +1062,60 @@ function renderClients(){
   $('clist').innerHTML = S.clients.length? S.clients.map(c=>{ const incas=S.prev.filter(p=>p.client===c.id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return `
     <div class="cl" onclick="openClient(${c.id})"><span class="dot" style="background:${c.color}"></span><div class="nm">${esc(c.name)}<div class="mt"><span style="color:var(--acc)">incassato ${fmt(incas)}</span>${att?` · <span class="danger">da incassare ${fmt(att)}</span>`:''} · previsto ${fmt(clPrev(c))}</div></div>${clPrev(c)-incas>0.5?`<button class="mkinc" onclick="event.stopPropagation();markInc(${c.id})">✓ Incassato</button>`:'<span style="color:var(--mut)">›</span>'}</div>`;}).join('') : `<div class="empty">Nessun cliente. Aggiungilo qui o scrivilo in un preventivo.</div>`;
   $('clients').innerHTML=S.clients.map(c=>`<option value="${esc(c.name)}">`).join('');
+  renderClientsDesk();
 }
+/* ---------- CLIENTI · DESKTOP ---------- */
+function dDonut(parts,size,th,center){ const r=(size-th)/2, C=2*Math.PI*r, tot=parts.reduce((a,x)=>a+x.v,0)||1; let off=0;
+  const segs=parts.filter(x=>x.v>0).map(x=>{ const l=x.v/tot*C, el=`<circle r="${r}" cx="${size/2}" cy="${size/2}" fill="none" stroke="${x.c}" stroke-width="${th}" stroke-dasharray="${Math.max(l-1.5,0.1)} ${C}" stroke-dashoffset="${-off}" transform="rotate(-90 ${size/2} ${size/2})"><title>${esc(x.t||'')}</title></circle>`; off+=l; return el; }).join('');
+  return `<svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}"><circle r="${r}" cx="${size/2}" cy="${size/2}" fill="none" stroke="var(--sur2)" stroke-width="${th}"/>${segs}${center||''}</svg>`; }
+function clStats(){ return S.clients.map(c=>{ const L=S.prev.filter(p=>p.client===c.id&&p.status!=='perso'&&p.status!=='inviato');
+  const inc=L.filter(p=>p.status==='incassato').reduce((a,p)=>a+p.tot,0), da=L.filter(p=>['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0);
+  const pd=L.filter(p=>p.status==='incassato'&&p.hist&&p.hist.fatturato&&p.hist.incassato).map(p=>(new Date(p.hist.incassato)-new Date(p.hist.fatturato))/864e5).filter(x=>x>=0);
+  const gg=pd.length?Math.round(pd.reduce((a,x)=>a+x,0)/pd.length):null;
+  return {c,inc,da,tot:Math.max(+c.atteso||0,inc+da),n:L.length,gg,costi:(typeof clCosti==='function'?clCosti(c):0)}; }); }
+function renderClientsDesk(){ const el=$('cdesk'); if(!el) return; const st=clStats(), act=st.filter(x=>x.tot>0).sort((a,b)=>b.tot-a.tot);
+  const inc=st.reduce((a,x)=>a+x.inc,0), da=st.reduce((a,x)=>a+x.da,0), prev=st.reduce((a,x)=>a+x.tot,0), cp=calc(prev);
+  const kpis=`<div class="kpis"><div class="kpi"><div class="k">Incassato</div><div class="v" style="color:var(--acc)">${fmt(inc)}</div><div class="s">soldi già arrivati</div></div>
+   <div class="kpi"><div class="k">Da incassare</div><div class="v" style="color:var(--red)">${fmt(da)}</div><div class="s">accettati o fatturati, non ancora pagati</div></div>
+   <div class="kpi"><div class="k">Previsto a fine anno</div><div class="v">${fmt(prev)}</div><div class="s">netto stimato ${fmt(cp.netto)}</div></div>
+   <div class="kpi"><div class="k">Soglia 85.000 €</div><div class="v" style="color:${prev>PARAMS.soglia?'var(--red)':'var(--txt)'}">${prev>PARAMS.soglia?'+'+fmt(prev-PARAMS.soglia):fmt(PARAMS.soglia-prev)}</div><div class="s">${prev>PARAMS.soglia?'sopra la soglia: parlane col commercialista':'quanto manca alla soglia'}</div></div></div>`;
+  if(!act.length){ el.innerHTML=kpis+`<div class="dcard" style="margin-bottom:14px">Qui vedrai i tuoi clienti a quadrati, chi ti porta più soldi e la linea del tempo dell'anno. Inizia da un preventivo, oppure porta qui i dati del telefono (in fondo alla pagina).</div>`; renderPhoneBox(); return; }
+  const center=`<text x="95" y="90" text-anchor="middle" fill="var(--mut)" font-size="11" letter-spacing="1">PREVISTO</text><text x="95" y="112" text-anchor="middle" fill="var(--txt)" font-size="19" font-weight="800">${fmt(prev)}</text>`;
+  const pie=`<div class="dcard"><h4>Chi ti porta i soldi</h4><div class="pie">${dDonut(act.map(x=>({v:x.tot,c:x.c.color,t:x.c.name+': '+fmt(x.tot)})),190,26,center)}<div class="pleg">${act.slice(0,8).map(x=>`<div><b style="background:${x.c.color}"></b><span>${esc(x.c.name)}</span><em>${Math.round(x.tot/prev*100)}%</em></div>`).join('')}${act.length>8?`<div><b style="background:var(--sur2)"></b><span>altri ${act.length-8}</span><em>${Math.round(act.slice(8).reduce((a,x)=>a+x.tot,0)/prev*100)}%</em></div>`:''}</div></div></div>`;
+  const best=act[0], pay=st.filter(x=>x.gg!=null&&x.inc>0), fast=pay.slice().sort((a,b)=>a.gg-b.gg)[0], slow=pay.slice().sort((a,b)=>b.gg-a.gg)[0], wait=st.filter(x=>x.da>0).sort((a,b)=>b.da-a.da)[0];
+  const top2=act.slice(0,2).reduce((a,x)=>a+x.tot,0)/prev;
+  const row=(ic,t,n,extra,cls)=>`<div class="brow ${cls||''}"><div class="ic">${ic}</div><div><div class="t">${t}</div><div class="n">${n}</div>${extra?`<div class="t">${extra}</div>`:''}</div></div>`;
+  const bestc=`<div class="dcard"><h4>Il quadro</h4><div class="best">
+   ${row('🏆','Il cliente migliore',esc(best.c.name),`${fmt(best.tot)} · ${Math.round(best.tot/prev*100)}% dell'anno · ${best.n} lavori`)}
+   ${fast&&pay.length>1?row('⚡','Paga prima',esc(fast.c.name),`in media ${fast.gg} giorni dopo la fattura`):''}
+   ${slow&&pay.length>1&&slow!==fast?row('🐢','Paga dopo',esc(slow.c.name),`in media ${slow.gg} giorni dopo la fattura`):''}
+   ${wait?row('⏳','Ti deve di più',esc(wait.c.name),`${fmt(wait.da)} da incassare`):''}
+   ${pay.length>1?'<div class="t" style="padding:0 4px">I tempi di pagamento si basano sulle date in cui hai segnato gli incassi.</div>':''}
+   ${act.length>1&&top2>0.6?row('⚠️','Dipendi da pochi clienti',`I primi due valgono il ${Math.round(top2*100)}%`,'Se se ne ferma uno, perdi una bella fetta dell\'anno.','warn'):''}
+  </div></div>`;
+  const tiles=`<div class="tiles">${act.concat(st.filter(x=>x.tot<=0)).map((x,i)=>{ const r=x.tot?x.inc/x.tot:0;
+   return `<div class="tile" onclick="openClient(${x.c.id})"><span class="rk ${i===0&&x.tot?'gold':''}">${x.tot?'#'+(i+1):''}</span>
+    <div class="hd">${dDonut([{v:x.inc,c:x.c.color},{v:x.da,c:'var(--red)'}],46,7)}<div class="nm">${esc(x.c.name)}</div></div>
+    <div class="big">${fmt(x.tot)}</div><div class="ln">${x.tot?Math.round(x.tot/prev*100)+'% del tuo anno · ':''}${x.n} ${x.n===1?'lavoro':'lavori'}${x.gg!=null?' · paga in ~'+x.gg+' gg':''}</div>
+    <div class="bar"><i style="width:${r*100}%;background:${x.c.color}"></i><i style="width:${x.tot?x.da/x.tot*100:0}%;background:var(--red)"></i></div>
+    <div class="ln"><span style="color:var(--acc)">incassato ${fmt(x.inc)}</span>${x.da?` · <span style="color:var(--red)">da incassare ${fmt(x.da)}</span>`:''}</div>
+    ${x.tot-x.inc>0.5?`<button class="mkinc" onclick="event.stopPropagation();markInc(${x.c.id})">✓ Segna incassato</button>`:''}</div>`; }).join('')}</div>`;
+  // timeline
+  const Y=String(PARAMS.anno), ev=S.prev.filter(p=>String(p.date).slice(0,4)===Y&&p.status!=='perso'), mx=Math.max(1,...ev.map(p=>p.tot));
+  const pos=d=>{ const t=new Date(d+'T12:00:00'), a=new Date(Y+'-01-01T00:00:00'), b=new Date((+Y+1)+'-01-01T00:00:00'); return Math.min(100,Math.max(0,(t-a)/(b-a)*100)); };
+  const rows=act.filter(x=>ev.some(p=>p.client===x.c.id)).map(x=>`<div class="tlrow"><div class="lb" onclick="openClient(${x.c.id})"><b style="display:inline-block;width:9px;height:9px;border-radius:3px;background:${x.c.color};margin-right:7px"></b>${esc(x.c.name)}</div>${ev.filter(p=>p.client===x.c.id).map(p=>{ const z=Math.round(10+16*Math.sqrt(p.tot/mx)); const k=p.status==='incassato'?'':(p.status==='fatturato'?'f':'a'); return `<i class="${k}" style="left:${pos(p.date)}%;width:${z}px;height:${z}px;background:${x.c.color};border-color:${x.c.color}" title="${esc(p.num)} · ${fdate(p.date)} · ${fmt(p.tot)} · ${p.status}" onclick="openPrev&&openPrev(${p.id})"></i>`; }).join('')}</div>`).join('');
+  const now=new Date().getFullYear()==+Y?`<div class="tlnow" style="left:calc(190px + (100% - 190px) * ${pos(new Date().toISOString().slice(0,10))/100})" title="oggi"></div>`:'';
+  const tl=rows?`<div class="dcard" style="margin-bottom:14px;position:relative"><h4>La tua linea del tempo ${Y}</h4><div style="position:relative"><div class="tl"><div class="tlax">${['gen','feb','mar','apr','mag','giu','lug','ago','set','ott','nov','dic'].map(m=>`<span>${m}</span>`).join('')}</div>${rows}</div>${now}</div>
+   <div class="tlleg"><span><i></i>incassato</span><span><i style="background:transparent;border:2px solid var(--acc)"></i>fatturato, da incassare</span><span><i style="background:transparent;border:2px dashed var(--acc)"></i>accettato</span><span>Più grande il pallino, più grande l'importo. Passa sopra per i dettagli.</span></div></div>`:'';
+  el.innerHTML=kpis+`<div class="dgrid">${pie}${bestc}</div>`+tl+`<h4 style="margin:22px 0 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">Tutti i clienti · dal più importante</h4>`+tiles;
+  renderPhoneBox(); }
+function renderPhoneBox(){ const el=$('cphone'); if(!el) return;
+  el.innerHTML=`<div class="dcard" style="margin-top:14px"><h4>Vuoi i dati del tuo telefono qui sul computer?</h4>
+   <div class="steps"><div><b class="n">1</b><br>Sul <b>telefono</b> apri PreventIVO, tocca <b>⚙︎ Impostazioni</b> e poi <b>Manda i dati</b>.</div>
+   <div><b class="n">2</b><br>Manda il file <b>a te stesso</b>: WhatsApp Web, mail o AirDrop. Salvalo sul computer.</div>
+   <div><b class="n">3</b><br><b>Trascinalo qui sotto</b> (o clicca). Scegli <b>Unisci</b> per tenere anche quello che c'è già qui.</div></div>
+   <div class="drop" id="cdrop" onclick="restore()" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')">⬇︎ <b>Trascina qui il file dei tuoi dati</b> oppure clicca per sceglierlo</div>
+   <div class="hint" style="margin-top:10px">Per riportare sul telefono quello che fai qui: ⚙︎ Impostazioni → <b>Manda i dati</b>, e sul telefono <b>Ricevi i dati</b>. I dati non passano da nessun server: restano sui tuoi dispositivi.</div></div>`; }
 function clRest(id){ const c=S.clients.find(x=>x.id===id); const inc=S.prev.filter(p=>p.client===id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return Math.max(0,Math.max(+c.atteso||0,inc+att)-inc); }
 function markInc(id){ const c=S.clients.find(x=>x.id===id), r=Math.round(clRest(id)*100)/100;
   sheet(`<h3>${esc(c.name)}: incassato?</h3><div class="sub">Del previsto mancano ${fmt(r)}. Segnali come incassati, tutti o in parte.</div>
