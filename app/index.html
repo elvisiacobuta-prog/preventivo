@@ -300,6 +300,35 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .drop{border:2px dashed var(--line);border-radius:16px;padding:22px;text-align:center;color:var(--mut);font-size:14px;cursor:pointer}
   .drop:hover,.drop.on{border-color:var(--acc);color:var(--txt)}
 }
+
+.bic{font-size:22px;line-height:1;margin-bottom:10px}
+@media (min-width:960px){
+  #v-bandi.on{max-width:1120px}
+  .phero{display:flex!important;justify-content:space-between;align-items:flex-end;gap:30px;background:radial-gradient(120% 140% at 0% 0%,rgba(255,213,74,.16),transparent 55%),var(--sur);border-radius:24px;padding:32px 34px;margin:4px 0 30px}
+  .phero .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);font-weight:700}
+  .phero h2{text-transform:none;color:var(--txt);font-weight:800;font-size:36px;line-height:1.08;letter-spacing:-.02em;margin:10px 0 10px}
+  .phero p{color:var(--mut);margin:0;max-width:520px;font-size:15px}
+  .pchips{display:flex;gap:10px;flex-shrink:0}
+  .pchips a{background:var(--sur2);color:var(--txt);text-decoration:none;padding:12px 16px;border-radius:999px;font-weight:600;font-size:14px;border:1px solid var(--line)}
+  .pchips a:hover{border-color:var(--acc)}
+  #v-bandi .q{font-size:26px!important}
+  #commlist{display:block!important}
+  .commgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:16px;align-items:stretch}
+  .commmain .citysel{max-width:280px}
+  .commcards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
+  .slots{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+  .slot{border:2px dashed var(--line);border-radius:20px;padding:26px 16px;display:flex;flex-direction:column;align-items:center;gap:6px;color:var(--mut);font-size:13px;text-align:center}
+  .slot .sav{width:52px;height:52px;border-radius:50%;background:var(--sur2);display:flex;align-items:center;justify-content:center;font-size:22px;opacity:.6;margin-bottom:4px}
+  .slot b{color:var(--txt);font-size:14px;opacity:.7}
+  .commside .commcta{height:100%;margin:0;box-sizing:border-box;display:flex;flex-direction:column;background:linear-gradient(160deg,rgba(255,213,74,.14),var(--sur) 60%);border:1px solid rgba(255,213,74,.35)}
+  .commcta .btn{margin-top:auto;background:var(--acc)!important;color:#111!important}
+  #v-bandi .disc0{text-align:left;margin:12px 2px 0}
+  #bandilist{grid-template-columns:repeat(3,minmax(0,1fr))!important;align-items:stretch!important}
+  #bandilist .card.bando{display:flex;flex-direction:column;transition:transform .15s,border-color .15s;border:1px solid transparent}
+  #bandilist .card.bando:hover{transform:translateY(-2px);border-color:var(--line)}
+  #bandilist .card.bando>.btn{margin-top:auto}
+  #bandilist .bnote{grid-column:1/-1;border-left:4px solid var(--acc)!important;margin:0}
+}
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
   body{padding-bottom:0;padding-left:232px}
@@ -454,10 +483,11 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
   <!-- VIEW: ANNO -->
   <section class="view" id="v-bandi">
-    <div class="q" style="margin-bottom:4px">Trova il tuo commercialista</div>
+    <div class="phero desk"><div><div class="k">Aiuto per la tua partita IVA</div><h2>Il commercialista giusto<br>e i soldi che ti spettano</h2><p>Qui trovi i commercialisti che collaborano con PreventIVO e i siti ufficiali di bandi e contributi.</p></div><div class="pchips"><a href="#" onclick="event.preventDefault();$('commsec').scrollIntoView({behavior:'smooth'})">🤝 Commercialisti</a><a href="#" onclick="event.preventDefault();$('bandisec').scrollIntoView({behavior:'smooth'})">💶 Bandi e contributi</a></div></div>
+    <div class="q" id="commsec" style="margin-bottom:4px">Trova il tuo commercialista</div>
     <div class="qsub" style="margin:0 0 14px">Commercialisti che collaborano con PreventIVO: conoscono il forfettario e sanno leggere i tuoi conti.</div>
     <div id="commlist"></div>
-    <div class="q" style="margin:26px 0 4px;font-size:22px">Bandi per te</div>
+    <div class="q" id="bandisec" style="margin:26px 0 4px;font-size:22px">Bandi per te</div>
     <div class="qsub" style="margin:0 0 14px">Contributi a fondo perduto, prestiti agevolati e voucher per chi ha la partita IVA. Si aprono i siti ufficiali, sempre aggiornati.</div>
     <div id="bandilist"></div>
     <div class="desk phonebox"></div>
@@ -531,7 +561,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.10.1',
+  ver: '4.10.2',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1585,23 +1615,25 @@ const CITTA=['Aosta'];
 function setCitta(v){ S.profile.citta=v; save(); renderComm(); }
 function renderComm(){ const el=$('commlist'); if(!el) return; const c=S.profile.citta||CITTA[0];
   const L=COMM.filter(x=>x.citta===c).sort((a,b)=>(b.partner?1:0)-(a.partner?1:0));
-  const sel=`<select onchange="setCitta(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:10px">${CITTA.map(x=>`<option ${x===c?'selected':''}>${x}</option>`).join('')}<option disabled>Altre città: in arrivo</option></select>`;
-  const card=x=>`<div class="card bando">${x.partner?'<span class="ptag">Collabora con PreventIVO</span>':''}<b>${esc(x.nome)}</b><p>${esc(x.studio||'')}${x.studio?' · ':''}${esc(x.citta)}</p><div class="row2">${x.tel?`<a class="btn ghost" href="tel:${esc(x.tel)}">Chiama</a>`:''}${x.mail?`<a class="btn ghost" href="mailto:${esc(x.mail)}">Scrivi</a>`:''}${x.sito?`<a class="btn ghost" href="${esc(x.sito)}" target="_blank" rel="noopener">Sito ↗</a>`:''}</div></div>`;
-  el.innerHTML = sel + (L.length ? L.map(card).join('') : `<div class="card hint" style="line-height:1.5">Stiamo cercando i primi commercialisti che collaborano con noi a <b>${esc(c)}</b>. Torna presto.</div>`)
-   + `<div class="card bando"><b>Sei un commercialista?</b><p>Collabora con PreventIVO: i tuoi clienti forfettari arrivano con i conti già in ordine.</p><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=${encodeURIComponent('Commercialista su PreventIVO')}">Scrivici</a></div>`
+  const sel=`<select onchange="setCitta(this.value)" class="citysel" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:10px">${CITTA.map(x=>`<option ${x===c?'selected':''}>${x}</option>`).join('')}<option disabled>Altre città: in arrivo</option></select>`;
+  const card=x=>`<div class="card bando comm">${x.partner?'<span class="ptag">Collabora con PreventIVO</span>':''}<b>${esc(x.nome)}</b><p>${esc(x.studio||'')}${x.studio?' · ':''}${esc(x.citta)}</p><div class="row2">${x.tel?`<a class="btn ghost" href="tel:${esc(x.tel)}">Chiama</a>`:''}${x.mail?`<a class="btn ghost" href="mailto:${esc(x.mail)}">Scrivi</a>`:''}${x.sito?`<a class="btn ghost" href="${esc(x.sito)}" target="_blank" rel="noopener">Sito ↗</a>`:''}</div></div>`;
+  const empty=`<div class="card hint mobonly" style="line-height:1.5">Stiamo cercando i primi commercialisti che collaborano con noi a <b>${esc(c)}</b>. Torna presto.</div>
+   <div class="desk"><div class="slots">${[1,2,3].map(i=>`<div class="slot"><div class="sav">👤</div><b>Posto libero</b><span>${esc(c)}</span></div>`).join('')}</div><div class="hint" style="margin-top:10px">Stiamo cercando i primi commercialisti che collaborano con noi a <b>${esc(c)}</b>. Torna presto.</div></div>`;
+  const cta=`<div class="card bando commcta"><div class="bic">🤝</div><b>Sei un commercialista?</b><p>Collabora con PreventIVO: i tuoi clienti forfettari arrivano con i conti già in ordine.</p><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=${encodeURIComponent('Commercialista su PreventIVO')}">Scrivici</a></div>`;
+  el.innerHTML = `<div class="commgrid"><div class="commmain">${sel}${L.length ? `<div class="commcards">${L.map(card).join('')}</div>` : empty}</div><div class="commside">${cta}</div></div>`
    + `<p class="disc0">Nell'elenco compare solo chi ha scelto di esserci. Il professionista lo scegli tu: PreventIVO non dà consulenza fiscale.</p>`; }
 function setRegione(v){ S.profile.regione=v; save(); renderBandi(); }
 function renderBandi(){ const el=$('bandilist'); if(!el) return; const rg=S.profile.regione||''; const prof=isIVS()?'Impresa':'Professionista';
-  const card=(t,d,u,b,extra)=>`<div class="card bando"><b>${t}</b><p>${d}</p>${extra||''}<a class="btn ghost" href="${u}" target="_blank" rel="noopener">${b} ↗</a></div>`;
+  const BIC=[['Tutti','🏛️'],['Invitalia','🚀'],['Camera','💻'],['Microcredito','🌱'],['Fondo','🛡️']]; const card=(t,d,u,b,extra)=>`<div class="card bando"><div class="bic">${(BIC.find(x=>t.startsWith(x[0]))||['','📄'])[1]}</div><b>${t}</b><p>${d}</p>${extra||''}<a class="btn ghost" href="${u}" target="_blank" rel="noopener">${b} ↗</a></div>`;
   el.innerHTML=
    card('Tutti gli incentivi, nazionali e regionali','Il catalogo ufficiale del Ministero delle Imprese: oltre 1.000 incentivi di Stato, Regioni e Camere di Commercio, in un posto solo.','https://www.incentivi.gov.it/it/catalogo','Apri incentivi.gov.it',
      `<div class="bguide"><b>Come filtrare, per te:</b><ol><li>Tocca <b>Filtri</b></li><li>Tipo soggetto → <b>${prof}</b>${S.profile.apertura&&annoAtt()<=1?' (o "Impresa da costituire")':''}</li><li>Forma agevolazione → <b>Contributo/Fondo perduto</b></li><li>Regione → <b>${rg?esc(rg):'la tua regione'}</b></li><li>Stato → <b>aperti</b>, poi <b>Applica</b></li></ol><small>Puoi anche attivare le notifiche per i nuovi incentivi.</small></div>`)
-   + `<div class="card bando"><b>I bandi della tua Regione</b><p>Ogni Regione pubblica i suoi bandi per imprese e professionisti.</p><select onchange="setRegione(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;margin-bottom:10px;color:var(--txt)"><option value="">Scegli la tua regione…</option>${REGIONI.map(r=>`<option ${r===rg?'selected':''}>${esc(r)}</option>`).join('')}</select>${rg? (rg==="Valle d'Aosta"? `<a class="btn ghost" href="https://imprese.regione.vda.it/" target="_blank" rel="noopener">Sportello imprese della Regione ↗</a>` : `<a class="btn ghost" href="https://www.google.com/search?q=${encodeURIComponent('bandi contributi fondo perduto imprese professionisti Regione '+rg+' '+PARAMS.anno)}" target="_blank" rel="noopener">Cerca i bandi della Regione ${esc(rg)} ↗</a>`):''}</div>`
+   + `<div class="card bando"><div class="bic">📍</div><b>I bandi della tua Regione</b><p>Ogni Regione pubblica i suoi bandi per imprese e professionisti.</p><select onchange="setRegione(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;margin-bottom:10px;color:var(--txt)"><option value="">Scegli la tua regione…</option>${REGIONI.map(r=>`<option ${r===rg?'selected':''}>${esc(r)}</option>`).join('')}</select>${rg? (rg==="Valle d'Aosta"? `<a class="btn ghost" href="https://imprese.regione.vda.it/" target="_blank" rel="noopener">Sportello imprese della Regione ↗</a>` : `<a class="btn ghost" href="https://www.google.com/search?q=${encodeURIComponent('bandi contributi fondo perduto imprese professionisti Regione '+rg+' '+PARAMS.anno)}" target="_blank" rel="noopener">Cerca i bandi della Regione ${esc(rg)} ↗</a>`):''}</div>`
    + card('Invitalia: avviare o far crescere un\'attività','L\'agenzia nazionale per gli incentivi: contributi e finanziamenti per chi apre un\'attività o una partita IVA (spesso per giovani, donne e disoccupati) e per chi investe.','https://www.invitalia.it/','Apri Invitalia')
    + card('Camera di Commercio: voucher digitali','I Punti Impresa Digitale delle Camere di Commercio pubblicano voucher per computer, software, siti, formazione digitale e green.','https://www.puntoimpresadigitale.camcom.it/','Apri Punto Impresa Digitale')
    + card('Microcredito','Piccoli prestiti agevolati, senza garanzie personali, per avviare o sviluppare un\'attività, con assistenza nella fase iniziale.','https://www.microcredito.gov.it/','Apri Ente Nazionale Microcredito')
    + card('Fondo di garanzia per le PMI','Lo Stato fa da garante quando chiedi un prestito in banca: più facile ottenerlo. Non è a fondo perduto.','https://www.fondidigaranzia.it/','Apri Fondo di garanzia')
-   + `<div class="card hint" style="line-height:1.5">Da sapere: quasi tutti i bandi a fondo perduto chiedono di <b>pagare prima le spese</b> e poi rendicontarle, hanno <b>scadenze strette</b> e requisiti precisi (età, nuova attività, regione). Leggi sempre il bando completo e chiedi al commercialista prima di fare domanda.</div>`; }
+   + `<div class="card hint bnote" style="line-height:1.5">Da sapere: quasi tutti i bandi a fondo perduto chiedono di <b>pagare prima le spese</b> e poi rendicontarle, hanno <b>scadenze strette</b> e requisiti precisi (età, nuova attività, regione). Leggi sempre il bando completo e chiedi al commercialista prima di fare domanda.</div>`; }
 /* ---------- SBLOCCO (Google Play Billing via Digital Goods API) ---------- */
 const BILL='https://play.google.com/billing';
 (function(){ try{ if(document.referrer.indexOf('android-app://')===0 || /[?&]src=twa/.test(location.search)) localStorage.setItem('pv.store','play'); }catch(e){} })();
