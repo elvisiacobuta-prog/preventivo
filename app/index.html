@@ -168,6 +168,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .faqsec{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px}.faqi{border-bottom:1px solid var(--sur2);padding:10px 0}.faqi summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}.faqi summary::after{content:' +';color:var(--acc)}.faqi[open] summary::after{content:' −'}.faqi p{margin:8px 0 2px;font-size:14px;line-height:1.55;color:var(--mut)}
 .faqlink{display:block;margin:4px auto 12px;font-size:13px;font-weight:700;color:var(--acc)}
 .atchip.set{display:block!important;text-align:left;border:1.5px solid var(--line)!important;padding:12px 14px}.ptop{display:flex;justify-content:space-between;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:6px}.ptop .pedit{color:var(--acc);text-transform:none;letter-spacing:0;font-weight:700;font-size:13px}.prow{font-size:13.5px;line-height:1.45;padding:3px 0;color:var(--txt)}.prow small{color:var(--mut)}.pmiss{color:var(--acc);font-weight:700}
+.ratecode{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}.ratecode small{font-size:10.5px;font-weight:600;color:var(--mut);margin-top:2px}#rateseg .ratecode.on,#rateseg .ratecode{color:var(--txt)}.profline{font-size:12px;color:var(--mut);text-align:center;margin:-2px 0 12px;line-height:1.5}.profline .link{font-size:12px}.profline .why{transform:scale(.85)}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .profcard-old{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -269,9 +270,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="seg dirseg" id="dirseg"><button id="dirF" onclick="setDir(false)">Quanto mi resta?</button><button id="dirR" onclick="setDir(true)">Quanto devo chiedere?</button></div>
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
-      <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button></div>
-      <div class="ratehint"><span><b>5%</b> primi 5 anni, se l'attività è davvero nuova</span><span><b>15%</b> tutti gli altri casi</span><span class="why" onclick="why('start')">?</span></div>
-      <button class="atchip" id="atchip" onclick="S.setup?openSheet('settings'):askAct(true)"></button>
+      <div class="seg" id="rateseg" style="margin:0 0 8px"><button id="rate5" onclick="setRate(true)">5%</button><button id="rate15" onclick="setRate(false)">15%</button><button id="ratecode" class="ratecode" onclick="S.setup?openSheet('settings'):askAct(true)"></button></div>
+      <div class="profline" id="profline"></div>
+      <button class="atchip" id="atchip" style="display:none"></button>
       <div class="codesel" id="codesel"></div>
       <div class="codesel" id="enpsel"></div>
       <div class="hero">
@@ -451,7 +452,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.6',
+  ver: '4.6.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -626,7 +627,13 @@ function setEnp(v){ S.homeEnp=!!v; save(); refreshRate(); renderCalc(); }
 function curCode(){ const cs=codes(); return cs.includes(S.homeCode)?S.homeCode:(cs[0]||''); }
 function setHomeCode(c){ S.homeCode=c; save(); refreshRate(); renderCalc(); }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); const cs=codes(); if($('enpsel')) $('enpsel').innerHTML = S.profile.enpals2 ? `<span>Contributi per questo lavoro:</span><button type="button" class="${curEnp()?'':'on'}" onclick="setEnp(0)">${isCassa()?esc((S.profile.cassaNome||'Cassa').split(' (')[0]):isIVS()?'INPS '+S.profile.inps:'Gestione separata'}<small>i soliti</small></button><button type="button" class="${curEnp()?'on':''}" onclick="setEnp(1)">Spettacolo<small>ex ENPALS 9,19% trattenuto</small></button>` : ''; if($('codesel')) $('codesel').innerHTML = cs.length>1 ? '<span>Questo lavoro è per:</span>'+cs.map(c=>`<button type="button" class="${c===curCode()?'on':''}" onclick="setHomeCode('${c}')">${esc(c)} · ${Math.round(coefAteco(c)*100)}%<small>${esc(((atecoInfo(c)||{}).g||'').split(' (')[0])}</small></button>`).join('') : ''; $('atchip').classList.add('set'); $('atchip').innerHTML=profileHTML(); }
+  const ca=coefAteco(S.profile.ateco); const cs=codes(); if($('enpsel')) $('enpsel').innerHTML = S.profile.enpals2 ? `<span>Contributi per questo lavoro:</span><button type="button" class="${curEnp()?'':'on'}" onclick="setEnp(0)">${isCassa()?esc((S.profile.cassaNome||'Cassa').split(' (')[0]):isIVS()?'INPS '+S.profile.inps:'Gestione separata'}<small>i soliti</small></button><button type="button" class="${curEnp()?'on':''}" onclick="setEnp(1)">Spettacolo<small>ex ENPALS 9,19% trattenuto</small></button>` : ''; if($('codesel')) $('codesel').innerHTML = cs.length>1 ? '<span>Questo lavoro è per:</span>'+cs.map(c=>`<button type="button" class="${c===curCode()?'on':''}" onclick="setHomeCode('${c}')">${esc(c)} · ${Math.round(coefAteco(c)*100)}%<small>${esc(((atecoInfo(c)||{}).g||'').split(' (')[0])}</small></button>`).join('') : ''; const rc=$('ratecode'); if(rc) rc.innerHTML = ca!=null ? `${esc(S.profile.ateco)}<small>tasse sul ${Math.round(ca*100)}%</small>` : `Codice ATECO<small class="pmiss">inseriscilo</small>`; if($('profline')) $('profline').innerHTML=profLine(); }
+function profLine(){ const pr=S.profile, n=annoAtt(), bits=[], miss=[];
+  if(n) bits.push(`${ordinale(n)} anno di P.IVA`); else miss.push('anno di apertura');
+  bits.push(isCassa()? esc((pr.cassaNome&&pr.cassaNome!=='Altra'?pr.cassaNome.split(' (')[0]:'Cassa')) : isIVS()? `INPS ${pr.inps}${pr.rid35?' −35%':''}` : 'Gestione separata');
+  if(n&&n>1){ if(pr.incPrec>0) bits.push(`${PARAMS.anno-1}: ${fmt(pr.incPrec)}`); else miss.push(`incassato ${PARAMS.anno-1}`); }
+  if(coefAteco(pr.ateco)==null) bits.push(`ora ${Math.round(coef()*100)}%`);
+  return `${bits.join(' · ')}${miss.length?` · <span class="pmiss">manca: ${miss.join(', ')}</span>`:''} · <span class="link" onclick="S.setup?openSheet('settings'):askAct(true)">modifica</span> · <span class="why" onclick="why('start')">?</span>`; }
 function profileHTML(){ const pr=S.profile, ca=coefAteco(pr.ateco), n=annoAtt(), miss=t=>`<span class="pmiss">${t}</span>`;
   const ok=v=>`<b>${v}</b>`;
   const ateco = ca!=null ? ok(esc(pr.ateco))+` · ${esc(((atecoInfo(pr.ateco)||{}).g||'').split(' (')[0])} · tasse sul <b>${Math.round(ca*100)}%</b>` : miss('Codice ATECO: inseriscilo')+` <small>(ora calcolo per ${esc(actFull().split(',')[0].toLowerCase())}, ${Math.round(coef()*100)}%)</small>`;
