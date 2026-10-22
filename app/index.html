@@ -660,7 +660,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.13.1',
+  ver: '4.13.2',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1853,7 +1853,7 @@ function renderOrd(ys,Y0){ const Ys=ys.filter(Y=>{const v=yearPrev(Y);return v>P
   h+=`<div class="row2" style="align-items:center;gap:8px"><label style="font-size:12px;color:var(--mut);flex:1">Costi reali che deduci in ordinario (% degli incassi)</label><input type="number" value="${cp}" min="0" max="90" onchange="ordSet(this.value)" style="width:80px;background:var(--sur2);border:0;border-radius:12px;padding:10px;font-size:16px"></div><div class="hint" style="margin-top:6px">Stima grezza: IRPEF 23/33/43% + 2% addizionali, INPS sul reddito, niente IRAP, detrazioni o altri redditi. In ordinario aggiungi IVA 22% sulle fatture (a carico del cliente, che se è un privato o un ente che non la recupera la sente come aumento di prezzo) e la contabilità costa di più. Il conto vero lo fa Distrotti.</div>`; return h; }
 
 /* ---------- SPESE LAVORO ---------- */
-const SPCAT_COL={'Camera, droni e regia':'#FFD54A','Audio':'#FF6FB5','Luci, treppiedi e supporti':'#FF9F4A','Cavi, rete e alimentazione':'#4AE0D8','Schede, storage e streaming':'#5BE38B','Ufficio e varie':'#9AA0A6','AI e creatività':'#C77DFF','Montaggio e plugin':'#4AA8FF','Cloud e strumenti':'#7C8CFF','Pubblicità':'#FF4D4D','Stampa e materiali':'#B08968','Affitto studio':'#E0E0E0','Altro lavoro':'#888'};
+const SPCAT_COL={'Camera, droni e regia':'#FFD54A','Audio':'#FF6FB5','Luci, treppiedi e supporti':'#FF9F4A','Cavi, rete e alimentazione':'#4AE0D8','Schede, storage e streaming':'#5BE38B','Ufficio e varie':'#9AA0A6','AI e creatività':'#C77DFF','Montaggio e plugin':'#4AA8FF','Cloud e strumenti':'#7C8CFF','Pubblicità':'#FF4D4D','Stampa e materiali':'#B08968','Affitto studio':'#E0E0E0','Collaboratori':'#FF8FA3','Altro lavoro':'#888'};
 function spY(){ return String(PARAMS.anno); }
 function spList(){ return (S.spese||[]).filter(x=>String(x.d).startsWith(spY())); }
 function spInc(){ const Y=spY(); return S.prev.filter(p=>p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).startsWith(Y)).reduce((a,p)=>a+p.tot,0); }
