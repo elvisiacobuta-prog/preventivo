@@ -452,7 +452,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.6.1',
+  ver: '4.7.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -465,19 +465,33 @@ const PARAMS = {
   ivs: { minimale: 18808, fisso: { artigiani: 4521.36, commercianti: 4611.64 }, rate: ['maggio','agosto','novembre','febbraio'] },
   // "cosa fai?" → coefficiente di redditività (ATECO di riferimento, indicativi — verificare)
   attivita: [
-    {id:'prof78',  n:'Libero professionista, consulenza, creativi', c:0.78, ateco:'varie'},
-    {id:'foto',    n:'Foto, grafica, design', c:0.78, ateco:'74.20 / 74.10'},
-    {id:'video',   n:'Video, cinema, produzione audio', c:0.67, ateco:'59.11 / 59.20'},
-    {id:'consul',  n:'Consulenza, marketing, comunicazione', c:0.78, ateco:'70.22 / 73.11'},
-    {id:'it',      n:'Sviluppo software, siti, IT', c:0.67, ateco:'62.01'},
-        {id:'artig',   n:'Artigiano, servizi alla persona', c:0.67, ateco:'varie'},
-    {id:'comm',    n:'Commercio', c:0.40, ateco:'47'},
-    {id:'ecomm',   n:'Commercio online', c:0.40, ateco:'47.91'},
-    {id:'ambul',   n:'Commercio ambulante (non alimentare)', c:0.54, ateco:'47.82–47.89'},
-    {id:'agente',  n:'Agente o rappresentante di commercio', c:0.62, ateco:'46.1'},
+    {id:'prof78',  n:'Libero professionista (altro)', c:0.78, ateco:'varie'},
+    {id:'consul',  n:'Consulenza aziendale', c:0.78, def:'70.20.09'},
+    {id:'comunic', n:'Comunicazione, ufficio stampa, PR', c:0.78, def:'73.30.09'},
+    {id:'mktg',    n:'Marketing, pubblicità, social media', c:0.78, def:'73.11.02'},
+    {id:'foto',    n:'Grafica, design, siti web', c:0.78, def:'74.12.09'},
+    {id:'fotog',   n:'Fotografo', c:0.78, def:'74.20.19'},
+    {id:'video',   n:'Video, cinema, produzione audio', c:0.67, def:'59.11.00'},
+    {id:'it',      n:'Sviluppo software, IT', c:0.67, def:'62.10.00'},
+    {id:'eventi',  n:'Organizzazione di eventi', c:0.67, def:'82.30.03'},
+    {id:'formaz',  n:'Formazione, corsi', c:0.78, def:'85.59.20'},
+    {id:'insegn',  n:'Lezioni private, insegnante', c:0.78, def:'85.59.99'},
+    {id:'tradut',  n:'Traduttore, interprete', c:0.78, def:'74.30.00'},
+    {id:'attore',  n:'Attore', c:0.67, def:'90.20.01'},
+    {id:'artista', n:'Musicista, artista dello spettacolo', c:0.67, def:'90.20.09'},
+    {id:'parruc',  n:'Parrucchiere', c:0.67, def:'96.21.00'},
+    {id:'estet',   n:'Estetista', c:0.67, def:'96.22.09'},
+    {id:'artig',   n:'Artigiano, altri servizi alla persona', c:0.67, ateco:'varie'},
+    {id:'elettr',  n:'Elettricista', c:0.86, def:'43.21.01'},
+    {id:'murat',   n:'Muratore', c:0.86, def:'43.91.00'},
+    {id:'ediliz',  n:'Edilizia, immobiliare (altro)', c:0.86, ateco:'41–43'},
+    {id:'comm',    n:'Commercio in negozio', c:0.40, ateco:'47', ask:1},
+    {id:'ecomm',   n:'Commercio online', c:0.40, ateco:'47', ask:1},
+    {id:'ambul',   n:'Commercio ambulante (non alimentare)', c:0.54, ateco:'47.8', ask:1},
+    {id:'agente',  n:'Agente o rappresentante di commercio', c:0.62, def:'46.19.00'},
     {id:'alim',    n:'Produzione di alimenti e bevande', c:0.40, ateco:'10–11'},
-    {id:'ediliz',  n:'Edilizia, immobiliare', c:0.86, ateco:'41–43'},
-    {id:'ristor',  n:'Ristorazione, alloggio', c:0.40, ateco:'55–56'},
+    {id:'ristor',  n:'Ristorante', c:0.40, def:'56.11.11'},
+    {id:'bar',     n:'Bar', c:0.40, def:'56.30.01'},
     {id:'cassa',   n:'Avvocato, architetto, ingegnere, medico… (con cassa)', c:0.78, ateco:'varie', cassa:true},
     {id:'altro',   n:'Altro: scrivi cosa fai', c:0.78, ateco:'—'},
     {id:'no',      n:'Ho una SRL o sono in regime ordinario', c:0.78, ateco:'—', no:true}
@@ -511,7 +525,12 @@ function cassaNote(n){ const c=CASSE.find(x=>x.n===n); return c? `${esc(c.note||
 function cassaPreset(pre,n){ const c=CASSE.find(x=>x.n===n); S.profile.cassaBase=c&&c.b||''; if(c){ $(pre+'-csog').value=String(c.s).replace('.',','); $(pre+'-cmin').value=c.m||''; $(pre+'-cint').value=String(c.i).replace('.',','); } $(pre+'-cnote').innerHTML=cassaNote(n); }
 function numIt(x){ const t=String(x==null?'':x).trim().replace(/[€\s]/g,''); if(!t) return 0; const v=/^\d{1,3}(\.\d{3})+$/.test(t)? +t.replace(/\./g,'') : parseFloat(t.replace(/\./g,(m,o,str)=>/,/.test(str)?'':'.').replace(',','.')); return isNaN(v)?0:v; }
 function readCassa(pre){ if(!$(pre+'-csog')) return; S.profile.cassaNome=$(pre+'-cpre').value; S.profile.cassaBase=(CASSE.find(x=>x.n===S.profile.cassaNome)||{}).b||''; S.profile.cassaSogg=numIt($(pre+'-csog').value); S.profile.cassaMin=numIt($(pre+'-cmin').value); S.profile.cassaInt=numIt($(pre+'-cint').value); }
-function atecoLive(v){ const on=!!(v&&coefAteco(v)!=null); ['a-act','s-act'].forEach(id=>{ const e=$(id); if(e){ e.disabled=on; e.style.opacity=on?.45:1; } }); if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
+function atecoLive(v,auto){ S.profile.atecoAuto=!!auto; if(!v||coefAteco(v)!=null){ S.profile.ateco=v; if(v) S.setup=true; save(); refreshRate(); } }
+function actDef(id){ const a=PARAMS.attivita.find(x=>x.id===id); return a&&a.def||''; }
+function isDefCode(v){ return !!v && PARAMS.attivita.some(a=>a.def===v); }
+function actPick(pre,id){ const inp=$(pre+'-ateco'), cur=fmtAteco(inp.value), d=actDef(id), a=PARAMS.attivita.find(x=>x.id===id)||{}, h=$(pre+'-ahint');
+  if(cur && !S.profile.atecoAuto && !isDefCode(cur)){ h.innerHTML=atecoHint(cur)+'<br>Hai già scritto un tuo codice: lo lascio com\'è.'; return; }
+  inp.value=d; atecoLive(d,!!d); h.innerHTML = d ? atecoHint(d) : (a.ask ? '<b style="color:var(--txt)">Cosa vendi?</b> Nel commercio il codice cambia in base al prodotto: scrivilo dalla tua visura.' : atecoHint('')); }
 function fmtAteco(v){ const d=String(v||'').replace(/\D/g,'').slice(0,6); return d.replace(/(\d{2})(?=\d)/g,'$1.'); }
 // Coefficienti: Allegato 4 L. 190/2014, letti sul codice ATECO 2007 corrispondente (D.Lgs. 81/2025). Gestiti anche i casi ATECO 2025 che hanno cambiato posto.
 function atecoInfo(code){ const m=String(code||'').replace(/,/g,'.').match(/^\s*(\d{2})(?:\.(\d{1,2}))?/); if(!m) return null; const d=+m[1], sub=m[2]!=null?+(m[2]+'0').slice(0,2):null;
@@ -536,7 +555,7 @@ function isCassa(){ return S.profile.inps==='cassa'; }
 function impOf(list){ return list.reduce((a,p)=>a+p.tot*coefFor(p.ateco),0); }
 function atecoHint(v){ if(!String(v||'').trim()) return 'Facoltativo ma consigliato: lo trovi nella visura camerale o nel certificato della partita IVA. Scrivi solo i numeri.'; const i=atecoInfo(v);
   if(!i) return '<span style="color:var(--red)">Codice non riconosciuto.</span> Controlla le prime due cifre: sono quelle che contano.'; if(i.need) return 'Per il 46 servono almeno 4 cifre (es. 46.18): agenti e grossisti hanno percentuali diverse.';
-  const c=coefAteco(v); let h=`Gruppo: <b style="color:var(--txt)">${esc(i.amb&&S.profile.ambul?'commercio ambulante'+(S.profile.ambul==='al'?' alimentare':' non alimentare'):i.g)}</b> · tasse calcolate sul <b style="color:var(--txt)">${Math.round(c*100)}%</b>. Se il gruppo non corrisponde a quello che fai, ricontrolla il codice.`;
+  const c=coefAteco(v); let h=(S.profile.atecoAuto&&isDefCode(fmtAteco(v))?'<b style="color:var(--acc)">Codice proposto: verificalo sulla tua visura.</b> ':'')+`Gruppo: <b style="color:var(--txt)">${esc(i.amb&&S.profile.ambul?'commercio ambulante'+(S.profile.ambul==='al'?' alimentare':' non alimentare'):i.g)}</b> · tasse calcolate sul <b style="color:var(--txt)">${Math.round(c*100)}%</b>. Se il gruppo non corrisponde a quello che fai, ricontrolla il codice.`;
   if(i.warn) h+=`<br><span style="color:var(--acc)">${i.warn}</span>`;
   if(i.amb) h+=`<div class="ambq"><span>Vendi su mercati e bancarelle (ambulante)?</span><div class="seg"><button type="button" data-v="" class="${!S.profile.ambul?'on':''}" onclick="setAmbul('')">No</button><button type="button" data-v="al" class="${S.profile.ambul==='al'?'on':''}" onclick="setAmbul('al')">Sì, alimentari</button><button type="button" data-v="na" class="${S.profile.ambul==='na'?'on':''}" onclick="setAmbul('na')">Sì, altro · 54%</button></div></div>`;
   return h; }
@@ -627,7 +646,7 @@ function setEnp(v){ S.homeEnp=!!v; save(); refreshRate(); renderCalc(); }
 function curCode(){ const cs=codes(); return cs.includes(S.homeCode)?S.homeCode:(cs[0]||''); }
 function setHomeCode(c){ S.homeCode=c; save(); refreshRate(); renderCalc(); }
 function renderRate(){ const m=isMan(); $('rate5').classList.toggle('on',!m&&is5()); $('rate15').classList.toggle('on',!m&&!is5()); 
-  const ca=coefAteco(S.profile.ateco); const cs=codes(); if($('enpsel')) $('enpsel').innerHTML = S.profile.enpals2 ? `<span>Contributi per questo lavoro:</span><button type="button" class="${curEnp()?'':'on'}" onclick="setEnp(0)">${isCassa()?esc((S.profile.cassaNome||'Cassa').split(' (')[0]):isIVS()?'INPS '+S.profile.inps:'Gestione separata'}<small>i soliti</small></button><button type="button" class="${curEnp()?'on':''}" onclick="setEnp(1)">Spettacolo<small>ex ENPALS 9,19% trattenuto</small></button>` : ''; if($('codesel')) $('codesel').innerHTML = cs.length>1 ? '<span>Questo lavoro è per:</span>'+cs.map(c=>`<button type="button" class="${c===curCode()?'on':''}" onclick="setHomeCode('${c}')">${esc(c)} · ${Math.round(coefAteco(c)*100)}%<small>${esc(((atecoInfo(c)||{}).g||'').split(' (')[0])}</small></button>`).join('') : ''; const rc=$('ratecode'); if(rc) rc.innerHTML = ca!=null ? `${esc(S.profile.ateco)}<small>tasse sul ${Math.round(ca*100)}%</small>` : `Codice ATECO<small class="pmiss">inseriscilo</small>`; if($('profline')) $('profline').innerHTML=profLine(); }
+  const ca=coefAteco(S.profile.ateco); const cs=codes(); if($('enpsel')) $('enpsel').innerHTML = S.profile.enpals2 ? `<span>Contributi per questo lavoro:</span><button type="button" class="${curEnp()?'':'on'}" onclick="setEnp(0)">${isCassa()?esc((S.profile.cassaNome||'Cassa').split(' (')[0]):isIVS()?'INPS '+S.profile.inps:'Gestione separata'}<small>i soliti</small></button><button type="button" class="${curEnp()?'on':''}" onclick="setEnp(1)">Spettacolo<small>ex ENPALS 9,19% trattenuto</small></button>` : ''; if($('codesel')) $('codesel').innerHTML = cs.length>1 ? '<span>Questo lavoro è per:</span>'+cs.map(c=>`<button type="button" class="${c===curCode()?'on':''}" onclick="setHomeCode('${c}')">${esc(c)} · ${Math.round(coefAteco(c)*100)}%<small>${esc(((atecoInfo(c)||{}).g||'').split(' (')[0])}</small></button>`).join('') : ''; const rc=$('ratecode'); if(rc) rc.innerHTML = ca!=null ? `${esc(S.profile.ateco)}<small>${S.profile.atecoAuto?'proposto · ':''}tasse sul ${Math.round(ca*100)}%</small>` : `Codice ATECO<small class="pmiss">inseriscilo</small>`; if($('profline')) $('profline').innerHTML=profLine(); }
 function profLine(){ const pr=S.profile, n=annoAtt(), bits=[], miss=[];
   if(n) bits.push(`${ordinale(n)} anno di P.IVA`); else miss.push('anno di apertura');
   bits.push(isCassa()? esc((pr.cassaNome&&pr.cassaNome!=='Altra'?pr.cassaNome.split(' (')[0]:'Cassa')) : isIVS()? `INPS ${pr.inps}${pr.rid35?' −35%':''}` : 'Gestione separata');
@@ -1196,11 +1215,11 @@ function askAct(first,after){
     <h3>${first?'Una domanda sola':'Cosa fai?'}</h3>
     <div class="sub">${first?'Serve per calcolare bene le tasse. Si cambia quando vuoi.':''}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="a-act" ${coefAteco(pr.ateco)!=null?'disabled style="opacity:.45"':''} onchange="$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l\'INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
+    <select id="a-act" onchange="actPick('a',this.value);$('a-altro').style.display=this.value==='altro'?'':'none';$('a-note').textContent=this.value==='no'?'PreventIVO è fatta per le partite IVA individuali in regime forfettario. Con una SRL o in ordinario i conti sono diversi: questa app non fa per te.':(this.value==='cassa'?'Hai una cassa di previdenza (Inarcassa, Forense, ENPAM…): l’INPS qui è una stima generica, la tua cassa ha regole sue. Il conto vero lo fa il commercialista.':'')">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}</option>`).join('')}</select>
     <div class="hint" id="a-note" style="color:var(--red);margin:8px 2px 0"></div>
     <input id="a-altro" value="${esc(pr.actName||'')}" placeholder="Es. tatuatore, personal trainer, guida…" style="display:${pr.act==='altro'?'':'none'};width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-top:8px">
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('a-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="a-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 73.30.09" oninput="this.value=fmtAteco(this.value);$('a-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="a-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">Come versi i contributi? <span class="why" onclick="why('inps')">?</span></label>
     <select id="a-inps" onchange="$('a-ridw').style.display=(this.value==='separata'||this.value==='cassa')?'none':'';$('a-cassaw').style.display=this.value==='cassa'?'':'none'"><option value="separata" ${pr.inps==='separata'?'selected':''}>Gestione separata · niente rate fisse</option><option value="artigiani" ${pr.inps==='artigiani'?'selected':''}>Artigiani · 4 rate fisse l'anno</option><option value="commercianti" ${pr.inps==='commercianti'?'selected':''}>Commercianti · 4 rate fisse l'anno</option><option value="cassa" ${pr.inps==='cassa'?'selected':''}>Cassa del mio albo · avvocati, ingegneri, giornalisti…</option></select>
@@ -1255,9 +1274,9 @@ function settingsHTML(first){
     <h3>${first?'Ciao. Tre domande e via.':'Impostazioni'} <small style="color:var(--mut);font-weight:400;font-size:12px">v${PARAMS.ver}</small></h3>
     <div class="sub">${first?'Niente account, niente banca. Tutto resta sul tuo telefono.':'Parametri '+PARAMS.anno+'. Stime, non consulenza.'}</div>
     <label class="l">Cosa fai? <span class="why" onclick="why('coef')">?</span></label>
-    <select id="s-act" ${coefAteco(pr.ateco)!=null?'disabled style="opacity:.45"':''}>${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
+    <select id="s-act" onchange="actPick('s',this.value)">${PARAMS.attivita.map(a=>`<option value="${a.id}" ${pr.act===a.id?'selected':''}>${a.n}${a.def?' · '+a.def:''} · ${Math.round(a.c*100)}%</option>`).join('')}</select>
     <label class="l">Codice ATECO <span class="why" onclick="why('coef')">?</span></label>
-    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 70.21.00" oninput="this.value=fmtAteco(this.value);$('s-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <input id="s-ateco" inputmode="numeric" maxlength="8" value="${esc(pr.ateco||'')}" placeholder="es. 73.30.09" oninput="this.value=fmtAteco(this.value);$('s-ahint').innerHTML=atecoHint(this.value);atecoLive(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" id="s-ahint" style="margin:8px 2px 0">${atecoHint(pr.ateco)}</div>
     <label class="l">Hai altri codici ATECO? (facoltativo)</label>
     <div class="row2"><input id="s-at2" inputmode="numeric" maxlength="8" value="${esc((pr.altri||[])[0]||'')}" placeholder="2° codice" oninput="this.value=fmtAteco(this.value);$('s-at2h').innerHTML=altroHint(this.value)" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="s-at3" inputmode="numeric" maxlength="8" value="${esc((pr.altri||[])[1]||'')}" placeholder="3° codice" oninput="this.value=fmtAteco(this.value);$('s-at3h').innerHTML=altroHint(this.value)" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"></div>
