@@ -249,6 +249,28 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .legend div{white-space:nowrap}
 .legend .ico{width:22px;height:22px;flex:none;color:var(--mut)}
 .donutwrap.empty .donut{opacity:.9}
+
+/* ---------- DESKTOP ---------- */
+@media (min-width:960px){
+  body{padding-bottom:0;padding-left:232px}
+  .tabs{top:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:92px 14px 20px;background:var(--bg)}
+  .tabs::before{content:'Menu';color:var(--mut);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 12px 8px}
+  .tabs button{flex-direction:row;gap:12px;font-size:15px;padding:11px 12px!important;border-radius:12px;width:100%;justify-content:flex-start}
+  .tabs button:hover{background:var(--sur)}
+  .tabs button.on{background:var(--sur)}
+  .tabs svg{width:20px;height:20px}
+  .app{max-width:1120px;padding:0 40px}
+  .hdr{padding-top:24px}
+  #v-new{max-width:560px}
+  #v-list.on,#v-clients.on,#v-year.on,#v-bandi.on{max-width:820px}
+  #v-bandi.on{max-width:980px}
+  #commlist,#bandilist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+  #commlist>select,#commlist>.disc0,#commlist>.hint{grid-column:1/-1}
+  #commlist .card,#bandilist .card{margin:0}
+  .sheet{align-items:center;padding:24px}
+  .sheet .in{max-width:560px;border-radius:22px;max-height:86vh}
+  .sheet .in::before{display:none}
+}
 @media print{
   body{background:#fff;color:#111;padding:0;display:block}
   .app,.tabs,.sheet,.toast{display:none!important}
@@ -455,7 +477,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.8.1',
+  ver: '4.9.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
