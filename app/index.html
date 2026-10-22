@@ -402,6 +402,16 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .nxl{display:flex;flex-direction:column;gap:4px;margin-top:10px;font-size:12.5px;color:var(--mut)}
 .nxl span{display:flex;align-items:center;gap:7px}.nxl b{width:8px;height:8px;border-radius:2px;flex:0 0 8px}.nxl em{margin-left:auto;font-style:normal;color:var(--txt);white-space:nowrap;padding-left:8px}
 @media (min-width:960px){ .nxg{grid-template-columns:repeat(3,minmax(0,1fr))} }
+
+/* ---------- SPESE ---------- */
+.spk{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:0 0 14px}
+.spk>div{background:var(--sur);border-radius:18px;padding:14px 16px}.spk .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}.spk .v{font-size:24px;font-weight:800;margin-top:4px;letter-spacing:-.02em}.spk small{display:block;color:var(--mut);font-size:12px;margin-top:2px}
+.spg{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
+@media (min-width:960px){.spg{grid-template-columns:1fr 1fr}.spk{grid-template-columns:repeat(4,1fr)}}
+.spc{background:var(--sur);border-radius:20px;padding:18px 20px}.spc h4{margin:0 0 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
+.spd{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.spl{flex:1;min-width:150px;display:grid;gap:6px;font-size:14px}.spl span{display:flex;align-items:center;gap:8px}.spl b{width:10px;height:10px;border-radius:3px;flex:none}.spl em{margin-left:auto;font-style:normal;font-weight:700}
+.spm{display:flex;align-items:flex-end;gap:6px;height:120px}.spm div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;font-size:10px;color:var(--mut);height:100%}.spm i{display:block;width:100%;background:var(--acc);border-radius:6px 6px 2px 2px;min-height:2px}
+.spr{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);font-size:14px}.spr:first-child{border-top:0}.spr .n{flex:1;min-width:0}.spr .n small{display:block;color:var(--mut);font-size:12px}.spr .a{font-weight:700;white-space:nowrap}.spr button{font-size:12px;background:var(--sur2);border-radius:10px;padding:6px 10px;color:var(--mut)}
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
   body{padding-bottom:0;padding-left:260px}
@@ -572,6 +582,12 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="desk phonebox"></div>
   </section>
 
+  <section class="view" id="v-spese">
+    <div class="yhead"><div class="q" style="margin-bottom:6px">Spese lavoro</div>
+    <div class="qsub" id="splabel"></div>
+    <p class="disc0" style="text-align:left;margin:0 0 12px">Da forfettario le spese non si deducono: servono a capire quanto ti resta davvero. In ordinario diventano deducibili. Decide il commercialista.</p></div>
+    <div id="spbody"></div>
+  </section>
   <section class="view" id="v-year">
     <div class="yhead"><div class="q" style="margin-bottom:6px">Quest'anno</div>
     <div class="qsub" id="ylabel"></div>
@@ -631,6 +647,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
   <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
   <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
+  <button data-v="spese"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 3v9h9"/></svg><span class="lmob">Spese</span><span class="ldsk">Spese lavoro</span></button>
   <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><span class="lmob">Commercialista</span><span class="ldsk">Trova il tuo commercialista</span></button>
 </nav>
 
@@ -642,7 +659,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.11.1',
+  ver: '4.12.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1594,7 +1611,7 @@ function readBackup(f){ if(!f) return; const r=new FileReader(); r.onload=()=>{ 
 let _imp=null;
 function mergeById(a,b){ const m=new Map(); (a||[]).forEach(x=>m.set(x.id,x)); (b||[]).forEach(x=>m.set(x.id,x)); return [...m.values()]; }
 function applyBackup(merge){ const D=_imp; _imp=null; if(!D) return;
-  if(merge){ const L=S; S=Object.assign({},L,D,{ prev:mergeById(L.prev,D.prev).sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id-a.id), clients:mergeById(L.clients,D.clients), seq:Math.max(L.seq||0,D.seq||0), unlocked:!!(L.unlocked||D.unlocked), setup:!!(L.setup||D.setup), profile:D.setup?Object.assign({},L.profile,D.profile):L.profile }); }
+  if(merge){ const L=S; S=Object.assign({},L,D,{ prev:mergeById(L.prev,D.prev).sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id-a.id), clients:mergeById(L.clients,D.clients), spese:mergeById(L.spese,D.spese), seq:Math.max(L.seq||0,D.seq||0), unlocked:!!(L.unlocked||D.unlocked), setup:!!(L.setup||D.setup), profile:D.setup?Object.assign({},L.profile,D.profile):L.profile }); }
   else S=D;
   save(); closeSheet(); renderAll(); renderRate(); renderActLine(); renderHello(); toast(merge?'✓ Dati uniti':'✓ Dati sostituiti'); }
 document.addEventListener('dragover',e=>{ if(e.dataTransfer&&[...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
@@ -1819,6 +1836,35 @@ function renderOrd(ys,Y0){ const Ys=ys.filter(Y=>{const v=yearPrev(Y);return v>P
     h+=`<div class="hint" style="line-height:1.55;margin-bottom:8px">Incassi ${fmt(yearPrev(Y))} nel ${Y} → dal <b>${Y+1}</b> sei in <b>regime ordinario</b>. Su ${fmt(vn)} di incassi ${Y+1}: forfettario avresti pagato ~<b>${fmt(f.tasse)}</b>, ordinario ~<b>${fmt(o.tot)}</b> (INPS ~${fmt(o.inps)} + IRPEF e addizionali ~${fmt(o.irpef)}), con ${cp}% di costi reali (${fmt(o.costi)}). Differenza ~<b style="color:${o.tot>f.tasse?'var(--red)':'var(--acc)'}">${o.tot>f.tasse?'+':'−'}${fmt(Math.abs(o.tot-f.tasse))}</b>.</div>`; });
   if(hi.length) h+=`<div class="hint" style="line-height:1.55;margin-bottom:8px">Sopra ${fmt(PARAMS.sogliaOut)} (${hi.join(', ')}): l'uscita è <b>immediata</b>, da quella fattura applichi IVA e ordinario sull'intero anno.</div>`;
   h+=`<div class="row2" style="align-items:center;gap:8px"><label style="font-size:12px;color:var(--mut);flex:1">Costi reali che deduci in ordinario (% degli incassi)</label><input type="number" value="${cp}" min="0" max="90" onchange="ordSet(this.value)" style="width:80px;background:var(--sur2);border:0;border-radius:12px;padding:10px;font-size:16px"></div><div class="hint" style="margin-top:6px">Stima grezza: IRPEF 23/33/43% + 2% addizionali, INPS sul reddito, niente IRAP, detrazioni o altri redditi. In ordinario aggiungi IVA 22% sulle fatture (a carico del cliente, che se è un privato o un ente che non la recupera la sente come aumento di prezzo) e la contabilità costa di più. Il conto vero lo fa Distrotti.</div>`; return h; }
+
+/* ---------- SPESE LAVORO ---------- */
+const SPCAT_COL={'Attrezzatura':'#FFD54A','Software e abbonamenti':'#4AA8FF','Stampa e materiali':'#C77DFF','Altro lavoro':'#4AE0D8'};
+function spY(){ return String(PARAMS.anno); }
+function spList(){ return (S.spese||[]).filter(x=>String(x.d).startsWith(spY())); }
+function spInc(){ const Y=spY(); return S.prev.filter(p=>p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).startsWith(Y)).reduce((a,p)=>a+p.tot,0); }
+function spToggle(id){ const x=(S.spese||[]).find(e=>e.id===id); if(!x) return; x.t=x.t==='lavoro'?'pers':'lavoro'; if(x.t==='lavoro'&&(x.cat==='Personale'||x.cat==='Amazon personale'||x.cat==='Da verificare')) x.cat='Altro lavoro'; if(x.t==='pers'&&x.cat==='Altro lavoro') x.cat='Personale'; save(); renderSpese(); }
+function spFilter(f){ window._spf=f; renderSpese(); }
+function spAddSheet(){ sheet(`<h3 style="margin:0 0 12px">Aggiungi una spesa di lavoro</h3><label class="l">Cosa</label><input id="sa-n" placeholder="es. Obiettivo 24-70" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px"><label class="l">Quanto (€)</label><input id="sa-v" inputmode="decimal" placeholder="es. 350" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px"><label class="l">Tipo</label><select id="sa-c" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px">${Object.keys(SPCAT_COL).map(k=>`<option>${k}</option>`).join('')}</select><button class="btn" style="margin-top:14px;width:100%" onclick="spAdd()">Aggiungi</button>`); }
+function spAdd(){ const n=($('sa-n').value||'').trim(), v=pnum($('sa-v').value); if(!n||!(v>0)){ toast('Scrivi cosa e quanto'); return; } S.spese=S.spese||[]; S.spese.push({id:Date.now(),d:today(),n,v,cat:$('sa-c').value,t:'lavoro'}); save(); closeSheet(); renderSpese(); toast('✓ Spesa aggiunta'); }
+function renderSpese(){ const el=$('spbody'); if(!el) return; const Y=spY(), L=spList(), lav=L.filter(x=>x.t==='lavoro'), dub=L.filter(x=>x.t==='dub'), inc=spInc();
+  $('splabel').textContent='Anno '+Y+' · incassi veri contro spese';
+  if(!(S.spese||[]).length){ el.innerHTML=`<div class="spc">Qui vedi quanto hai speso per lavorare (attrezzatura, software, stampe) e quanto ti resta davvero. Carica i dati con le spese oppure aggiungile a mano.<br><br><button class="btn" onclick="spAddSheet()">+ Aggiungi una spesa</button></div>`; return; }
+  const sp=lav.reduce((a,x)=>a+x.v,0), tasse=inc>0?calc(inc,{annual:true}).tasse:0, resta=inc-tasse-sp, pct=inc>0?sp/inc*100:0;
+  const cats={}; lav.forEach(x=>cats[x.cat]=(cats[x.cat]||0)+x.v); const cl=Object.entries(cats).filter(a=>a[1]>0).sort((a,b)=>b[1]-a[1]);
+  const mm=Array(12).fill(0); lav.forEach(x=>mm[+String(x.d).slice(5,7)-1]+=x.v); const mx=Math.max(...mm,1), mn=['G','F','M','A','M','G','L','A','S','O','N','D'];
+  const d1=dDonut([{v:Math.max(0,resta),c:'var(--acc)',t:'Ti resta'},{v:tasse,c:'#FF4D4D',t:'Tasse'},{v:sp,c:'#FFD54A',t:'Spese'}],150,22,`<text x="75" y="72" text-anchor="middle" fill="var(--mut)" font-size="11">ti resta</text><text x="75" y="92" text-anchor="middle" fill="currentColor" font-size="18" font-weight="800">${inc>0?Math.round(resta/inc*100):0}%</text>`);
+  const d2=dDonut(cl.map(([k,v])=>({v,c:SPCAT_COL[k]||'#999',t:k})),150,22,`<text x="75" y="72" text-anchor="middle" fill="var(--mut)" font-size="11">speso</text><text x="75" y="92" text-anchor="middle" fill="currentColor" font-size="16" font-weight="800">${fmt(sp)}</text>`);
+  const f=window._spf||'lavoro', rows=(f==='lavoro'?lav:f==='dub'?dub:L.filter(x=>x.t==='pers')).slice().sort((a,b)=>b.v-a.v);
+  const tab=(k,t,n)=>`<button type="button" class="${f===k?'on':''}" onclick="spFilter('${k}')">${t} (${n})</button>`;
+  el.innerHTML=`<div class="spk"><div><div class="k">Incassato</div><div class="v">${fmt(inc)}</div><small>soldi arrivati davvero</small></div><div><div class="k">Speso per lavoro</div><div class="v" style="color:#FFD54A">${fmt(sp)}</div><small>${pct.toFixed(0)}% di quello che incassi</small></div><div><div class="k">Tasse stimate</div><div class="v" style="color:#FF4D4D">${fmt(tasse)}</div><small>forfettario, stima</small></div><div><div class="k">Ti resta davvero</div><div class="v" style="color:var(--acc)">${fmt(resta)}</div><small>dopo tasse e spese</small></div></div>
+  <div class="spg"><div class="spc"><h4>Dove vanno i soldi che incassi</h4><div class="spd">${d1}<div class="spl"><span><b style="background:var(--acc)"></b>Ti resta<em>${fmt(Math.max(0,resta))}</em></span><span><b style="background:#FF4D4D"></b>Tasse<em>${fmt(tasse)}</em></span><span><b style="background:#FFD54A"></b>Spese lavoro<em>${fmt(sp)}</em></span></div></div></div>
+  <div class="spc"><h4>Spese per tipo</h4><div class="spd">${d2}<div class="spl">${cl.map(([k,v])=>`<span><b style="background:${SPCAT_COL[k]||'#999'}"></b>${esc(k)}<em>${fmt(v)}</em></span>`).join('')}</div></div></div></div>
+  <div class="spc" style="margin-bottom:12px"><h4>Mese per mese</h4><div class="spm">${mm.map((v,i)=>`<div title="${fmt(v)}"><span>${v>0?Math.round(v/100)/10+'k':''}</span><i style="height:${v/mx*80}%"></i>${mn[i]}</div>`).join('')}</div></div>
+  ${dub.length?`<div class="spc" style="margin-bottom:12px;border:1px solid #ff9f43"><h4 style="color:#ff9f43">Da verificare: ${fmt(dub.reduce((a,x)=>a+x.v,0))}</h4><div class="hint">Non so se sono di lavoro (Apple, Poste, stampe, ecc.). Aprili qui sotto e tocca «È di lavoro» su quelli che lo sono.</div></div>`:''}
+  <div class="spc"><div class="seg" style="margin:0 0 10px">${tab('lavoro','Lavoro',lav.length)}${tab('dub','Da verificare',dub.length)}${tab('pers','Personali',L.filter(x=>x.t==='pers').length)}</div>
+  ${rows.slice(0,60).map(x=>`<div class="spr"><div class="n">${esc(x.n)}<small>${x.d} · ${esc(x.cat)}</small></div><div class="a">${fmt(x.v)}</div><button onclick="spToggle(${x.id})">${x.t==='lavoro'?'Non è di lavoro':'È di lavoro'}</button></div>`).join('')||'<div class="hint">Niente qui.</div>'}${rows.length>60?`<div class="hint" style="margin-top:8px">Mostro le 60 più grandi su ${rows.length}.</div>`:''}
+  <button class="btn" style="margin-top:12px" onclick="spAddSheet()">+ Aggiungi una spesa</button></div>
+  <div class="hint" style="margin-top:10px;line-height:1.5">Dati: carta Revolut e ordini Amazon ${Y}. I rimborsi sono già tolti. Non vedo i pagamenti fatti da altri conti, quindi il totale può essere più alto.</div>`; }
 function pmSet(m){ $('pm-anno').style.display=m==='anno'?'':'none'; $('pm-rate').style.display=m==='rate'?'':'none'; $('pm-b0').classList.toggle('on',m==='anno'); $('pm-b1').classList.toggle('on',m==='rate'); window._pm=m; pmLive(); }
 function pmRead(){ return {tipo:window._ct||'fisso', pmode:window._pm||'anno', anni:Object.fromEntries([0,1,2].map(i=>[+PARAMS.anno+i, ($('pa-'+i).value||'').trim()===''?'':pnum($('pa-'+i).value)])), rate:{v:pnum($('pr-v').value), ogni:+$('pr-f').value||1, dal:$('pr-d').value||'', al:$('pr-a').value||''}}; }
 function pmLive(){ const e=$('pm-sum'); if(!e) return; const t=Object.assign({id:-1,atteso:0},pmRead()); const Y=+PARAMS.anno; if(t.pmode!=='rate'){ e.innerHTML=''; return; } e.innerHTML=[Y,Y+1,Y+2].map(y=>`${y}: <b>${fmt(clPlan(t,y))}</b> (${rateCount(t,y)} ${rateCount(t,y)===1?'incasso':'incassi'})`).join(' · '); }
@@ -1833,7 +1879,7 @@ function prevBox(c){ const Y=+PARAMS.anno, a=c.anni||{}, r=c.rate||{}, m=c.pmode
      <div class="row2">${inp('pr-v',r.v||'','Importo €, es. 1.500')}<select id="pr-f" onchange="pmLive()" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px">${FREQ.map(f=>`<option value="${f[0]}" ${(+r.ogni||1)===f[0]?'selected':''}>${f[1]}</option>`).join('')}</select></div>
      <div class="row2" style="margin-top:8px"><label style="flex:1;font-size:12px;color:var(--mut)">Primo incasso${inp('pr-d',r.dal||'','', 'month')}</label><label style="flex:1;font-size:12px;color:var(--mut)">Ultimo (vuoto = senza fine)${inp('pr-a',r.al||'','', 'month')}</label></div>
      <div class="hint" id="pm-sum" style="margin:8px 2px 0"></div></div></div>`; }
-function renderAll(){ try{ renderPhoneBox(); renderHomeSide(); renderNext(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
+function renderAll(){ try{ renderPhoneBox(); renderHomeSide(); renderNext(); renderSpese(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
