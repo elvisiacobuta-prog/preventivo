@@ -596,8 +596,6 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <p class="disc0" style="text-align:left;margin:0 0 12px">Stime: importi e scadenze vanno confermati dal commercialista.</p>
     <div class="desk" id="yhero"></div></div>
 
-    <div class="card ya-money" id="ymoney"></div>
-    <div class="card ya-next" id="ynext"></div>
     <div class="ya-tax"><div class="seg" id="ymodeseg" style="margin:0 0 12px"><button id="ym0" onclick="setYMode(0)">Solo incassato</button><button id="ym1" onclick="setYMode(1)">Con quelli da incassare</button></div>
     <div class="card">
       <div class="kpi"><div class="k" id="ytaxk">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
@@ -628,6 +626,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
     <div class="ya-act"><button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
     <button class="btn ghost" onclick="backup()">Salva un backup dei dati</button></div></div>
+    <div class="card ya-money" id="ymoney"></div>
+    <div class="card ya-next" id="ynext"></div>
     <div class="card ya-piano">
       <div class="k2">Cosa paghi e quando</div>
       <div class="qsub" id="yatt" style="margin:-4px 0 12px"></div>
@@ -662,7 +662,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.13.7',
+  ver: '4.13.8',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
