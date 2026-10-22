@@ -455,7 +455,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.8.0',
+  ver: '4.8.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1145,8 +1145,8 @@ function exportCSV(){
   const rows=[['Numero','Data preventivo','Data incasso','Cliente','Importo','Voci'],...inc.map(p=>[p.num,p.date,p.hist.incassato,clientOf(p).name,p.tot.toFixed(2).replace('.',','),p.rows.map(r=>`${r.q}x ${r.d} ${r.p}`).join(' | ')])];
   dl(`incassi-${PARAMS.anno}.csv`, rows.map(r=>r.map(x=>`"${String(x).replace(/"/g,'""')}"`).join(';')).join('\n'), 'text/csv');
 }
-async function backup(){ const name=`preventivo-backup-${today()}.json`, txt=JSON.stringify(S);
-  try{ const f=new File([txt],name,{type:'application/json'}); if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:'Backup PreventIVO'}); toast('Backup pronto'); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
+async function backup(){ const name=`preventivo-dati-${today()}.json`, txt=JSON.stringify(Object.assign({},S,{savedAt:Date.now()}));
+  try{ const f=new File([txt],name,{type:'application/json'}); if(navigator.canShare&&navigator.canShare({files:[f]})){ await navigator.share({files:[f],title:'Dati PreventIVO'}); toast('Dati pronti'); return; } }catch(e){ if(e&&e.name==='AbortError') return; }
   dl(name, txt, 'application/json'); toast('Backup salvato nei download'); }
 function dl(name,content,type){ const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([content],{type})); a.download=name; a.click(); }
 
@@ -1316,7 +1316,7 @@ function settingsHTML(first){
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
     <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
     ${first?'':'<button class="btn ghost" onclick="faq()">? Aiuto · domande frequenti</button>'}
-    ${first?'':'<div class="movebox"><b>Vuoi i tuoi dati anche su un altro telefono o sul computer?</b><small>I dati stanno solo su questo dispositivo, non su internet. Per spostarli: 1) qui tocca <b>Salva un backup</b> e mandatelo (mail, WhatsApp, AirDrop); 2) sull\'altro dispositivo apri l\'app, Impostazioni, <b>Ripristina da backup</b>.</small><button class="btn ghost" onclick="backup()">Salva un backup</button></div><button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
+    ${first?'':'<div class="movebox"><b>Lavori anche sul computer o su un altro telefono?</b><small>I dati restano solo sui tuoi dispositivi, nessun server. Per portarli di là: 1) qui tocca <b>Manda i dati</b> e mandateli (WhatsApp, mail, AirDrop); 2) sull\'altro apri PreventIVO e tocca <b>Ricevi i dati</b> (sul computer puoi anche trascinare il file nella pagina). Puoi unirli a quelli che ci sono già.</small><button class="btn ghost" onclick="backup()">Manda i dati</button></div><button class="btn ghost" onclick="restore()">Ricevi i dati</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
     <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
 }
 let tmpStart='unset';
@@ -1327,7 +1327,21 @@ function saveSettings(){
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim(); S.profile.marchio=($('s-mk').value||'').trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0); toast('✓ Impostazioni salvate');
 }
-function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json,text/plain'; i.onchange=()=>{ const r=new FileReader(); r.onload=()=>{ try{ S=JSON.parse(r.result); save(); renderAll(); closeSheet(); toast('Ripristinato'); }catch(e){ alert('File non valido'); } }; r.readAsText(i.files[0]); }; i.click(); }
+function restore(){ const i=document.createElement('input'); i.type='file'; i.accept='.json,application/json,text/plain'; i.onchange=()=>readBackup(i.files[0]); i.click(); }
+function readBackup(f){ if(!f) return; const r=new FileReader(); r.onload=()=>{ let D; try{ D=JSON.parse(r.result); if(!D||typeof D!=='object'||!('prev' in D)) throw 0; }catch(e){ alert('File non valido: serve il file di PreventIVO (.json)'); return; } _imp=D;
+  const empty=!S.setup&&!(S.prev||[]).length&&!(S.clients||[]).length; if(empty){ applyBackup(false); return; }
+  const when=D.savedAt?new Date(D.savedAt).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}):'';
+  sheet(`<h3>Ricevi i dati</h3><div class="sub">File${when?' del '+when:''}: ${(D.prev||[]).length} preventivi e incassi, ${(D.clients||[]).length} clienti. Qui ne hai ${S.prev.length} e ${S.clients.length}.</div>
+  <button class="btn" onclick="applyBackup(true)">Unisci con quelli di qui</button><div class="hint" style="margin:-4px 2px 12px">Aggiunge quello che manca. Se lo stesso preventivo è su tutti e due, vale la versione del file.</div>
+  <button class="btn ghost" onclick="applyBackup(false)">Sostituisci tutto con il file</button><div class="hint" style="margin:-4px 2px 0">Quello che c'è qui sparisce.</div>`); }; r.readAsText(f); }
+let _imp=null;
+function mergeById(a,b){ const m=new Map(); (a||[]).forEach(x=>m.set(x.id,x)); (b||[]).forEach(x=>m.set(x.id,x)); return [...m.values()]; }
+function applyBackup(merge){ const D=_imp; _imp=null; if(!D) return;
+  if(merge){ const L=S; S=Object.assign({},L,D,{ prev:mergeById(L.prev,D.prev).sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id-a.id), clients:mergeById(L.clients,D.clients), seq:Math.max(L.seq||0,D.seq||0), unlocked:!!(L.unlocked||D.unlocked), setup:!!(L.setup||D.setup), profile:D.setup?Object.assign({},L.profile,D.profile):L.profile }); }
+  else S=D;
+  save(); closeSheet(); renderAll(); renderRate(); renderActLine(); renderHello(); toast(merge?'✓ Dati uniti':'✓ Dati sostituiti'); }
+document.addEventListener('dragover',e=>{ if(e.dataTransfer&&[...e.dataTransfer.types].includes('Files')) e.preventDefault(); });
+document.addEventListener('drop',e=>{ const f=e.dataTransfer&&e.dataTransfer.files[0]; if(f&&/\.json$|json|text/.test(f.name+f.type)){ e.preventDefault(); readBackup(f); } });
 function wipe(){ if(!confirm('Cancellare tutto? Non si torna indietro.')) return; localStorage.removeItem(KEY); location.reload(); }
 
 /* ---------- PERCHÉ ---------- */
@@ -1424,7 +1438,7 @@ const FAQ=[
 ['Le scadenze','Perché il primo anno non pago niente?','Il primo anno non ci sono acconti, perché non c\'è un anno prima su cui calcolarli. Il conto arriva tutto il secondo anno, a giugno: saldo del primo anno più acconti del secondo. È il "conto doppio": metti via i soldi fin dal primo incasso.'],
 ['Le scadenze','Perché a giugno ho pagato zero?','Probabilmente avevi un credito: l\'anno prima avevi pagato acconti più alti di quanto dovevi, e la differenza è stata usata per pagare giugno. È normale quando un anno si incassa meno del precedente.'],
 ['Le scadenze','Metodo storico o previsionale?','Storico: paghi gli acconti calcolati sull\'anno prima, senza rischi. Previsionale: se sai che quest\'anno incasserai meno, paghi acconti più bassi; ma se poi incassi di più paghi la differenza con sanzioni e interessi. Si decide con il commercialista prima di giugno o novembre.'],
-['L\'app','Dove sono i miei dati?','Solo sul tuo telefono (o sul computer da cui usi l\'app). Non c\'è un account e non vanno su internet. Per passarli su un altro dispositivo: Impostazioni, Salva un backup, poi Ripristina da backup sull\'altro.'],
+['L\'app','Dove sono i miei dati?','Solo sul tuo telefono (o sul computer da cui usi l\'app). Non c\'è un account e non vanno su internet. Per passarli su un altro dispositivo: Impostazioni, Manda i dati, poi Ricevi i dati sull\'altro (puoi unirli a quelli che ci sono già).'],
 ['L\'app','L\'app sostituisce il commercialista?','No. Ti dà una visione chiara del tuo anno, ti dice quanto ti resta e ti fa mandare preventivi in pochi secondi. I calcoli sono stime fatte con le regole pubbliche: dichiarazione, F24 e casi particolari restano al commercialista.'],
 ['L\'app','Ogni quanto si aggiornano le percentuali?','Aliquote INPS, minimi delle casse e soglie cambiano ogni anno, di solito tra gennaio e marzo. L\'app si aggiorna da sola quando escono i valori nuovi.']
 ];
