@@ -593,6 +593,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="qsub" id="ylabel"></div>
     <p class="disc0" style="text-align:left;margin:0 0 12px">Stime: importi e scadenze vanno confermati dal commercialista.</p>
     <div class="desk" id="yhero"></div></div>
+    <button class="impbtn" onclick="restore()"><b>Hai un file dati dell'app?</b><small>Tocca qui e scegli il file .json (da Ricevi i dati): sostituisce o unisce i dati.</small><span>↥</span></button>
     <button class="impbtn" onclick="need(importStart)"><b>Hai già i tuoi incassi in Excel?</b><small>Caricali qui (Excel o CSV): l'anno si aggiorna da solo.</small><span>↥</span></button>
 
     <div class="card ya-money" id="ymoney"></div>
@@ -659,7 +660,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.13.0',
+  ver: '4.13.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
