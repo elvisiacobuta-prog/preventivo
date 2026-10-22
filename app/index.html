@@ -659,7 +659,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.12.0',
+  ver: '4.12.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1838,7 +1838,7 @@ function renderOrd(ys,Y0){ const Ys=ys.filter(Y=>{const v=yearPrev(Y);return v>P
   h+=`<div class="row2" style="align-items:center;gap:8px"><label style="font-size:12px;color:var(--mut);flex:1">Costi reali che deduci in ordinario (% degli incassi)</label><input type="number" value="${cp}" min="0" max="90" onchange="ordSet(this.value)" style="width:80px;background:var(--sur2);border:0;border-radius:12px;padding:10px;font-size:16px"></div><div class="hint" style="margin-top:6px">Stima grezza: IRPEF 23/33/43% + 2% addizionali, INPS sul reddito, niente IRAP, detrazioni o altri redditi. In ordinario aggiungi IVA 22% sulle fatture (a carico del cliente, che se è un privato o un ente che non la recupera la sente come aumento di prezzo) e la contabilità costa di più. Il conto vero lo fa Distrotti.</div>`; return h; }
 
 /* ---------- SPESE LAVORO ---------- */
-const SPCAT_COL={'Attrezzatura':'#FFD54A','Software e abbonamenti':'#4AA8FF','Stampa e materiali':'#C77DFF','Altro lavoro':'#4AE0D8'};
+const SPCAT_COL={'Affitto studio':'#FF9F4A','Attrezzatura':'#FFD54A','Software e abbonamenti':'#4AA8FF','Stampa e materiali':'#C77DFF','Altro lavoro':'#4AE0D8'};
 function spY(){ return String(PARAMS.anno); }
 function spList(){ return (S.spese||[]).filter(x=>String(x.d).startsWith(spY())); }
 function spInc(){ const Y=spY(); return S.prev.filter(p=>p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).startsWith(Y)).reduce((a,p)=>a+p.tot,0); }
@@ -1846,7 +1846,7 @@ function spToggle(id){ const x=(S.spese||[]).find(e=>e.id===id); if(!x) return; 
 function spFilter(f){ window._spf=f; renderSpese(); }
 function spAddSheet(){ sheet(`<h3 style="margin:0 0 12px">Aggiungi una spesa di lavoro</h3><label class="l">Cosa</label><input id="sa-n" placeholder="es. Obiettivo 24-70" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px"><label class="l">Quanto (€)</label><input id="sa-v" inputmode="decimal" placeholder="es. 350" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px"><label class="l">Tipo</label><select id="sa-c" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px">${Object.keys(SPCAT_COL).map(k=>`<option>${k}</option>`).join('')}</select><button class="btn" style="margin-top:14px;width:100%" onclick="spAdd()">Aggiungi</button>`); }
 function spAdd(){ const n=($('sa-n').value||'').trim(), v=pnum($('sa-v').value); if(!n||!(v>0)){ toast('Scrivi cosa e quanto'); return; } S.spese=S.spese||[]; S.spese.push({id:Date.now(),d:today(),n,v,cat:$('sa-c').value,t:'lavoro'}); save(); closeSheet(); renderSpese(); toast('✓ Spesa aggiunta'); }
-function renderSpese(){ const el=$('spbody'); if(!el) return; const Y=spY(), L=spList(), lav=L.filter(x=>x.t==='lavoro'), dub=L.filter(x=>x.t==='dub'), inc=spInc();
+function renderSpese(){ const el=$('spbody'); if(!el) return; const Y=spY(), L=spList(), lav=L.filter(x=>x.t==='lavoro'&&String(x.d)<=today()), fut=L.filter(x=>x.t==='lavoro'&&String(x.d)>today()), dub=L.filter(x=>x.t==='dub'), inc=spInc();
   $('splabel').textContent='Anno '+Y+' · incassi veri contro spese';
   if(!(S.spese||[]).length){ el.innerHTML=`<div class="spc">Qui vedi quanto hai speso per lavorare (attrezzatura, software, stampe) e quanto ti resta davvero. Carica i dati con le spese oppure aggiungile a mano.<br><br><button class="btn" onclick="spAddSheet()">+ Aggiungi una spesa</button></div>`; return; }
   const sp=lav.reduce((a,x)=>a+x.v,0), tasse=inc>0?calc(inc,{annual:true}).tasse:0, resta=inc-tasse-sp, pct=inc>0?sp/inc*100:0;
@@ -1860,6 +1860,7 @@ function renderSpese(){ const el=$('spbody'); if(!el) return; const Y=spY(), L=s
   <div class="spg"><div class="spc"><h4>Dove vanno i soldi che incassi</h4><div class="spd">${d1}<div class="spl"><span><b style="background:var(--acc)"></b>Ti resta<em>${fmt(Math.max(0,resta))}</em></span><span><b style="background:#FF4D4D"></b>Tasse<em>${fmt(tasse)}</em></span><span><b style="background:#FFD54A"></b>Spese lavoro<em>${fmt(sp)}</em></span></div></div></div>
   <div class="spc"><h4>Spese per tipo</h4><div class="spd">${d2}<div class="spl">${cl.map(([k,v])=>`<span><b style="background:${SPCAT_COL[k]||'#999'}"></b>${esc(k)}<em>${fmt(v)}</em></span>`).join('')}</div></div></div></div>
   <div class="spc" style="margin-bottom:12px"><h4>Mese per mese</h4><div class="spm">${mm.map((v,i)=>`<div title="${fmt(v)}"><span>${v>0?Math.round(v/100)/10+'k':''}</span><i style="height:${v/mx*80}%"></i>${mn[i]}</div>`).join('')}</div></div>
+  ${fut.length?`<div class="spc" style="margin-bottom:12px"><h4>In arrivo: ${fmt(fut.reduce((a,x)=>a+x.v,0))}</h4><div class="hint">${[...new Set(fut.map(x=>x.n))].map(esc).join(', ')}: non li ho contati nel totale finché non scade la data.</div></div>`:''}
   ${dub.length?`<div class="spc" style="margin-bottom:12px;border:1px solid #ff9f43"><h4 style="color:#ff9f43">Da verificare: ${fmt(dub.reduce((a,x)=>a+x.v,0))}</h4><div class="hint">Non so se sono di lavoro (Apple, Poste, stampe, ecc.). Aprili qui sotto e tocca «È di lavoro» su quelli che lo sono.</div></div>`:''}
   <div class="spc"><div class="seg" style="margin:0 0 10px">${tab('lavoro','Lavoro',lav.length)}${tab('dub','Da verificare',dub.length)}${tab('pers','Personali',L.filter(x=>x.t==='pers').length)}</div>
   ${rows.slice(0,60).map(x=>`<div class="spr"><div class="n">${esc(x.n)}<small>${x.d} · ${esc(x.cat)}</small></div><div class="a">${fmt(x.v)}</div><button onclick="spToggle(${x.id})">${x.t==='lavoro'?'Non è di lavoro':'È di lavoro'}</button></div>`).join('')||'<div class="hint">Niente qui.</div>'}${rows.length>60?`<div class="hint" style="margin-top:8px">Mostro le 60 più grandi su ${rows.length}.</div>`:''}
