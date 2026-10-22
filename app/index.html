@@ -449,7 +449,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="card">
       <div class="inl"><input id="newclient" placeholder="Nuovo cliente" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><button class="btn small" onclick="addClient()" style="flex:none">Aggiungi</button></div>
     </div>
-    <div class="desk" id="cphone"></div>
+    <div class="desk phonebox" id="cphone"></div>
   </section>
 
   <!-- VIEW: ANNO -->
@@ -460,6 +460,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <div class="q" style="margin:26px 0 4px;font-size:22px">Bandi per te</div>
     <div class="qsub" style="margin:0 0 14px">Contributi a fondo perduto, prestiti agevolati e voucher per chi ha la partita IVA. Si aprono i siti ufficiali, sempre aggiornati.</div>
     <div id="bandilist"></div>
+    <div class="desk phonebox"></div>
   </section>
 
   <section class="view" id="v-year">
@@ -510,6 +511,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
     <button class="btn ghost" onclick="backup()">Salva un backup dei dati</button>
     <div style="height:10px"></div>
+    <div class="desk phonebox"></div>
   </section>
 </div>
 
@@ -529,7 +531,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.10.0',
+  ver: '4.10.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1109,13 +1111,12 @@ function renderClientsDesk(){ const el=$('cdesk'); if(!el) return; const st=clSt
    <div class="tlleg"><span><i></i>incassato</span><span><i style="background:transparent;border:2px solid var(--acc)"></i>fatturato, da incassare</span><span><i style="background:transparent;border:2px dashed var(--acc)"></i>accettato</span><span>Più grande il pallino, più grande l'importo. Passa sopra per i dettagli.</span></div></div>`:'';
   el.innerHTML=kpis+`<div class="dgrid">${pie}${bestc}</div>`+tl+`<h4 style="margin:22px 0 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">Tutti i clienti · dal più importante</h4>`+tiles;
   renderPhoneBox(); }
-function renderPhoneBox(){ const el=$('cphone'); if(!el) return;
-  el.innerHTML=`<div class="dcard" style="margin-top:14px"><h4>Vuoi i dati del tuo telefono qui sul computer?</h4>
+function renderPhoneBox(){ const h=`<div class="dcard" style="margin-top:14px"><h4>Vuoi i dati del tuo telefono qui sul computer?</h4>
    <div class="steps"><div><b class="n">1</b><br>Sul <b>telefono</b> apri PreventIVO, tocca <b>⚙︎ Impostazioni</b> e poi <b>Manda i dati</b>.</div>
    <div><b class="n">2</b><br>Manda il file <b>a te stesso</b>: WhatsApp Web, mail o AirDrop. Salvalo sul computer.</div>
    <div><b class="n">3</b><br><b>Trascinalo qui sotto</b> (o clicca). Scegli <b>Unisci</b> per tenere anche quello che c'è già qui.</div></div>
    <div class="drop" id="cdrop" onclick="restore()" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')">⬇︎ <b>Trascina qui il file dei tuoi dati</b> oppure clicca per sceglierlo</div>
-   <div class="hint" style="margin-top:10px">Per riportare sul telefono quello che fai qui: ⚙︎ Impostazioni → <b>Manda i dati</b>, e sul telefono <b>Ricevi i dati</b>. I dati non passano da nessun server: restano sui tuoi dispositivi.</div></div>`; }
+   <div class="hint" style="margin-top:10px">Per riportare sul telefono quello che fai qui: ⚙︎ Impostazioni → <b>Manda i dati</b>, e sul telefono <b>Ricevi i dati</b>. I dati non passano da nessun server: restano sui tuoi dispositivi.</div></div>`; document.querySelectorAll('.phonebox').forEach(e=>e.innerHTML=h); }
 function clRest(id){ const c=S.clients.find(x=>x.id===id); const inc=S.prev.filter(p=>p.client===id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return Math.max(0,Math.max(+c.atteso||0,inc+att)-inc); }
 function markInc(id){ const c=S.clients.find(x=>x.id===id), r=Math.round(clRest(id)*100)/100;
   sheet(`<h3>${esc(c.name)}: incassato?</h3><div class="sub">Del previsto mancano ${fmt(r)}. Segnali come incassati, tutti o in parte.</div>
@@ -1635,7 +1636,7 @@ function closeSheet(){ $('sheet').classList.remove('on'); }
 $('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
 function openSheet(k){ if(k==='settings') sheet(settingsHTML(false)); }
 let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'),1400); }
-function renderAll(){ renderList(); renderClients(); renderMargin(); renderYear(); }
+function renderAll(){ try{ renderPhoneBox(); }catch(e){}  renderList(); renderClients(); renderMargin(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
