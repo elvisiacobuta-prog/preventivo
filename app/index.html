@@ -331,7 +331,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 }
 
 @media (min-width:960px){
-  #v-year.on{max-width:1120px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;grid-template-areas:"head head" "imp imp" "money tax" "money soglia" "piano piano" "side side" "phone phone"}
+  #v-year.on{max-width:1120px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;grid-template-areas:"head head" "money tax" "money soglia" "piano piano" "side side" "phone phone"}
   #v-year .yhead{grid-area:head}#v-year .impbtn{grid-area:imp;margin:0}
   #v-year .ya-money{grid-area:money;margin:0}#v-year .ya-tax{grid-area:tax}#v-year .ya-tax .card{margin:0}
   #v-year .ya-soglia{grid-area:soglia;margin:0}#v-year .ya-piano{grid-area:piano;margin:0}#v-year .ya-side{grid-area:side}
@@ -378,6 +378,17 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .hs-row b{width:9px;height:9px;border-radius:3px;flex:0 0 9px}.hs-row .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   .hs-row .st{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}.hs-row .t{font-weight:700;min-width:84px;text-align:right}
   .hs-tip{font-size:12.5px;color:var(--mut);margin-top:12px}
+}
+
+@media (min-width:960px){
+  .pbwrap{margin-top:28px}
+  .pbt{text-transform:none;color:var(--txt);font-size:30px;font-weight:800;letter-spacing:-.02em;margin:0 0 14px}
+  .pbgrid{display:grid;grid-template-columns:minmax(0,2fr) minmax(0,1fr);gap:14px;align-items:stretch}
+  .pbq{text-transform:none;color:var(--txt);font-size:20px;font-weight:800;margin:0 0 14px;letter-spacing:-.01em}
+  .pbgrid .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
+  .pbx{display:flex;flex-direction:column}.pbx p{color:var(--mut);font-size:14px;line-height:1.5;margin:0 0 10px}.pbx .btn{margin-top:auto}
+  #v-year>.impbtn{display:none}
+  #v-year.on>*:not(.yhead):not(.ya-money):not(.ya-tax):not(.ya-soglia):not(.ya-piano):not(.ya-side):not(.phonebox):not(.impbtn){grid-column:1/-1}
 }
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
@@ -618,7 +629,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.10.5',
+  ver: '4.10.7',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1204,12 +1215,14 @@ function renderClientsDesk(){ const el=$('cdesk'); if(!el) return; const st=clSt
    <div class="ctlleg"><span><i></i>incassato</span><span><i style="background:transparent;border:2px solid var(--acc)"></i>fatturato, da incassare</span><span><i style="background:transparent;border:2px dashed var(--acc)"></i>accettato</span><span>Più grande il pallino, più grande l'importo. Passa sopra per i dettagli.</span></div></div>`:'';
   el.innerHTML=kpis+`<div class="dgrid">${pie}${bestc}</div>`+tl+`<h4 style="margin:22px 0 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600">Tutti i clienti · dal più importante</h4>`+tiles;
   renderPhoneBox(); }
-function renderPhoneBox(){ const h=`<div class="dcard" style="margin-top:14px"><h4>Vuoi i dati del tuo telefono qui sul computer?</h4>
+function renderPhoneBox(){ const h=`<div class="pbwrap"><h2 class="pbt">Porta qui i tuoi dati</h2>
+  <div class="pbgrid"><div class="dcard"><h3 class="pbq">📱 Vuoi trasferire i dati del telefono sul computer?</h3>
    <div class="steps"><div><b class="n">1</b><br>Sul <b>telefono</b> apri PreventIVO, tocca <b>⚙︎ Impostazioni</b> e poi <b>Manda i dati</b>.</div>
    <div><b class="n">2</b><br>Manda il file <b>a te stesso</b>: WhatsApp Web, mail o AirDrop. Salvalo sul computer.</div>
    <div><b class="n">3</b><br><b>Trascinalo qui sotto</b> (o clicca). Scegli <b>Unisci</b> per tenere anche quello che c'è già qui.</div></div>
-   <div class="drop" id="cdrop" onclick="restore()" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')">⬇︎ <b>Trascina qui il file dei tuoi dati</b> oppure clicca per sceglierlo</div>
-   <div class="hint" style="margin-top:10px">Per riportare sul telefono quello che fai qui: ⚙︎ Impostazioni → <b>Manda i dati</b>, e sul telefono <b>Ricevi i dati</b>. I dati non passano da nessun server: restano sui tuoi dispositivi.</div></div>`; document.querySelectorAll('.phonebox').forEach(e=>e.innerHTML=h); }
+   <div class="drop" onclick="restore()" ondragover="event.preventDefault();this.classList.add('on')" ondragleave="this.classList.remove('on')">⬇︎ <b>Trascina qui il file dei tuoi dati</b> oppure clicca per sceglierlo</div>
+   <div class="hint" style="margin-top:10px">Per riportare sul telefono quello che fai qui: ⚙︎ Impostazioni → <b>Manda i dati</b>, e sul telefono <b>Ricevi i dati</b>. I dati non passano da nessun server: restano sui tuoi dispositivi.</div></div>
+  <div class="dcard pbx"><h3 class="pbq">📊 Hai i tuoi incassi in Excel?</h3><p>Carica il file Excel o CSV che usi già (anche l'export del tuo programma di fatture): l'app riconosce data, cliente e importo e ti aggiorna l'anno da sola.</p><p>Prima di importare ti mostra cosa ha capito, e puoi annullare.</p><button class="btn" onclick="need(importStart)">Carica Excel o CSV</button></div></div></div>`; document.querySelectorAll('.phonebox').forEach(e=>e.innerHTML=h); }
 function clRest(id){ const c=S.clients.find(x=>x.id===id); const inc=S.prev.filter(p=>p.client===id&&p.status==='incassato').reduce((a,p)=>a+p.tot,0); const att=S.prev.filter(p=>p.client===id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); return Math.max(0,Math.max(+c.atteso||0,inc+att)-inc); }
 function markInc(id){ const c=S.clients.find(x=>x.id===id), r=Math.round(clRest(id)*100)/100;
   sheet(`<h3>${esc(c.name)}: incassato?</h3><div class="sub">Del previsto mancano ${fmt(r)}. Segnali come incassati, tutti o in parte.</div>
@@ -1630,17 +1643,27 @@ function importMap(){ sheet(`<h3>Quali colonne?</h3><div class="sub">${esc(IMP.f
    <div class="hint" style="margin:6px 2px 0">Senza questa colonna: le date passate contano come incassate, quelle future come da incassare.</div>
    <div id="im-prev" class="impprev"></div>
    <button class="btn" id="im-go" onclick="importDo()">Importa</button>`); importPreview(); }
+function normCli(n){ return String(n||'').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[`'’.,;:()\-\/&·]/g,' ').replace(/\b(s ?r ?l ?s?|s ?p ?a|s ?n ?c|s ?a ?s|s ?s ?d|a ?r ?l|s ?c ?s|a ?s ?d|aps|onlus|soc|societa|cooperativa|coop|di|e|a|responsabilita|limitata|semplificata|uff|efatturapa|spa|srl)\b/g,' ').replace(/\s+/g,' ').trim(); }
+function findCli(nm){ const n=normCli(nm); if(!n) return null; let c=S.clients.find(x=>normCli(x.name)===n); if(c) return c;
+  const w=(a,b)=>b.length>=3&&(' '+a+' ').includes(' '+b+' ');
+  return S.clients.find(x=>{ const m=normCli(x.name); return w(m,n)||w(n,m)||(m.length>=5&&n.length>=5&&(m.includes(n)||n.includes(m))); })||null; }
+function impPlan(ok){ const newC=new Map(); let dup=0, matched=new Set(); const rows=[];
+  ok.forEach(o=>{ const nm=o.cli||'Senza nome'; const c=findCli(nm); const key=c?c.id:'n:'+normCli(nm);
+    if(c){ matched.add(c.name); if(S.prev.some(p=>p.client===c.id&&p.date===o.dt&&Math.abs(p.tot-o.v)<0.01)){ dup++; return; } } else if(!newC.has(key)) newC.set(key,nm);
+    rows.push(Object.assign({},o,{c,key})); });
+  return {rows,dup,newC:[...newC.values()],matched:[...matched]}; }
 function importRowsParsed(){ const g=id=>+$(id).value, d=g('im-d'), i=g('im-i'), c=g('im-c'), x=g('im-x'), pg=g('im-p'), td=today(); const ok=[], bad=[];
   IMP.rows.forEach((r,k)=>{ const dt=impDate(r[d]), v=impNum(r[i]); if(!dt||!(v>0)){ bad.push(k); return; }
     let paid; if(pg>=0){ const t=String(r[pg]).trim().toLowerCase(); paid=/^(s[iì]|x|ok|1|vero|true|pagat|incassat|saldat|yes)/.test(t); } else paid=dt<=td;
     ok.push({dt,v,cli:c>=0?String(r[c]).trim():'',des:x>=0?String(r[x]).trim():'',paid}); }); return {ok,bad}; }
 function importPreview(){ const {ok,bad}=importRowsParsed(); const tot=ok.filter(o=>o.paid).reduce((a,o)=>a+o.v,0);
   $('im-prev').innerHTML=`<div class="impsum"><b>${ok.length}</b> righe valide · incassato <b>${fmt(tot)}</b>${bad.length?` · <span style="color:var(--red)">${bad.length} saltate</span> (senza data o importo)`:''}</div>`+ok.slice(0,4).map(o=>`<div class="kv"><span>${o.dt.split('-').reverse().join('/')} · ${esc(o.cli||'—')}</span><span>${fmt(o.v)}${o.paid?'':' <small>da incassare</small>'}</span></div>`).join('');
-  $('im-go').disabled=!ok.length; $('im-go').textContent=ok.length?`Importa ${ok.length} righe`:'Nessuna riga valida'; }
-function importDo(){ const {ok}=importRowsParsed(); if(!ok.length) return; const batch=Date.now(); let id=batch;
-  ok.forEach(o=>{ let cl=null; const nm=o.cli||'Senza nome'; cl=S.clients.find(x=>x.name.toLowerCase()===nm.toLowerCase()); if(!cl){ cl={id:++id,name:nm,color:pickColor(),atteso:0}; S.clients.push(cl); }
+  const P=impPlan(ok); $('im-prev').innerHTML+=`<div class="hint" style="margin-top:8px;line-height:1.5">${P.matched.length?`Clienti che hai già: <b>${P.matched.map(esc).join(', ')}</b>. `:''}${P.newC.length?`Clienti nuovi: <b>${P.newC.map(esc).join(', ')}</b>. `:''}${P.dup?`<span style="color:var(--acc)">${P.dup} righe le hai già (stessa data, cliente e importo): non le conto due volte.</span>`:''}</div>`;
+  $('im-go').disabled=!P.rows.length; $('im-go').textContent=P.rows.length?`Importa ${P.rows.length} righe`:(ok.length?'Le hai già tutte':'Nessuna riga valida'); }
+function importDo(){ const {ok}=importRowsParsed(); const P=impPlan(ok); if(!P.rows.length) return; const batch=Date.now(); let id=batch; const made={};
+  P.rows.forEach(o=>{ let cl=o.c||made[o.key]; const nm=o.cli||'Senza nome'; if(!cl){ cl={id:++id,name:nm,color:pickColor(),atteso:0}; S.clients.push(cl); made[o.key]=cl; }
     S.seq++; const y=o.dt.slice(0,4); S.prev.push({ id:++id, num:`${y}-${String(S.seq).padStart(3,'0')}`, date:o.dt, client:cl.id, rows:[{d:o.des||'Incasso importato',q:1,p:o.v,t:o.v}], tot:o.v, status:o.paid?'incassato':'inviato', hist:o.paid?{incassato:o.dt}:{inviato:o.dt}, imp:batch }); });
-  S.prev.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); save(); closeSheet(); renderAll(); go('year'); toast(`Importate ${ok.length} righe`); }
+  S.prev.sort((a,b)=>(b.date||'').localeCompare(a.date||'')); save(); closeSheet(); renderAll(); go('year'); toast(`Importate ${P.rows.length} righe${P.dup?' · '+P.dup+' già presenti saltate':''}`); }
 function importUndo(){ const n=S.prev.filter(p=>p.imp).length; S.prev=S.prev.filter(p=>!p.imp); const used=new Set(S.prev.map(p=>p.client)); S.clients=S.clients.filter(c=>used.has(c.id)||c.atteso>0||c.mail||c.wa); save(); closeSheet(); renderAll(); toast(`Tolti ${n} incassi importati`); }
 
 /* ---------- DOMANDE FREQUENTI (risposte verificate, ottobre 2026) ---------- */
