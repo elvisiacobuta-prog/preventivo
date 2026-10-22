@@ -409,7 +409,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .spg{display:grid;grid-template-columns:1fr;gap:12px;margin-bottom:12px}
 @media (min-width:960px){.spg{grid-template-columns:1fr 1fr}.spk{grid-template-columns:repeat(4,1fr)}}
 .spc{background:var(--sur);border-radius:20px;padding:18px 20px}
-.dt{background:var(--sur);border-radius:16px;margin-bottom:10px;overflow:hidden}.dt>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:14px;font-weight:700}.dt>summary::-webkit-details-marker{display:none}.dt>summary em{font-style:normal;color:var(--mut);font-weight:600;font-size:13px;margin-left:auto;margin-right:8px}.dt>summary::after{content:"⌄";color:var(--mut);font-size:18px;transition:transform .2s}.dt[open]>summary::after{transform:rotate(180deg)}.dt>.spc,.dt>.card{margin:0;border-radius:0;background:transparent;padding-top:0}.dt>div:not(.spc):not(.card){padding:0 16px 14px}.morebtn{width:100%;margin-top:8px;background:var(--sur2);border:0;border-radius:12px;padding:12px;color:var(--txt);font-weight:700;font-size:14px}
+.dt{background:var(--sur);border-radius:16px;margin-bottom:10px;overflow:hidden}.dt>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:14px 16px;font-size:14px;font-weight:700}.dt>summary::-webkit-details-marker{display:none}.dt>summary em{font-style:normal;color:var(--mut);font-weight:600;font-size:13px;margin-left:auto;margin-right:8px}.dt>summary::after{content:"⌄";color:var(--mut);font-size:18px;transition:transform .2s}.dt[open]>summary::after{transform:rotate(180deg)}.dt>.spc,.dt>.card{margin:0;border-radius:0;background:transparent;padding-top:0}.dt>div:not(.spc):not(.card){padding:0 16px 14px}.ya-act.dsk{display:none}.ya-act.mob{display:grid;gap:8px;margin-bottom:10px}.morebtn{width:100%;margin-top:8px;background:var(--sur2);border:0;border-radius:12px;padding:12px;color:var(--txt);font-weight:700;font-size:14px}
+@media (min-width:960px){#v-year .ya-act.mob{display:none}#v-year .ya-act.dsk{display:grid}}
 @media (max-width:700px){.spk{gap:8px;margin-bottom:8px}.spk>div{padding:10px 12px;border-radius:14px}.spk .v{font-size:20px;margin-top:2px}.spk small{font-size:11px}.card,.spc{border-radius:16px}.card{padding:14px;margin-bottom:10px}.spc{padding:14px}.q{font-size:26px}.it{padding:10px 0}.hint{font-size:11.5px}.k2{margin-bottom:8px}}.spc h4{margin:0 0 12px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600}
 .spd{display:flex;gap:16px;align-items:center;flex-wrap:wrap}.spl{flex:1;min-width:150px;display:grid;gap:6px;font-size:14px}.spl span{display:flex;align-items:center;gap:8px}.spl b{width:10px;height:10px;border-radius:3px;flex:none}.spl em{margin-left:auto;font-style:normal;font-weight:700}
 .spm{display:flex;align-items:flex-end;gap:6px;height:120px}.spm div{flex:1;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;gap:4px;font-size:10px;color:var(--mut);height:100%}.spm i{display:block;width:100%;background:var(--acc);border-radius:6px 6px 2px 2px;min-height:2px}
@@ -624,7 +625,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       <div class="ml"><span>G</span><span>F</span><span>M</span><span>A</span><span>M</span><span>G</span><span>L</span><span>A</span><span>S</span><span>O</span><span>N</span><span>D</span></div>
     </div>
 
-    <div class="ya-act"><button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
+    <div class="ya-act dsk"><button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
     <button class="btn ghost" onclick="backup()">Salva un backup dei dati</button></div></div>
     <div class="card ya-money" id="ymoney"></div>
     <div class="card ya-next" id="ynext"></div>
@@ -640,6 +641,8 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
     <button class="impbtn" onclick="restore()"><b>Hai un file dati dell'app?</b><small>Tocca qui e scegli il file .json (da Ricevi i dati): sostituisce o unisce i dati.</small><span>↥</span></button>
     <button class="impbtn" onclick="need(importStart)"><b>Hai già i tuoi incassi in Excel?</b><small>Caricali qui (Excel o CSV): l'anno si aggiorna da solo.</small><span>↥</span></button>
+    <div class="ya-act mob"><button class="btn ghost" onclick="exportCSV()">Esporta per il commercialista</button>
+    <button class="btn ghost" onclick="backup()">Salva un backup dei dati</button></div>
     <div style="height:10px"></div>
     <div class="desk phonebox"></div>
   </section>
@@ -662,7 +665,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.13.9',
+  ver: '4.14.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
