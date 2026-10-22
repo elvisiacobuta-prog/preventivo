@@ -331,10 +331,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 }
 
 @media (min-width:960px){
-  #v-year.on{max-width:1120px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;grid-template-areas:"head head" "money tax" "money soglia" "piano piano" "side side" "phone phone"}
+  #v-year.on{max-width:1120px;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:16px;align-items:start;grid-template-areas:"head head" "money tax" "money soglia" "next next" "piano piano" "side side" "phone phone"}
   #v-year .yhead{grid-area:head}#v-year .impbtn{grid-area:imp;margin:0}
   #v-year .ya-money{grid-area:money;margin:0}#v-year .ya-tax{grid-area:tax}#v-year .ya-tax .card{margin:0}
-  #v-year .ya-soglia{grid-area:soglia;margin:0}#v-year .ya-piano{grid-area:piano;margin:0}#v-year .ya-side{grid-area:side}
+  #v-year .ya-soglia{grid-area:soglia;margin:0}#v-year .ya-next{grid-area:next;margin:0}#v-year .ya-piano{grid-area:piano;margin:0}#v-year .ya-side{grid-area:side}
   #v-year .ya-side .card{margin:0 0 16px}#v-year .ya-act{display:grid;grid-template-columns:1fr 1fr;gap:10px}#v-year .ya-act .btn{margin:0}
   #v-year .phonebox{grid-area:phone}#v-year>div[style*="height:10px"]{display:none}
   #piano{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start}#piano>.yn{grid-column:1/-1}#piano>.yr{margin:0}#piano>.howtax,#piano>.nextpay{margin:0}
@@ -388,8 +388,20 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .pbgrid .steps{grid-template-columns:repeat(3,minmax(0,1fr))}
   .pbx{display:flex;flex-direction:column}.pbx p{color:var(--mut);font-size:14px;line-height:1.5;margin:0 0 10px}.pbx .btn{margin-top:auto}
   #v-year>.impbtn{display:none}
-  #v-year.on>*:not(.yhead):not(.ya-money):not(.ya-tax):not(.ya-soglia):not(.ya-piano):not(.ya-side):not(.phonebox):not(.impbtn){grid-column:1/-1}
+  #v-year.on>*:not(.yhead):not(.ya-next):not(.ya-money):not(.ya-tax):not(.ya-soglia):not(.ya-piano):not(.ya-side):not(.phonebox):not(.impbtn){grid-column:1/-1}
 }
+
+.spchip{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);border:1px solid var(--line);border-radius:6px;padding:1px 5px;vertical-align:2px}
+.nxg{display:grid;grid-template-columns:1fr;gap:10px}
+.nxc{background:var(--sur2);border-radius:16px;padding:14px 16px}
+.nxy{font-weight:800;font-size:15px}.nxy small{font-weight:500;color:var(--mut);font-size:12px}
+.nxv{font-size:26px;font-weight:800;letter-spacing:-.02em;margin-top:2px}
+.nxs{font-size:12.5px;color:var(--mut)}
+.nxc .mb{height:6px;border-radius:3px;background:var(--bg);margin-top:10px;overflow:hidden}.nxc .mb i{display:block;height:100%;border-radius:3px}
+.nxst{font-size:12.5px;font-weight:600;margin-top:6px}
+.nxl{display:flex;flex-direction:column;gap:4px;margin-top:10px;font-size:12.5px;color:var(--mut)}
+.nxl span{display:flex;align-items:center;gap:7px}.nxl b{width:8px;height:8px;border-radius:2px;flex:0 0 8px}.nxl em{margin-left:auto;font-style:normal;color:var(--txt);white-space:nowrap;padding-left:8px}
+@media (min-width:960px){ .nxg{grid-template-columns:repeat(3,minmax(0,1fr))} }
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
   body{padding-bottom:0;padding-left:260px}
@@ -568,6 +580,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
     <button class="impbtn" onclick="need(importStart)"><b>Hai già i tuoi incassi in Excel?</b><small>Caricali qui (Excel o CSV): l'anno si aggiorna da solo.</small><span>↥</span></button>
 
     <div class="card ya-money" id="ymoney"></div>
+    <div class="card ya-next" id="ynext"></div>
     <div class="ya-tax"><div class="seg" id="ymodeseg" style="margin:0 0 12px"><button id="ym0" onclick="setYMode(0)">Solo incassato</button><button id="ym1" onclick="setYMode(1)">Con quelli da incassare</button></div>
     <div class="card">
       <div class="kpi"><div class="k" id="ytaxk">tasse stimate</div><div class="huge red" id="ytax">0 €</div></div>
@@ -629,7 +642,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.10.7',
+  ver: '4.11.1',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -829,7 +842,7 @@ function profLine(){ const pr=S.profile, n=annoAtt(), bits=[], miss=[];
   bits.push(isCassa()? esc((pr.cassaNome&&pr.cassaNome!=='Altra'?pr.cassaNome.split(' (')[0]:'Cassa')) : isIVS()? `INPS ${pr.inps}${pr.rid35?' −35%':''}` : 'Gestione separata');
   if(n&&n>1){ if(pr.incPrec>0) bits.push(`${PARAMS.anno-1}: ${fmt(pr.incPrec)}`); else miss.push(`incassato ${PARAMS.anno-1}`); }
   if(coefAteco(pr.ateco)==null) bits.push(`ora ${Math.round(coef()*100)}%`);
-  return `${bits.join(' · ')}${miss.length?` · <span class="pmiss">manca: ${miss.join(', ')}</span>`:''} · <span class="link" onclick="S.setup?openSheet('settings'):askAct(true)">modifica</span> · <span class="why" onclick="why('start')">?</span>`; }
+  return `${bits.join(' · ')}${miss.length?` · <span class="pmiss link" style="color:var(--acc)" onclick="${!n?'askAct(false)':"openSheet('settings')"}">manca: ${miss.join(', ')} › inseriscilo</span>`:''} · <span class="link" onclick="S.setup?askAct(false):askAct(true)">modifica</span> · <span class="why" onclick="why('start')">?</span>`; }
 function profileHTML(){ const pr=S.profile, ca=coefAteco(pr.ateco), n=annoAtt(), miss=t=>`<span class="pmiss">${t}</span>`;
   const ok=v=>`<b>${v}</b>`;
   const ateco = ca!=null ? ok(esc(pr.ateco))+` · ${esc(((atecoInfo(pr.ateco)||{}).g||'').split(' (')[0])} · tasse sul <b>${Math.round(ca*100)}%</b>` : miss('Codice ATECO: inseriscilo')+` <small>(ora calcolo per ${esc(actFull().split(',')[0].toLowerCase())}, ${Math.round(coef()*100)}%)</small>`;
@@ -1159,7 +1172,7 @@ function renderClients(){
   const pres=S.clients.reduce((a,c)=>a+clPrev(c),0);
   const cp=calc(pres);
   $('cinc').textContent=fmt(totInc); $('presunto').textContent=fmt(pres);
-  $('csub').innerHTML = S.clients.length? `${S.clients.length} clienti · tocca un cliente per mail, WhatsApp e incasso atteso` : 'I clienti si creano da soli quando fai un preventivo. Tocca un cliente per mail, WhatsApp e incasso atteso.';
+  $('csub').innerHTML = S.clients.length? `${S.clients.length} clienti · tocca un cliente per mail, WhatsApp e incassi previsti` : 'I clienti si creano da soli quando fai un preventivo. Tocca un cliente per mail, WhatsApp e incasso atteso.';
   $('presuntosub').innerHTML = pres? `Su ${fmt(pres)}: tasse stimate <b style="color:var(--red)">${fmt(cp.tasse)}</b> · netto <b style="color:var(--acc)">${fmt(cp.netto)}</b> · ${pres>PARAMS.soglia?`<b style="color:var(--red)">sopra la soglia di ${fmt(pres-PARAMS.soglia)}</b>`:`alla soglia mancano ${fmt(PARAMS.soglia-pres)}`} <span class="why">?</span>` : 'Il previsto si aggiorna da solo con i preventivi accettati e incassati. Per un cliente fisso puoi scrivere tu l\'incasso atteso. <span class="why">?</span>';
   const inc=S.clients.map(c=>({c,v:clInc(c)})).filter(x=>x.v>0);
   const tot=inc.reduce((a,x)=>a+x.v,0);
@@ -1197,11 +1210,12 @@ function renderClientsDesk(){ const el=$('cdesk'); if(!el) return; const st=clSt
    ${slow&&pay.length>1&&slow!==fast?row('🐢','Paga dopo',esc(slow.c.name),`in media ${slow.gg} giorni dopo la fattura`):''}
    ${wait?row('⏳','Ti deve di più',esc(wait.c.name),`${fmt(wait.da)} da incassare`):''}
    ${pay.length>1?'<div class="t" style="padding:0 4px">I tempi di pagamento si basano sulle date in cui hai segnato gli incassi.</div>':''}
+   ${(()=>{ const fx=act.filter(x=>x.c.tipo!=='spot').reduce((a,x)=>a+x.tot,0), spv=prev-fx; return S.clients.some(c=>c.tipo==='spot')? row('🔁','Clienti fissi e lavori spot',`fissi ${Math.round(fx/prev*100)}% · spot ${Math.round(spv/prev*100)}%`,`${fmt(fx)} da clienti che tornano, ${fmt(spv)} da lavori fatti una volta`):''; })()}
    ${act.length>1&&top2>0.6?row('⚠️','Dipendi da pochi clienti',`I primi due valgono il ${Math.round(top2*100)}%`,'Se se ne ferma uno, perdi una bella fetta dell\'anno.','warn'):''}
   </div></div>`;
   const tiles=`<div class="tiles">${act.concat(st.filter(x=>x.tot<=0)).map((x,i)=>{ const r=x.tot?x.inc/x.tot:0;
    return `<div class="tile" onclick="openClient(${x.c.id})"><span class="rk ${i===0&&x.tot?'gold':''}">${x.tot?'#'+(i+1):''}</span>
-    <div class="hd">${dDonut([{v:x.inc,c:x.c.color},{v:x.da,c:'var(--red)'}],46,7)}<div class="nm">${esc(x.c.name)}</div></div>
+    <div class="hd">${dDonut([{v:x.inc,c:x.c.color},{v:x.da,c:'var(--red)'}],46,7)}<div class="nm">${esc(x.c.name)}${x.c.tipo==='spot'?' <span class="spchip">spot</span>':''}</div></div>
     <div class="big">${fmt(x.tot)}</div><div class="ln">${x.tot?Math.round(x.tot/prev*100)+'% del tuo anno · ':''}${x.n} ${x.n===1?'lavoro':'lavori'}${x.gg!=null?' · paga in ~'+x.gg+' gg':''}</div>
     <div class="bar"><i style="width:${r*100}%;background:${x.c.color}"></i><i style="width:${x.tot?x.da/x.tot*100:0}%;background:var(--red)"></i></div>
     <div class="ln"><span style="color:var(--acc)">incassato ${fmt(x.inc)}</span>${x.da?` · <span style="color:var(--red)">da incassare ${fmt(x.da)}</span>`:''}</div>
@@ -1268,8 +1282,7 @@ function openClient(id){
     <div class="row2"><input id="cinc-v" type="text" inputmode="decimal" autocomplete="off" placeholder="Importo €, es. 60.000" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px"><input id="cinc-d" type="date" value="${today()}" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 10px;outline:none;color:var(--txt)"></div>
     <div class="hint" id="cinc-msg" style="margin:6px 2px 0">Anche più incassi messi insieme, per esempio tutto quello che ti ha pagato da gennaio a oggi.</div>
     <button class="btn ghost" style="margin-top:8px" onclick="addClientIncasso(${id})">+ Aggiungi incasso</button>
-    <label class="l">Incasso atteso quest'anno (presunto)</label>
-    <input id="att" type="number" inputmode="numeric" value="${c.atteso||''}" placeholder="es. 12000" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;font-size:16px">
+    ${prevBox(c)}
     <label class="l">Mail · WhatsApp</label>
     <div class="row2"><input id="cemail" type="email" value="${esc(c.email||'')}" placeholder="mail" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"><input id="cwa2" type="tel" value="${esc(c.wa||'')}" placeholder="WhatsApp" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none"></div>
     <label class="l">Nome</label>
@@ -1280,9 +1293,9 @@ function openClient(id){
     <h2>Preventivi (${P.length})</h2>
     ${P.map(p=>`<div class="kv" onclick="openPrev(${p.id})"><span>${p.num} · ${fdate(p.date)} <span class="st ${p.status}">${p.status}</span></span><span>${fmt(p.tot)}</span></div>`).join('')||'<div class="hint">Nessuno.</div>'}
     <button class="btn ghost danger" onclick="delClient(${id})" style="margin-top:16px">Elimina cliente</button>
-  `);
+  `); setTimeout(pmLive,0);
 }
-function saveClient(id){ const c=S.clients.find(x=>x.id===id); c.atteso=+$('att').value||0; c.email=$('cemail').value.trim(); c.wa=$('cwa2').value.trim(); c.name=$('cname').value.trim()||c.name; save(); renderAll(); closeSheet(); toast('Salvato'); }
+function saveClient(id){ const c=S.clients.find(x=>x.id===id); Object.assign(c,pmRead()); c.atteso=clPlan(c,+PARAMS.anno); c.email=$('cemail').value.trim(); c.wa=$('cwa2').value.trim(); c.name=$('cname').value.trim()||c.name; save(); renderAll(); closeSheet(); toast('Salvato'); }
 function delClient(id){ if(S.prev.some(p=>p.client===id)){ alert('Ha dei preventivi: elimina prima quelli.'); return; } if(!confirm('Eliminare?')) return; S.clients=S.clients.filter(x=>x.id!==id); save(); renderAll(); closeSheet(); }
 
 /* ---------- ANNO ---------- */
@@ -1535,6 +1548,9 @@ function settingsHTML(first){
       <div class="hint" id="s-cnote" style="margin:6px 2px 0">${cassaNote(pr.cassaNome)}</div></div>
 <label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-enp" ${pr.enpals2?'checked':''} style="width:auto;margin-top:3px"> Faccio anche lavori di spettacolo (ex ENPALS): per quei lavori il committente trattiene il 9,19% e non pago gli altri contributi. In prima schermata scegli il tipo per ogni lavoro.</label>
     <div id="s-ridw" style="display:${pr.inps==='separata'||pr.inps==='cassa'||!pr.inps?'none':''}"><label style="display:flex;gap:10px;align-items:flex-start;margin:10px 2px 0;font-size:14px;color:var(--mut)"><input type="checkbox" id="s-rid" ${pr.rid35?'checked':''} style="width:auto;margin-top:3px"> Artigiani e commercianti: ho chiesto la riduzione del 35% per i forfettari</label></div>
+    <label class="l">In che anno hai aperto la partita IVA?</label>
+    <input id="s-aper" type="number" inputmode="numeric" min="1990" max="${PARAMS.anno}" value="${pr.apertura||''}" placeholder="es. ${PARAMS.anno-3}" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
+    <div class="hint" style="margin:6px 2px 0">Lo trovi sul certificato di attribuzione della partita IVA o in visura. Serve per acconti e 5%.</div>
     <label class="l">Meno di 5 anni e attività nuova? <span class="why" onclick="why('start')">?</span></label>
     <div class="seg"><button id="s-y" class="${pr.start===true?'on':''}" onclick="segStart(true)">Sì · 5%</button><button id="s-n" class="${pr.start===false?'on':''}" onclick="segStart(false)">No · 15%</button><button id="s-u" class="${pr.start==null?'on':''}" onclick="segStart(null)">Non lo so · 15%</button></div>
     <label class="l">Quanto hai incassato l'anno scorso? (rende esatti gli acconti)</label>
@@ -1564,7 +1580,7 @@ let tmpStart='unset';
 function segStart(v){ tmpStart=v; $('s-y').classList.toggle('on',v===true); $('s-n').classList.toggle('on',v===false); $('s-u').classList.toggle('on',v===null); }
 function saveSettings(){
   S.profile.act=$('s-act').value; S.profile.ateco=fmtAteco($('s-ateco').value); S.profile.altri=[$('s-at2').value,$('s-at3').value].map(fmtAteco).filter(c=>c&&coefAteco(c)!=null); S.profile.inps=$('s-inps').value; S.profile.rid35=isIVS()&&!!($('s-rid')&&$('s-rid').checked); readCassa('s'); S.profile.enpals2=!!($('s-enp')&&$('s-enp').checked); if(tmpStart!=='unset') S.profile.start=tmpStart; tmpStart='unset';
-  S.profile.incPrec=+$('s-incprec').value||0; S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
+  if($('s-aper')) S.profile.apertura=+$('s-aper').value||null; S.profile.incPrec=+$('s-incprec').value||0; S.profile.contribPrec=+$('s-contrib').value||0; S.profile.messoVia=+$('s-via').value||0;
   S.profile.nome=$('s-nome').value.trim(); S.profile.piva=$('s-piva').value.trim(); S.profile.contatti=$('s-cont').value.trim(); S.profile.marchio=($('s-mk').value||'').trim();
   S.setup=true; save(); closeSheet(); renderAll(); renderCalc(); renderActLine(); renderRate(); renderHello(); ring0(parseFloat($('q0').value)||0); toast('✓ Impostazioni salvate');
 }
@@ -1595,6 +1611,7 @@ const WHY={
   stima:['Perché è una stima','L\'imposta vera si calcola sul reddito meno i contributi versati l\'anno prima, e l\'INPS ha minimi e massimi. Su un preventivo la cifra è vicina; il conto esatto lo fa il commercialista a maggio. Per questo "metti via" è arrotondato in su.'],
   attesa:['In attesa di incasso','Preventivi accettati o fatturati ma non ancora pagati. È la cifra che devi sollecitare.']
 };
+WHY.prevcl=['Incasso previsto','Scrivi quanto pensi di incassare da questo cliente. Due modi: un importo per ogni anno (es. 10.000 € nel 2026, 10.000 € nel 2027), oppure un importo che si ripete (ogni mese, ogni 2 o 3 mesi, ogni 6 mesi o una volta l\'anno) con il mese del primo incasso. Conta il mese in cui arrivano i soldi, non quello della fattura: è così che si calcola la soglia degli 85.000 €. In Anno trovi il riepilogo dei prossimi anni.'];
 WHY.presunto=['Incassato e previsto',"Incassato: i preventivi segnati come incassati quest'anno. Previsto a fine anno: per ogni cliente, il più alto tra l'incasso atteso che scrivi tu (tocca il cliente) e quello che risulta dai preventivi accettati, fatturati e incassati. Serve a vedere prima tasse, netto e soglia dell'anno."];
 function why(k){ const w=WHY[k]; sheet(`<h3>${w[0]}</h3><p style="line-height:1.6;color:var(--txt)">${w[1]}</p><button class="btn ghost" onclick="closeSheet()">Ok</button>`); }
 
@@ -1773,7 +1790,50 @@ function renderHomeSide(){ const el=$('homeside'); if(!el) return; const Y=Strin
     <div class="hs-k" onclick="go('year')"><div class="k">Soglia 85.000 €</div><div class="v" style="color:${pct>=100?'var(--red)':pct>=85?'#ff9f43':'var(--txt)'}">${pct}%</div><div class="s">${inc<PARAMS.soglia?'mancano '+fmt(PARAMS.soglia-inc):'superata'}</div></div></div>
    ${rec.length?`<div class="hs-rec"><h4>Ultimi lavori <span onclick="go('list')">vedi tutti ›</span></h4>${rec.map(p=>{ const cl=clientOf(p); return `<div class="hs-row" onclick="openPrev(${p.id})"><b style="background:${cl.color}"></b><span class="n">${esc(cl.name)}</span><span class="st">${p.status}</span><span class="t">${fmt(p.tot)}</span></div>`; }).join('')}</div>`:''}
    <div class="hs-tip">Sul computer puoi scrivere la cifra anche con la tastiera: numeri, ⌫ per cancellare, Invio per confermare.</div>`; }
-function renderAll(){ try{ renderPhoneBox(); renderHomeSide(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
+/* ---------- INCASSI PREVISTI PER CLIENTE (per anno o periodici) ---------- */
+const FREQ=[[1,'ogni mese'],[2,'ogni 2 mesi'],[3,'ogni 3 mesi'],[6,'ogni 6 mesi'],[12,'una volta l\'anno']];
+function pnum(v){ const t=String(v==null?'':v).trim().replace(/[€\s]/g,''); if(!t) return 0; if(/^\d{1,3}(\.\d{3})+(,\d+)?$/.test(t)) return +t.replace(/\./g,'').replace(',','.'); return impNum(t)||0; }
+function ym(s){ const m=/^(\d{4})-(\d{2})/.exec(s||''); return m? (+m[1])*12+(+m[2]-1) : null; }
+function rateCount(c,Y){ const r=c.rate; if(!r||!(+r.v>0)) return 0; const a=ym(r.dal); if(a==null) return 0; const f=+r.ogni||1; const b=ym(r.al); const y0=Y*12, y1=Y*12+11; let n=0; for(let k=a;k<=(b==null?y1:Math.min(b,y1));k+=f){ if(k>=y0) n++; } return n; }
+function clPlan(c,Y){ Y=+Y; if(c.pmode==='rate'&&c.tipo!=='spot') return (+c.rate.v||0)*rateCount(c,Y); const a=c.anni||{}; if(a[Y]!=null&&a[Y]!=='') return +a[Y]||0; return Y===+PARAMS.anno?(+c.atteso||0):0; }
+function clIncY(c,Y){ return S.prev.filter(p=>p.client===c.id&&p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).startsWith(String(Y))).reduce((a,p)=>a+p.tot,0); }
+function clDa(c){ return S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); }
+function yearPrev(Y){ Y=+Y; const cur=+PARAMS.anno; return S.clients.reduce((a,c)=>a+(Y===cur? Math.max(clPlan(c,Y), clIncY(c,Y)+clDa(c)) : clPlan(c,Y)),0); }
+function hasFuture(){ return S.clients.some(c=>clPlan(c,+PARAMS.anno+1)>0||clPlan(c,+PARAMS.anno+2)>0); }
+function renderNext(){ const el=$('ynext'); if(!el) return; const Y0=+PARAMS.anno, ys=[Y0,Y0+1,Y0+2];
+  if(!hasFuture()){ el.innerHTML=`<div class="k2">I prossimi anni</div><div class="hint" style="line-height:1.5">Hai clienti fissi o lavori già decisi per il ${Y0+1}? Tocca un cliente in <b>Clienti</b> e scrivi l'<b>incasso previsto</b> anno per anno, oppure un importo che arriva ogni mese, ogni 2 o 3 mesi. Qui vedi tasse, netto e soglia di ogni anno.</div>`; return; }
+  el.innerHTML=`<div class="k2">I prossimi anni</div><div class="nxg">${ys.map(Y=>{ const v=yearPrev(Y), c=calc(v,{annual:true}), pc=v/PARAMS.soglia, col=v>PARAMS.sogliaOut?'var(--red)':v>PARAMS.soglia?'#ff9f43':'var(--acc)';
+    const st=v>PARAMS.sogliaOut?'Sopra 100.000 €: si esce dal forfettario subito, durante l\'anno':v>PARAMS.soglia?`Sopra 85.000 €: dal ${Y+1} si esce dal forfettario`:(v>PARAMS.soglia*0.85?'Vicino alla soglia: controlla quando incassi':'Sotto la soglia');
+    const top=S.clients.map(c2=>({c:c2,v:Y===Y0?Math.max(clPlan(c2,Y),clIncY(c2,Y)+clDa(c2)):clPlan(c2,Y)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,4);
+    return `<div class="nxc"><div class="nxy">${Y}${Y===Y0?' <small>quest\'anno</small>':''}</div><div class="nxv">${fmt(v)}</div><div class="nxs">previsti · tasse ~${fmt(c.tasse)} · netto ~${fmt(c.netto)}</div><div class="mb"><i style="width:${Math.min(100,pc*100)}%;background:${col}"></i></div><div class="nxst" style="color:${col}">${st}</div>${top.length?`<div class="nxl">${top.map(x=>`<span><b style="background:${x.c.color}"></b>${esc(x.c.name)}<em>${fmt(x.v)}</em></span>`).join('')}</div>`:''}</div>`; }).join('')}</div>
+   ${renderOrd(ys,Y0)}
+   <div class="hint" style="margin-top:8px">Conta l'anno in cui arrivano i soldi. ${Y0} = incassato + da incassare (o il previsto, se più alto); anni dopo = gli incassi previsti che hai scritto nei clienti. Stime: decide il commercialista.</div>`; }
+function ordEst(v,cp){ const prof=Math.max(0,v*(1-cp/100)); let inps=0;
+  if(isIVS()){ const rid=S.profile.rid35?0.65:1, r=PARAMS.inps[S.profile.inps]*rid; inps=PARAMS.ivs.fisso[S.profile.inps]*rid+Math.max(0,prof-PARAMS.ivs.minimale)*r; } else inps=prof*(PARAMS.inps[S.profile.inps||'separata']||0.2607);
+  const b=Math.max(0,prof-inps); let irpef=Math.min(b,28000)*0.23+Math.max(0,Math.min(b,50000)-28000)*0.33+Math.max(0,b-50000)*0.43; const add=b*0.02;
+  return {prof,inps,irpef:irpef+add,tot:inps+irpef+add,netto:v-(v-prof)-inps-irpef-add,costi:v-prof}; }
+function ordSet(x){ S.profile.ordCosti=Math.max(0,Math.min(90,+x||0)); save(); renderNext(); }
+function renderOrd(ys,Y0){ const Ys=ys.filter(Y=>{const v=yearPrev(Y);return v>PARAMS.soglia&&v<=PARAMS.sogliaOut;}); const hi=ys.filter(Y=>yearPrev(Y)>PARAMS.sogliaOut); if(!Ys.length&&!hi.length) return '';
+  const cp=S.profile.ordCosti==null?25:S.profile.ordCosti; let h=`<div class="k2" style="margin-top:14px">Se superi: cosa paghi l'anno dopo</div>`;
+  Ys.forEach(Y=>{ const vn=yearPrev(Y+1)||yearPrev(Y), f=calc(vn,{annual:true}), o=ordEst(vn,cp);
+    h+=`<div class="hint" style="line-height:1.55;margin-bottom:8px">Incassi ${fmt(yearPrev(Y))} nel ${Y} → dal <b>${Y+1}</b> sei in <b>regime ordinario</b>. Su ${fmt(vn)} di incassi ${Y+1}: forfettario avresti pagato ~<b>${fmt(f.tasse)}</b>, ordinario ~<b>${fmt(o.tot)}</b> (INPS ~${fmt(o.inps)} + IRPEF e addizionali ~${fmt(o.irpef)}), con ${cp}% di costi reali (${fmt(o.costi)}). Differenza ~<b style="color:${o.tot>f.tasse?'var(--red)':'var(--acc)'}">${o.tot>f.tasse?'+':'−'}${fmt(Math.abs(o.tot-f.tasse))}</b>.</div>`; });
+  if(hi.length) h+=`<div class="hint" style="line-height:1.55;margin-bottom:8px">Sopra ${fmt(PARAMS.sogliaOut)} (${hi.join(', ')}): l'uscita è <b>immediata</b>, da quella fattura applichi IVA e ordinario sull'intero anno.</div>`;
+  h+=`<div class="row2" style="align-items:center;gap:8px"><label style="font-size:12px;color:var(--mut);flex:1">Costi reali che deduci in ordinario (% degli incassi)</label><input type="number" value="${cp}" min="0" max="90" onchange="ordSet(this.value)" style="width:80px;background:var(--sur2);border:0;border-radius:12px;padding:10px;font-size:16px"></div><div class="hint" style="margin-top:6px">Stima grezza: IRPEF 23/33/43% + 2% addizionali, INPS sul reddito, niente IRAP, detrazioni o altri redditi. In ordinario aggiungi IVA 22% sulle fatture (a carico del cliente, che se è un privato o un ente che non la recupera la sente come aumento di prezzo) e la contabilità costa di più. Il conto vero lo fa Distrotti.</div>`; return h; }
+function pmSet(m){ $('pm-anno').style.display=m==='anno'?'':'none'; $('pm-rate').style.display=m==='rate'?'':'none'; $('pm-b0').classList.toggle('on',m==='anno'); $('pm-b1').classList.toggle('on',m==='rate'); window._pm=m; pmLive(); }
+function pmRead(){ return {tipo:window._ct||'fisso', pmode:window._pm||'anno', anni:Object.fromEntries([0,1,2].map(i=>[+PARAMS.anno+i, ($('pa-'+i).value||'').trim()===''?'':pnum($('pa-'+i).value)])), rate:{v:pnum($('pr-v').value), ogni:+$('pr-f').value||1, dal:$('pr-d').value||'', al:$('pr-a').value||''}}; }
+function pmLive(){ const e=$('pm-sum'); if(!e) return; const t=Object.assign({id:-1,atteso:0},pmRead()); const Y=+PARAMS.anno; if(t.pmode!=='rate'){ e.innerHTML=''; return; } e.innerHTML=[Y,Y+1,Y+2].map(y=>`${y}: <b>${fmt(clPlan(t,y))}</b> (${rateCount(t,y)} ${rateCount(t,y)===1?'incasso':'incassi'})`).join(' · '); }
+function ctSet(t){ window._ct=t; $('ct-0').classList.toggle('on',t==='fisso'); $('ct-1').classList.toggle('on',t==='spot'); $('ct-h').textContent=t==='spot'?'Lavoro fatto una volta. Se lo incassi in un altro anno, scrivi la cifra sotto l\'anno giusto.':'Cliente che torna: puoi scrivere quanto pensi di incassare nei prossimi anni.'; $('pm-b1').style.display=t==='spot'?'none':''; if(t==='spot') pmSet('anno'); }
+function prevBox(c){ const Y=+PARAMS.anno, a=c.anni||{}, r=c.rate||{}, m=c.pmode||'anno'; window._pm=m; const ct=c.tipo||'fisso'; window._ct=ct;
+  const inp=(id,val,ph,t)=>`<input id="${id}" ${t?`type="${t}"`:'type="text" inputmode="decimal"'} value="${val==null?'':val}" placeholder="${ph||''}" oninput="pmLive()" onchange="pmLive()" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px 12px;outline:none;font-size:16px">`;
+  return `<label class="l">Che cliente è?</label><div class="seg" style="margin:0 0 6px"><button type="button" id="ct-0" class="${ct!=='spot'?'on':''}" onclick="ctSet('fisso')">Cliente fisso</button><button type="button" id="ct-1" class="${ct==='spot'?'on':''}" onclick="ctSet('spot')">Lavoro spot</button></div><div class="hint" id="ct-h" style="margin:0 2px 4px">${ct==='spot'?'Lavoro fatto una volta. Se lo incassi in un altro anno, scrivi la cifra sotto l\'anno giusto.':'Cliente che torna: puoi scrivere quanto pensi di incassare nei prossimi anni.'}</div>
+   <div id="pm-wrap"><label class="l">Incasso previsto da questo cliente <span class="why" onclick="why('prevcl')">?</span></label>
+   <div class="seg" style="margin:0 0 10px"><button type="button" id="pm-b0" class="${m!=='rate'?'on':''}" onclick="pmSet('anno')">Importo per anno</button><button type="button" id="pm-b1" class="${m==='rate'?'on':''}" style="display:${ct==='spot'?'none':''}" onclick="pmSet('rate')">Importo che si ripete</button></div>
+   <div id="pm-anno" style="display:${m!=='rate'?'':'none'}"><div class="row3">${[0,1,2].map(i=>`<label>${Y+i}${inp('pa-'+i, a[Y+i]!=null&&a[Y+i]!==''?a[Y+i]:(i===0&&c.atteso?c.atteso:''),'€')}</label>`).join('')}</div><div class="hint" style="margin:6px 2px 0">Quanto pensi di <b>incassare</b> da questo cliente in ogni anno (conta quando arrivano i soldi). Vuoto = niente.</div></div>
+   <div id="pm-rate" style="display:${m==='rate'?'':'none'}">
+     <div class="row2">${inp('pr-v',r.v||'','Importo €, es. 1.500')}<select id="pr-f" onchange="pmLive()" style="flex:1;min-width:0;background:var(--sur2);border:0;border-radius:12px;padding:12px;font-size:16px">${FREQ.map(f=>`<option value="${f[0]}" ${(+r.ogni||1)===f[0]?'selected':''}>${f[1]}</option>`).join('')}</select></div>
+     <div class="row2" style="margin-top:8px"><label style="flex:1;font-size:12px;color:var(--mut)">Primo incasso${inp('pr-d',r.dal||'','', 'month')}</label><label style="flex:1;font-size:12px;color:var(--mut)">Ultimo (vuoto = senza fine)${inp('pr-a',r.al||'','', 'month')}</label></div>
+     <div class="hint" id="pm-sum" style="margin:8px 2px 0"></div></div></div>`; }
+function renderAll(){ try{ renderPhoneBox(); renderHomeSide(); renderNext(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
