@@ -251,9 +251,9 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 .donutwrap.empty .donut{opacity:.9}
 
 
-.desk{display:none}
+.desk{display:none}.ldsk{display:none}
 @media (min-width:960px){
-  .desk{display:block}.mobonly{display:none!important}
+  .desk{display:block}.mobonly{display:none!important}.ldsk{display:inline}.lmob{display:none}
   #v-clients.on{max-width:1120px}
   .dkpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin-bottom:14px}
   .dkpi{background:var(--sur);border-radius:20px;padding:18px 20px}
@@ -348,15 +348,46 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   .yhero .ys .s{font-size:12px;color:var(--mut);margin-top:3px}
   .yhero .mb{height:6px;border-radius:3px;background:var(--sur2);margin-top:10px;overflow:hidden}.yhero .mb i{display:block;height:100%;border-radius:3px}
 }
+
+@media (min-width:960px){
+  #v-new{max-width:1120px!important}
+  #st0.on{display:grid;grid-template-columns:minmax(0,500px) minmax(0,1fr);gap:0 48px;align-items:start}
+  #st1.on,#st10.on{max-width:620px}
+  .homecalc{background:var(--sur);border-radius:26px;padding:22px 24px 10px}
+  .homecalc .pad button{background:var(--sur2)}.homecalc .pad button:hover{filter:brightness(1.25)}
+  #st0 .homeside .choices{display:grid!important}
+  .homeside{position:sticky;top:20px}
+  .hsh .k{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--acc);font-weight:700}
+  .hsh h2{text-transform:none;color:var(--txt);font-size:34px;font-weight:800;letter-spacing:-.02em;margin:8px 0 18px;line-height:1.1}
+  .homeside .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .homeside .choices .choice{margin:0;text-align:left;min-height:96px}
+  .homeside .choices .choice.main{grid-column:1/-1;min-height:110px;font-size:19px}
+  .homeside .disc0{text-align:left;margin:14px 2px}
+  .homeside .faqlink{display:block;margin:6px 0 0;text-align:left}
+  .hs-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:18px}
+  .hs-k{background:var(--sur);border-radius:18px;padding:16px 18px;cursor:pointer;border:1px solid transparent}
+  .hs-k:hover{border-color:var(--line)}
+  .hs-k .k{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut)}
+  .hs-k .v{font-size:22px;font-weight:800;margin-top:6px;white-space:nowrap;letter-spacing:-.02em}
+  .hs-k .s{font-size:12px;color:var(--mut);margin-top:3px}
+  .hs-rec{background:var(--sur);border-radius:18px;padding:16px 18px;margin-top:12px}
+  .hs-rec h4{margin:0 0 8px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mut);font-weight:600;display:flex;justify-content:space-between}
+  .hs-rec h4 span{color:var(--acc);cursor:pointer;text-transform:none;letter-spacing:0;font-size:12px}
+  .hs-row{display:flex;align-items:center;gap:10px;padding:9px 0;border-top:1px solid var(--line);cursor:pointer;font-size:14px}
+  .hs-row:first-of-type{border-top:0}
+  .hs-row b{width:9px;height:9px;border-radius:3px;flex:0 0 9px}.hs-row .n{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .hs-row .st{font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.05em}.hs-row .t{font-weight:700;min-width:84px;text-align:right}
+  .hs-tip{font-size:12.5px;color:var(--mut);margin-top:12px}
+}
 /* ---------- DESKTOP ---------- */
 @media (min-width:960px){
-  body{padding-bottom:0;padding-left:232px}
-  .tabs{top:0;right:auto;width:232px;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:92px 14px 20px;background:var(--bg)}
+  body{padding-bottom:0;padding-left:260px}
+  .tabs{top:0;right:auto;width:260px;box-sizing:border-box;flex-direction:column;justify-content:flex-start;gap:4px;border-top:0;border-right:1px solid var(--line);padding:92px 14px 20px;background:var(--bg)}
   .tabs::before{content:'Menu';color:var(--mut);font-size:11px;letter-spacing:.08em;text-transform:uppercase;padding:0 12px 8px}
-  .tabs button{flex-direction:row;gap:12px;font-size:15px;padding:11px 12px!important;border-radius:12px;width:100%;justify-content:flex-start}
+  .tabs button{flex-direction:row;gap:12px;font-size:15px;white-space:nowrap;text-align:left;padding:11px 12px!important;border-radius:12px;width:100%;justify-content:flex-start}
   .tabs button:hover{background:var(--sur)}
   .tabs button.on{background:var(--sur)}
-  .tabs svg{width:20px;height:20px}
+  .tabs svg{width:20px;height:20px;flex:0 0 20px}
   .app{max-width:1120px;padding:0 40px}
   .hdr{padding-top:24px}
   #v-new{max-width:560px}
@@ -387,6 +418,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <!-- VIEW: NUOVO (guidata) -->
   <section class="view on" id="v-new">
     <div class="step on" id="st0">
+      <div class="homecalc">
       <div class="seg dirseg" id="dirseg"><button id="dirF" onclick="setDir(false)">Quanto mi resta?</button><button id="dirR" onclick="setDir(true)">Quanto devo chiedere?</button></div>
       <div class="q" style="margin:4px 0 6px" id="hello">Inserisci la cifra</div>
       <div class="qsub" style="margin:0 0 10px" id="hellosub">Un preventivo o un incasso: vedi subito quanto è tuo e quanto va al fisco.</div>
@@ -414,13 +446,18 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
       </div>
       <div class="legend h" id="l0" style="display:none"></div><div id="how0"></div>
       <div class="hint" style="text-align:center;margin:-8px 0 14px" id="actline"></div>
+      </div>
+      <div class="homeside">
+      <div class="desk hsh"><div class="k">Benvenuto</div><h2 id="hshname">Cosa facciamo oggi?</h2></div>
       <div class="choices">
         <button class="choice main" onclick="fromHome('prev')">Fai il preventivo da mandare<small>Voci, PDF con il tuo logo, invio in un tocco</small></button>
         <button class="choice" onclick="fromHome('inc')">Li ho già incassati<small>Segnali nell'anno e sai quanto mettere via</small></button>
         <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
       </div>
       <p class="disc0">PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime.</p>
+      <div class="desk" id="homeside"></div>
       <button class="faqlink" onclick="faq()">? Aiuto · domande frequenti</button>
+      </div>
     </div>
 
     <div class="step" id="st1">
@@ -570,7 +607,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
   <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
   <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
-  <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg>Commercialista</button>
+  <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg><span class="lmob">Commercialista</span><span class="ldsk">Trova il tuo commercialista</span></button>
 </nav>
 
 <div class="sheet" id="sheet"><div class="in" id="sheetin"></div></div>
@@ -581,7 +618,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.10.3',
+  ver: '4.10.5',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -826,6 +863,12 @@ renderActLine();
 $('pad').addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b||b.classList.contains('ok')) return; const i=$('q0'); let v=i.value; if(b.classList.contains('del')) v=v.slice(0,-1); else if(v.length<7) v+=b.textContent; i.value=v; i.dispatchEvent(new Event('input')); });
 $('q0').setAttribute('readonly','');
 let padOpen=true;
+document.addEventListener('keydown',e=>{ if(e.metaKey||e.ctrlKey||e.altKey) return; const a=document.activeElement; if(a&&/INPUT|TEXTAREA|SELECT/.test(a.tagName)) return; if($('sheet').classList.contains('on')) return;
+  if(!$('v-new').classList.contains('on')||!$('st0').classList.contains('on')) return;
+  const pad=$('pad'); let b=null;
+  if(/^[0-9]$/.test(e.key)) b=[...pad.querySelectorAll('button')].find(x=>x.textContent.trim()===e.key);
+  else if(e.key==='Backspace') b=pad.querySelector('.del'); else if(e.key==='Enter') b=pad.querySelector('.ok');
+  if(!b) return; e.preventDefault(); if(pad.style.display==='none') setPad(true); b.click(); });
 function setPad(o){ padOpen=o; $('pad').style.display=o?'':'none'; $('l0').style.display=(o||!$('q0').value)?'none':''; document.querySelector('#st0 .choices').style.display=o?'none':''; }
 $('q0').addEventListener('click',()=>setPad(true));
 document.querySelector('#st0 .amtwrap').addEventListener('click',()=>setPad(true));
@@ -1695,7 +1738,19 @@ function closeSheet(){ $('sheet').classList.remove('on'); }
 $('sheet').addEventListener('click',e=>{ if(e.target.id==='sheet') closeSheet(); });
 function openSheet(k){ if(k==='settings') sheet(settingsHTML(false)); }
 let tt; function toast(m){ $('toast').textContent=m; $('toast').classList.add('on'); clearTimeout(tt); tt=setTimeout(()=>$('toast').classList.remove('on'),1400); }
-function renderAll(){ try{ renderPhoneBox(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
+function renderHomeSide(){ const el=$('homeside'); if(!el) return; const Y=String(PARAMS.anno);
+  const inc=S.prev.filter(p=>p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).slice(0,4)===Y).reduce((a,p)=>a+p.tot,0);
+  const da=S.prev.filter(p=>['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0);
+  const c=calc(inc), pct=Math.round(inc/PARAMS.soglia*100);
+  if($('hshname')) $('hshname').textContent = S.profile.nome ? `Ciao ${S.profile.nome.split(' ')[0]}, cosa facciamo?` : 'Cosa facciamo oggi?';
+  const rec=S.prev.slice().sort((a,b)=>String(b.date).localeCompare(String(a.date))||b.id-a.id).slice(0,5);
+  el.innerHTML=`<div class="hs-grid">
+    <div class="hs-k" onclick="go('year')"><div class="k">Incassato ${Y}</div><div class="v" style="color:var(--acc)">${fmt(inc)}</div><div class="s">tasse stimate ${fmt(c.tasse)}</div></div>
+    <div class="hs-k" onclick="go('clients')"><div class="k">Da incassare</div><div class="v" style="color:${da?'var(--red)':'var(--txt)'}">${fmt(da)}</div><div class="s">accettati o fatturati</div></div>
+    <div class="hs-k" onclick="go('year')"><div class="k">Soglia 85.000 €</div><div class="v" style="color:${pct>=100?'var(--red)':pct>=85?'#ff9f43':'var(--txt)'}">${pct}%</div><div class="s">${inc<PARAMS.soglia?'mancano '+fmt(PARAMS.soglia-inc):'superata'}</div></div></div>
+   ${rec.length?`<div class="hs-rec"><h4>Ultimi lavori <span onclick="go('list')">vedi tutti ›</span></h4>${rec.map(p=>{ const cl=clientOf(p); return `<div class="hs-row" onclick="openPrev(${p.id})"><b style="background:${cl.color}"></b><span class="n">${esc(cl.name)}</span><span class="st">${p.status}</span><span class="t">${fmt(p.tot)}</span></div>`; }).join('')}</div>`:''}
+   <div class="hs-tip">Sul computer puoi scrivere la cifra anche con la tastiera: numeri, ⌫ per cancellare, Invio per confermare.</div>`; }
+function renderAll(){ try{ renderPhoneBox(); renderHomeSide(); }catch(e){} setTimeout(()=>{ try{ renderYearHero(); }catch(e){} },0);  renderList(); renderClients(); renderMargin(); renderYear(); }
 
 /* ---------- AVVIO ---------- */
 if('serviceWorker' in navigator && location.protocol==='https:'){ navigator.serviceWorker.register('sw.js').then(reg=>{ reg.update(); reg.addEventListener('updatefound',()=>{ const w=reg.installing; w&&w.addEventListener('statechange',()=>{ if(w.state==='activated' && navigator.serviceWorker.controller) toast('Aggiornata: riapri per la nuova versione'); }); }); }).catch(()=>{}); }
