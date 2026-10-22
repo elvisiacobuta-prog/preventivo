@@ -659,7 +659,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.12.4',
+  ver: '4.13.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1817,12 +1817,26 @@ function clIncY(c,Y){ return S.prev.filter(p=>p.client===c.id&&p.status==='incas
 function clDa(c){ return S.prev.filter(p=>p.client===c.id&&['accettato','fatturato'].includes(p.status)).reduce((a,p)=>a+p.tot,0); }
 function yearPrev(Y){ Y=+Y; const cur=+PARAMS.anno; return S.clients.reduce((a,c)=>a+(Y===cur? Math.max(clPlan(c,Y), clIncY(c,Y)+clDa(c)) : clPlan(c,Y)),0); }
 function hasFuture(){ return S.clients.some(c=>clPlan(c,+PARAMS.anno+1)>0||clPlan(c,+PARAMS.anno+2)>0); }
+function renderPend(){ const Y=+PARAMS.anno, nm=id=>{const c=S.clients.find(x=>x.id===id);return c?c.name:'Cliente'};
+  const inc=S.prev.filter(p=>p.status==='incassato'&&String((p.hist&&p.hist.incassato)||p.date).startsWith(String(Y))).reduce((a,p)=>a+p.tot,0);
+  const fat=S.prev.filter(p=>p.status==='fatturato'), acc=S.prev.filter(p=>p.status==='accettato');
+  const tf=fat.reduce((a,p)=>a+p.tot,0), ta=acc.reduce((a,p)=>a+p.tot,0), tot=inc+tf+ta||1;
+  const row=(p,t,col)=>`<div class="spr"><div class="n">${esc(nm(p.client))}<small>${esc((p.rows&&p.rows[0]&&p.rows[0].d)||'')} · ${p.hist&&p.hist.fatturato?'fatturata il '+p.hist.fatturato:'accettato il '+(p.hist&&p.hist.accettato||p.date)}</small></div><div class="a">${fmt(p.tot)}</div><span style="font-size:11px;background:${col};color:#111;border-radius:8px;padding:4px 8px;font-weight:700">${t}</span></div>`;
+  const list=[...fat.slice().sort((a,b)=>b.tot-a.tot).map(p=>row(p,'DA INCASSARE','#5BE38B')),...acc.slice().sort((a,b)=>b.tot-a.tot).map(p=>row(p,'DA FATTURARE','#FFD54A'))].join('');
+  const fut=[Y+1,Y+2].map(y=>({y,rows:S.clients.map(c=>({c,v:clPlan(c,y)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v)})).filter(x=>x.rows.length);
+  return `<div class="spc" style="margin-bottom:12px"><h4>Incassato, da incassare e da fatturare · ${Y}</h4>
+  <div class="mb" style="display:flex;height:14px;border-radius:8px;overflow:hidden;margin-bottom:10px"><i style="width:${inc/tot*100}%;background:var(--acc)"></i><i style="width:${tf/tot*100}%;background:#5BE38B;opacity:.55"></i><i style="width:${ta/tot*100}%;background:#FFD54A"></i></div>
+  <div class="spl" style="margin-bottom:10px"><span><b style="background:var(--acc)"></b>Già incassato<em>${fmt(inc)}</em></span><span><b style="background:#5BE38B"></b>Fatture inviate, da incassare<em>${fmt(tf)}</em></span><span><b style="background:#FFD54A"></b>Accettato, da fatturare<em>${fmt(ta)}</em></span><span style="border-top:1px solid var(--line);padding-top:6px;font-weight:800">Totale ${Y} se arriva tutto<em>${fmt(inc+tf+ta)}</em></span></div>
+  ${list||'<div class="hint">Niente in attesa.</div>'}
+  ${fut.map(f=>`<h4 style="margin:14px 0 6px">Previsti ${f.y}: ${fmt(f.rows.reduce((a,x)=>a+x.v,0))}</h4>${f.rows.map(x=>`<div class="spr"><div class="n">${esc(x.c.name)}<small>${(x.c.tipo==='spot'?'lavoro spot':'cliente fisso')}</small></div><div class="a">${fmt(x.v)}</div></div>`).join('')}`).join('')}
+  <div class="hint" style="margin-top:8px;line-height:1.5">Conta quando arrivano i soldi, non quando fatturi. «Da incassare» sono fatture già inviate; «da fatturare» sono lavori accettati ma senza fattura. Per vedere un anno prima di emettere le fatture guarda il totale ${Y}.</div></div>`; }
 function renderNext(){ const el=$('ynext'); if(!el) return; const Y0=+PARAMS.anno, ys=[Y0,Y0+1,Y0+2];
   if(!hasFuture()){ el.innerHTML=`<div class="k2">I prossimi anni</div><div class="hint" style="line-height:1.5">Hai clienti fissi o lavori già decisi per il ${Y0+1}? Tocca un cliente in <b>Clienti</b> e scrivi l'<b>incasso previsto</b> anno per anno, oppure un importo che arriva ogni mese, ogni 2 o 3 mesi. Qui vedi tasse, netto e soglia di ogni anno.</div>`; return; }
   el.innerHTML=`<div class="k2">I prossimi anni</div><div class="nxg">${ys.map(Y=>{ const v=yearPrev(Y), c=calc(v,{annual:true}), pc=v/PARAMS.soglia, col=v>PARAMS.sogliaOut?'var(--red)':v>PARAMS.soglia?'#ff9f43':'var(--acc)';
     const st=v>PARAMS.sogliaOut?'Sopra 100.000 €: si esce dal forfettario subito, durante l\'anno':v>PARAMS.soglia?`Sopra 85.000 €: dal ${Y+1} si esce dal forfettario`:(v>PARAMS.soglia*0.85?'Vicino alla soglia: controlla quando incassi':'Sotto la soglia');
     const top=S.clients.map(c2=>({c:c2,v:Y===Y0?Math.max(clPlan(c2,Y),clIncY(c2,Y)+clDa(c2)):clPlan(c2,Y)})).filter(x=>x.v>0).sort((a,b)=>b.v-a.v).slice(0,4);
     return `<div class="nxc"><div class="nxy">${Y}${Y===Y0?' <small>quest\'anno</small>':''}</div><div class="nxv">${fmt(v)}</div><div class="nxs">previsti · tasse ~${fmt(c.tasse)} · netto ~${fmt(c.netto)}</div><div class="mb"><i style="width:${Math.min(100,pc*100)}%;background:${col}"></i></div><div class="nxst" style="color:${col}">${st}</div>${top.length?`<div class="nxl">${top.map(x=>`<span><b style="background:${x.c.color}"></b>${esc(x.c.name)}<em>${fmt(x.v)}</em></span>`).join('')}</div>`:''}</div>`; }).join('')}</div>
+   ${renderPend()}
    ${renderOrd(ys,Y0)}
    <div class="hint" style="margin-top:8px">Conta l'anno in cui arrivano i soldi. ${Y0} = incassato + da incassare (o il previsto, se più alto); anni dopo = gli incassi previsti che hai scritto nei clienti. Stime: decide il commercialista.</div>`; }
 function ordEst(v,cp){ const prof=Math.max(0,v*(1-cp/100)); let inps=0;
