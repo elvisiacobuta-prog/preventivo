@@ -168,7 +168,7 @@ label.l{font-size:12px;color:var(--mut);display:block;margin:12px 2px 6px}
 .faqsec{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin:16px 0 4px}.faqi{border-bottom:1px solid var(--sur2);padding:10px 0}.faqi summary{font-weight:700;font-size:15px;cursor:pointer;list-style:none}.faqi summary::after{content:' +';color:var(--acc)}.faqi[open] summary::after{content:' −'}.faqi p{margin:8px 0 2px;font-size:14px;line-height:1.55;color:var(--mut)}
 .faqlink{display:block;margin:4px auto 12px;font-size:13px;font-weight:700;color:var(--acc)}
 .atchip.set{display:block!important;text-align:left;border:1.5px solid var(--line)!important;padding:12px 14px}.ptop{display:flex;justify-content:space-between;font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--mut);margin-bottom:6px}.ptop .pedit{color:var(--acc);text-transform:none;letter-spacing:0;font-weight:700;font-size:13px}.prow{font-size:13.5px;line-height:1.45;padding:3px 0;color:var(--txt)}.prow small{color:var(--mut)}.pmiss{color:var(--acc);font-weight:700}
-.ratecode{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}.ratecode small{font-size:10.5px;font-weight:600;color:var(--mut);margin-top:2px}#rateseg .ratecode.on,#rateseg .ratecode{color:var(--txt)}.profline{font-size:12px;color:var(--mut);text-align:center;margin:-2px 0 12px;line-height:1.5}.profline .link{font-size:12px}.profline .why{transform:scale(.85)}
+.ptag{display:table;font-size:11px;font-weight:700;color:#111;background:var(--acc);border-radius:6px;padding:2px 7px;margin-bottom:6px}.ratecode{display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}.ratecode small{font-size:10.5px;font-weight:600;color:var(--mut);margin-top:2px}#rateseg .ratecode.on,#rateseg .ptag{display:inline-block;font-size:11px;font-weight:700;color:#111;background:var(--acc);border-radius:6px;padding:2px 7px;margin-bottom:6px}.ratecode{color:var(--txt)}.profline{font-size:12px;color:var(--mut);text-align:center;margin:-2px 0 12px;line-height:1.5}.profline .link{font-size:12px}.profline .why{transform:scale(.85)}
 .ratehint{display:flex;gap:10px;align-items:center;justify-content:center;flex-wrap:wrap;font-size:12px;color:var(--mut);margin:-2px 0 10px;text-align:center}.ratehint b{color:var(--txt)}
 .profcard-old{display:flex;align-items:center;gap:10px;width:100%;margin:0 0 12px;padding:12px 14px;border-radius:14px;background:var(--sur2);border:1.5px solid var(--acc);text-align:left;color:var(--txt)}
 .atchip.set{border-color:transparent}.atchip .atl{font-size:12px;color:var(--mut);font-weight:600;white-space:nowrap}.atchip .atv{font-size:17px;font-weight:800;letter-spacing:.02em}.atchip .atp{color:var(--acc);font-weight:800;font-size:16px;letter-spacing:0}
@@ -300,7 +300,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
         <button class="choice" onclick="go('year')">Quanto pago quest'anno?<small>Tasse, scadenze, soglia</small></button>
       </div>
       <p class="disc0">PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime.</p>
-      <button class="faqlink" onclick="faq()">? Domande frequenti</button>
+      <button class="faqlink" onclick="faq()">? Aiuto · domande frequenti</button>
     </div>
 
     <div class="step" id="st1">
@@ -380,7 +380,10 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 
   <!-- VIEW: ANNO -->
   <section class="view" id="v-bandi">
-    <div class="q" style="margin-bottom:4px">Bandi e contributi</div>
+    <div class="q" style="margin-bottom:4px">Trova il tuo commercialista</div>
+    <div class="qsub" style="margin:0 0 14px">Commercialisti che collaborano con PreventIVO: conoscono il forfettario e sanno leggere i tuoi conti.</div>
+    <div id="commlist"></div>
+    <div class="q" style="margin:26px 0 4px;font-size:22px">Bandi per te</div>
     <div class="qsub" style="margin:0 0 14px">Contributi a fondo perduto, prestiti agevolati e voucher per chi ha la partita IVA. Si aprono i siti ufficiali, sempre aggiornati.</div>
     <div id="bandilist"></div>
   </section>
@@ -441,7 +444,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
   <button data-v="list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6h16M4 12h16M4 18h10"/></svg>Preventivi</button>
   <button data-v="clients"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Clienti</button>
   <button data-v="year"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-8M22 20H2"/></svg>Anno</button>
-  <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l2.6 5.6 6.1.7-4.5 4.2 1.2 6L12 15.6 6.6 18.5l1.2-6L3.3 8.3l6.1-.7z"/></svg>Bandi</button>
+  <button data-v="bandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.5-4.5"/></svg>Commercialista</button>
 </nav>
 
 <div class="sheet" id="sheet"><div class="in" id="sheetin"></div></div>
@@ -452,7 +455,7 @@ input[type=number]::-webkit-inner-spin-button,input[type=number]::-webkit-outer-
 const $=id=>document.getElementById(id);
 /* ---------- PARAMETRI (aggiornare ogni gennaio) ---------- */
 const PARAMS = {
-  ver: '4.7.0',
+  ver: '4.8.0',
   sku: 'sblocco', prezzo: '15,99 €',
   webFree: true,   // sul sito (non dallo store) tutto libero durante la beta: mettere false al lancio
   link: 'preventivo-app.com',   // ← dominio da comprare; sostituire con il link dello store al lancio
@@ -1312,7 +1315,7 @@ function settingsHTML(first){
     <input id="s-mk" value="${esc(pr.marchio||'')}" maxlength="34" placeholder="Es. Studio Rossi · Grafica" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none">
     <div class="hint" style="margin:6px 2px 0">Esce in grande in alto a destra, al posto del logo. Se carichi un logo, vale il logo.</div>
     <button class="btn" onclick="saveSettings()">${first?'Inizia':'Salva'}</button>
-    ${first?'':'<button class="btn ghost" onclick="faq()">? Domande frequenti</button>'}
+    ${first?'':'<button class="btn ghost" onclick="faq()">? Aiuto · domande frequenti</button>'}
     ${first?'':'<div class="movebox"><b>Vuoi i tuoi dati anche su un altro telefono o sul computer?</b><small>I dati stanno solo su questo dispositivo, non su internet. Per spostarli: 1) qui tocca <b>Salva un backup</b> e mandatelo (mail, WhatsApp, AirDrop); 2) sull\'altro dispositivo apri l\'app, Impostazioni, <b>Ripristina da backup</b>.</small><button class="btn ghost" onclick="backup()">Salva un backup</button></div><button class="btn ghost" onclick="restore()">Ripristina da backup</button><button class="btn ghost danger" onclick="wipe()">Cancella tutti i dati</button>'}
     <div class="stima">Coefficienti e aliquote sono quelli noti per il ${PARAMS.anno}: verificali con il tuo commercialista. L'app non dà consulenza fiscale.</div>`;
 }
@@ -1428,10 +1431,23 @@ const FAQ=[
 function faq(q){ const t=(q||'').trim().toLowerCase(); const L=FAQ.filter(f=>!t||(f[1]+' '+f[2]).toLowerCase().includes(t)); let last='';
   const body=L.map(f=>{ const h=f[0]!==last?`<div class="faqsec">${esc(f[0])}</div>`:''; last=f[0]; return h+`<details class="faqi"><summary>${esc(f[1])}</summary><p>${esc(f[2])}</p></details>`; }).join('')||'<div class="hint">Nessuna risposta trovata. Chiedi al tuo commercialista: è la persona giusta per i casi particolari.</div>';
   if(q!=null&&$('faql')){ $('faql').innerHTML=body; return; }
-  sheet(`<h3>Domande frequenti</h3><div class="sub">Risposte brevi, verificate sulle regole del ${PARAMS.anno}. Per il tuo caso specifico decide il commercialista.</div><input id="faqq" placeholder="Cerca: spese, acconti, soglia, ATECO…" oninput="faq(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin:6px 0 4px"><div id="faql">${body}</div>`); }
+  sheet(`<h3>Aiuto</h3><div class="sub">Risposte brevi, verificate sulle regole del ${PARAMS.anno}. Per il tuo caso specifico decide il commercialista.</div><input id="faqq" placeholder="Cerca: spese, acconti, soglia, ATECO…" oninput="faq(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin:6px 0 4px"><div id="faql">${body}</div>`); }
 
 /* ---------- BANDI (solo link a fonti ufficiali) ---------- */
 const REGIONI=['Abruzzo','Basilicata','Calabria','Campania','Emilia-Romagna','Friuli-Venezia Giulia','Lazio','Liguria','Lombardia','Marche','Molise','Piemonte','Puglia','Sardegna','Sicilia','Toscana','Trentino-Alto Adige','Umbria',"Valle d'Aosta",'Veneto'];
+/* Commercialisti: entrano SOLO con consenso scritto. partner:true = sempre in alto. */
+const COMM=[
+  // {nome:'', studio:'', citta:'Aosta', tel:'', mail:'', sito:'', partner:true}
+];
+const CITTA=['Aosta'];
+function setCitta(v){ S.profile.citta=v; save(); renderComm(); }
+function renderComm(){ const el=$('commlist'); if(!el) return; const c=S.profile.citta||CITTA[0];
+  const L=COMM.filter(x=>x.citta===c).sort((a,b)=>(b.partner?1:0)-(a.partner?1:0));
+  const sel=`<select onchange="setCitta(this.value)" style="width:100%;background:var(--sur2);border:0;border-radius:12px;padding:12px 14px;outline:none;margin-bottom:10px">${CITTA.map(x=>`<option ${x===c?'selected':''}>${x}</option>`).join('')}<option disabled>Altre città: in arrivo</option></select>`;
+  const card=x=>`<div class="card bando">${x.partner?'<span class="ptag">Collabora con PreventIVO</span>':''}<b>${esc(x.nome)}</b><p>${esc(x.studio||'')}${x.studio?' · ':''}${esc(x.citta)}</p><div class="row2">${x.tel?`<a class="btn ghost" href="tel:${esc(x.tel)}">Chiama</a>`:''}${x.mail?`<a class="btn ghost" href="mailto:${esc(x.mail)}">Scrivi</a>`:''}${x.sito?`<a class="btn ghost" href="${esc(x.sito)}" target="_blank" rel="noopener">Sito ↗</a>`:''}</div></div>`;
+  el.innerHTML = sel + (L.length ? L.map(card).join('') : `<div class="card hint" style="line-height:1.5">Stiamo cercando i primi commercialisti che collaborano con noi a <b>${esc(c)}</b>. Torna presto.</div>`)
+   + `<div class="card bando"><b>Sei un commercialista?</b><p>Collabora con PreventIVO: i tuoi clienti forfettari arrivano con i conti già in ordine.</p><a class="btn ghost" href="mailto:elvisiacobuta@gmail.com?subject=${encodeURIComponent('Commercialista su PreventIVO')}">Scrivici</a></div>`
+   + `<p class="disc0">Nell'elenco compare solo chi ha scelto di esserci. Il professionista lo scegli tu: PreventIVO non dà consulenza fiscale.</p>`; }
 function setRegione(v){ S.profile.regione=v; save(); renderBandi(); }
 function renderBandi(){ const el=$('bandilist'); if(!el) return; const rg=S.profile.regione||''; const prof=isIVS()?'Impresa':'Professionista';
   const card=(t,d,u,b,extra)=>`<div class="card bando"><b>${t}</b><p>${d}</p>${extra||''}<a class="btn ghost" href="${u}" target="_blank" rel="noopener">${b} ↗</a></div>`;
@@ -1471,7 +1487,7 @@ checkOwned(); loadPrice();
 
 /* ---------- NAV / SHEET / TOAST ---------- */
 ['list','clients','year','bandi'].forEach(v=>{ const sec=document.getElementById('v-'+v); if(sec&&!sec.querySelector('.disc0.foot')){ const p=document.createElement('p'); p.className='disc0 foot'; p.textContent="PreventIVO non sostituisce il commercialista: ti dà una visione chiara del tuo anno e ti fa mandare preventivi in pochi secondi. I calcoli sono stime."; sec.appendChild(p); const b=document.createElement('button'); b.className='faqlink'; b.textContent='? Domande frequenti'; b.onclick=()=>faq(); sec.appendChild(b); } });
-function go(v){ if(v==='bandi') renderBandi(); if(v!=='new' && v!=='bandi' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
+function go(v){ if(v==='bandi'){ renderComm(); renderBandi(); } if(v!=='new' && v!=='bandi' && !paid()){ paywall(()=>go(v)); return; } document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v)); document.querySelectorAll('.tabs button').forEach(b=>b.classList.toggle('on',b.dataset.v===v)); window.scrollTo(0,0); }
 document.querySelector('.tabs').addEventListener('click',e=>{ const b=e.target.closest('button'); if(b) go(b.dataset.v); });
 function sheet(html){ $('sheetin').innerHTML='<button class="sx" onclick="closeSheet()" aria-label="Chiudi">×</button>'+html; $('sheet').classList.add('on'); $('sheetin').scrollTop=0; }
 function closeSheet(){ $('sheet').classList.remove('on'); }
